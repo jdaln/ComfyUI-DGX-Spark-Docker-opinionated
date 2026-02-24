@@ -47,6 +47,10 @@ for src in /opt/onnxruntime/onnxruntime_gpu-*.whl; do
     [ -e "$src" ] || continue
     sync_wheel "$src" "onnxruntime"
 done
+for src in /opt/decord/*.whl; do
+    [ -e "$src" ] || continue
+    sync_wheel "$src" "decord"
+done
 
 # Install FlashAttention-3 from pre-built wheel (built in Docker image for CUDA 13.0)
 echo "Installing flash-attn3 from pre-built wheel..."
@@ -55,6 +59,10 @@ pip install /opt/flash-attn3/*.whl
 # Install onnxruntime-gpu from pre-built wheel (built in Docker image for CUDA 13.0)
 echo "Installing onnxruntime-gpu from pre-built wheel..."
 pip install /opt/onnxruntime/onnxruntime_gpu-*.whl
+
+# Install decord from pre-built wheel (built in Docker image, no PyPI wheel for Python 3.12)
+echo "Installing decord from pre-built wheel..."
+pip install /opt/decord/*.whl || true
 
 # Update ComfyUI repository if UPDATE_DEPS is true
 if [ "${UPDATE_DEPS}" = "true" ]; then

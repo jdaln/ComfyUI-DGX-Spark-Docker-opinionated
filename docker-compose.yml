@@ -31,7 +31,7 @@ services:
               capabilities: [gpu]
     environment:
       NVIDIA_VISIBLE_DEVICES: all
-      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
       HF_HOME: /workspace/cache/huggingface
       PIP_CACHE_DIR: /workspace/pip_cache
       PIP_CONSTRAINT: /workspace/constraints.txt

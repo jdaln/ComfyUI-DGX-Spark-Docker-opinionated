@@ -27,5 +27,8 @@ https://github.com/kijai/ComfyUI-WanVideoWrapper
 https://github.com/kijai/ComfyUI-KJNodes.git
 https://github.com/PozzettiAndrea/ComfyUI-SAM3
 
+# Remove background
+https://github.com/1038lab/ComfyUI-RMBG.git
+
 # ComfyUI Manager - recommended for managing custom nodes via GUI
 https://github.com/ltdrdata/ComfyUI-Manager.git

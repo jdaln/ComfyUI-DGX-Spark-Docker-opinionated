@@ -215,6 +215,15 @@ pip install torch torchvision torchaudio --pre --index-url https://download.pyto
 
 This is an intentional pin for DGX Spark; change the line in `entrypoint.sh` if you want a different version flow.
 
+## Changelog
+
+### 2026-02-23 — decord support for ComfyUI-RMBG / SAM3
+
+- Built **decord** wheel from [source](https://github.com/dr-vij/decord) (forked with FFmpeg 7 fixes) with CUDA/NVDEC enabled — no pre-built wheel exists for Python 3.12
+- Added decord wheel to `entrypoint.sh` (backup + install on startup, same as flash-attn3 and onnxruntime-gpu)
+- Enabled `video` driver capability in `docker-compose.yml` so the container gets access to hardware video decoding
+- Added `libopengl0` to fix a missing library warning
+
 ## License
 
 This repo only provides configuration and Docker wiring (and I do not really care about that). ComfyUI has its own license — see [ComfyUI License](https://github.com/Comfy-Org/ComfyUI/blob/master/LICENSE). All models have their own licenses. All wheels and third-party libraries have their own licenses as well — please check and comply with each upstream.
