@@ -91,4 +91,47 @@ while IFS= read -r repo || [ -n "$repo" ]; do
 done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt
 
 # Run ComfyUI
-python /workspace/ComfyUI/main.py --listen 0.0.0.0 --port "${COMFY_PORT:-8188}"
+COMFY_ARGS=(
+  --listen 0.0.0.0
+  --port "${COMFY_PORT:-8188}"
+)
+
+# Debug mode for custom node bisection:
+# - If COMFY_NODE_WHITELIST is set (comma-separated), load only these nodes.
+# - Else if COMFY_NODE_BLACKLIST is set (comma-separated), load all node dirs except blacklisted.
+# - Else DISABLE_ALL_CUSTOM_NODES=true keeps custom nodes disabled.
+if [ -n "${COMFY_NODE_WHITELIST:-}" ]; then
+    COMFY_ARGS+=(--disable-all-custom-nodes)
+    IFS=',' read -ra NODE_LIST <<< "${COMFY_NODE_WHITELIST}"
+    WHITELIST_NODES=()
+    for node in "${NODE_LIST[@]}"; do
+        node_trimmed="$(echo "$node" | xargs)"
+        [ -n "$node_trimmed" ] && WHITELIST_NODES+=("$node_trimmed")
+    done
+    [ "${#WHITELIST_NODES[@]}" -gt 0 ] && COMFY_ARGS+=(--whitelist-custom-nodes "${WHITELIST_NODES[@]}")
+elif [ -n "${COMFY_NODE_BLACKLIST:-}" ]; then
+    COMFY_ARGS+=(--disable-all-custom-nodes)
+
+    # Build a hash-set once; membership checks are O(1) per node.
+    IFS=',' read -ra BLACKLIST_NODES <<< "${COMFY_NODE_BLACKLIST}"
+    declare -A BLACKLIST_SET=()
+    for raw in "${BLACKLIST_NODES[@]}"; do
+        node_trimmed="${raw#"${raw%%[![:space:]]*}"}"
+        node_trimmed="${node_trimmed%"${node_trimmed##*[![:space:]]}"}"
+        [ -n "$node_trimmed" ] && BLACKLIST_SET["$node_trimmed"]=1
+    done
+
+    WHITELIST_NODES=()
+    for node_path in /workspace/ComfyUI/custom_nodes/*; do
+        [ -d "$node_path" ] || continue
+        node_name="$(basename "$node_path")"
+        [ "$node_name" = "__pycache__" ] && continue
+        [ -n "${BLACKLIST_SET[$node_name]:-}" ] && continue
+        WHITELIST_NODES+=("$node_name")
+    done
+    [ "${#WHITELIST_NODES[@]}" -gt 0 ] && COMFY_ARGS+=(--whitelist-custom-nodes "${WHITELIST_NODES[@]}")
+elif [ "${DISABLE_ALL_CUSTOM_NODES:-true}" = "true" ]; then
+    COMFY_ARGS+=(--disable-all-custom-nodes)
+fi
+
+python /workspace/ComfyUI/main.py "${COMFY_ARGS[@]}"

@@ -2,6 +2,8 @@
 
 Docker container for running [ComfyUI](https://github.com/Comfy-Org/ComfyUI) with NVIDIA CUDA 13.0 and GPU acceleration.
 
+**Project version: 0.1**
+
 ## About
 
 **Disclaimer:** this is a strongly opinionated setup for my personal DGX Spark. Do whatever you want with it — I am sharing because DGX Spark is a new platform and I keep hunting for details myself.
@@ -52,6 +54,8 @@ Create a `.env` file in the project root:
 UID=1000
 GID=1000
 UPDATE_DEPS=true
+DISABLE_ALL_CUSTOM_NODES=false
+COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 ```
 
 **Parameters:**
@@ -59,6 +63,9 @@ UPDATE_DEPS=true
 - `GID` — group ID (find with: `id -g`)
 - `UPDATE_DEPS` — update ComfyUI and custom nodes on each startup (`true`/`false`)
 - `COMFY_PORT` — web interface port (default: `8188`)
+- `DISABLE_ALL_CUSTOM_NODES` — disable all custom nodes by default (`true`/`false`)
+- `COMFY_NODE_WHITELIST` — comma-separated list of custom node folders to allow
+- `COMFY_NODE_BLACKLIST` — comma-separated list of custom node folders to block
 
 Note: `UPDATE_DEPS=true` forces dependency updates inside the container, but it does **not** update this repo. Pull the repo separately with `git pull`.
 
@@ -131,6 +138,26 @@ Comment out the line in `custom_nodes.txt` with `#`:
 Add: put a repo URL into `custom_nodes/custom_nodes.txt`.  
 Remove: delete the line or comment it with `#`, then the repo will not be pulled on next start.
 
+### Selective Custom Node Control (env API)
+
+The container supports selective enabling/disabling of custom nodes via `.env`:
+
+- `COMFY_NODE_WHITELIST` — load only listed node folders.
+- `COMFY_NODE_BLACKLIST` — load all node folders except listed ones.
+- `DISABLE_ALL_CUSTOM_NODES=true` — disable all custom nodes if whitelist/blacklist is not set.
+
+Example blacklist (disable one problematic node, keep the rest):
+
+```dotenv
+DISABLE_ALL_CUSTOM_NODES=false
+COMFY_NODE_BLACKLIST=ComfyUI-SAM3
+```
+
+Priority:
+1. `COMFY_NODE_WHITELIST`
+2. `COMFY_NODE_BLACKLIST`
+3. `DISABLE_ALL_CUSTOM_NODES`
+
 ## Configuration
 
 ### Environment Variables
@@ -141,6 +168,9 @@ Remove: delete the line or comment it with `#`, then the repo will not be pulled
 | `GID` | Group ID for running the container | — |
 | `UPDATE_DEPS` | Update ComfyUI and custom nodes | `false` |
 | `COMFY_PORT` | Web interface port | `8188` |
+| `DISABLE_ALL_CUSTOM_NODES` | Disable all custom nodes (fallback mode) | `true` |
+| `COMFY_NODE_WHITELIST` | Comma-separated custom node folders to allow | — |
+| `COMFY_NODE_BLACKLIST` | Comma-separated custom node folders to block | — |
 
 ### Volumes
 
@@ -216,6 +246,24 @@ pip install torch torchvision torchaudio --pre --index-url https://download.pyto
 This is an intentional pin for DGX Spark; change the line in `entrypoint.sh` if you want a different version flow.
 
 ## Changelog
+
+### 2026-03-07 — v0.1
+
+- Added project versioning (`0.1`)
+- Identified and documented regression source on latest ComfyUI stack: `ComfyUI-SAM3`
+- Added env-based custom node control API:
+  - `COMFY_NODE_WHITELIST`
+  - `COMFY_NODE_BLACKLIST`
+  - `DISABLE_ALL_CUSTOM_NODES`
+- Finalized practical workaround: disable only `ComfyUI-SAM3` via blacklist
+
+If you are on a recent ComfyUI build and get black images / hangs around `Requested to load WanVAE`:
+
+1. Set in `.env`:
+   - `DISABLE_ALL_CUSTOM_NODES=false`
+   - `COMFY_NODE_BLACKLIST=ComfyUI-SAM3`
+2. Restart container: `docker compose down && docker compose up`
+3. Re-test the same workflow.
 
 ### 2026-02-23 — decord support for ComfyUI-RMBG / SAM3
 
