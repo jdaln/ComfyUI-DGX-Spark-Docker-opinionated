@@ -23,12 +23,13 @@ https://github.com/jtydhr88/ComfyUI-qwenmultiangle
 
 https://github.com/kijai/ComfyUI-WanAnimatePreprocess
 https://github.com/kijai/ComfyUI-WanVideoWrapper
-# https://github.com/kijai/ComfyUI-segment-anything-2.git
 https://github.com/kijai/ComfyUI-KJNodes.git
-https://github.com/PozzettiAndrea/ComfyUI-SAM3
 
 # Remove background
 https://github.com/1038lab/ComfyUI-RMBG.git
 
 # ComfyUI Manager - recommended for managing custom nodes via GUI
 https://github.com/ltdrdata/ComfyUI-Manager.git
+
+# custom fork.
+https://github.com/dr-vij/ComfyUI-SAM3-DGX-Spark.git
