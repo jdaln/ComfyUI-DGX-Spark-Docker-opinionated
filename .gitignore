@@ -18,7 +18,3 @@ custom_nodes/*
 !custom_nodes/custom_nodes.txt
 !custom_nodes/websocket_image_save.py
 !custom_nodes/example_node.py.example
-!custom_nodes/ComfyUI-DrViJ/
-!custom_nodes/ComfyUI-DrViJ/**
-custom_nodes/ComfyUI-DrViJ/__pycache__/
-custom_nodes/ComfyUI-DrViJ/**/*.pyc
