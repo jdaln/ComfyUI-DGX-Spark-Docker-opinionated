@@ -33,6 +33,7 @@ https://github.com/ltdrdata/ComfyUI-Manager.git
 
 # custom fork.
 https://github.com/dr-vij/ComfyUI-SAM3-DGX-Spark.git
+https://github.com/dr-vij/ComfyUI-DrViJ.git
 
 # Layer Style Advance, bbox and etc
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher.git
