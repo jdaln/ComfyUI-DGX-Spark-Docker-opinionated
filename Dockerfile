@@ -157,6 +157,8 @@ WORKDIR /workspace
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+# Keep this copy near the end to avoid rebuilding heavy layers when cutter changes.
+COPY ["models-cutter", "/workspace/models-cutter"]
 
 ENTRYPOINT ["/entrypoint.sh"]
 LABEL authors="dr-vij"

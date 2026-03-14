@@ -37,3 +37,7 @@ https://github.com/dr-vij/ComfyUI-DrViJ.git
 
 # Layer Style Advance, bbox and etc
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher.git
+
+# need this for cool ltx 2.3 workflows.
+https://github.com/rgthree/rgthree-comfy.git
+https://github.com/yolain/ComfyUI-Easy-Use.git
