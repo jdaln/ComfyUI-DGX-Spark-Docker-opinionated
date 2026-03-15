@@ -7,10 +7,8 @@
 
 https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait.git
 https://github.com/ubisoft/ComfyUI-Chord.git
-https://github.com/phaserblast/ComfyUI-DGXSparkSafetensorsLoader.git
 https://github.com/city96/ComfyUI-GGUF.git
 https://github.com/ltdrdata/ComfyUI-Inspire-Pack.git
-https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler.git
 https://github.com/cubiq/ComfyUI_IPAdapter_plus.git
 https://github.com/filliptm/ComfyUI_Fill-Nodes.git
 https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
@@ -31,12 +29,9 @@ https://github.com/1038lab/ComfyUI-RMBG.git
 # ComfyUI Manager - recommended for managing custom nodes via GUI
 https://github.com/ltdrdata/ComfyUI-Manager.git
 
-# custom fork.
+# Dr.ViJ (me)
 https://github.com/dr-vij/ComfyUI-SAM3-DGX-Spark.git
 https://github.com/dr-vij/ComfyUI-DrViJ.git
-
-# Layer Style Advance, bbox and etc
-https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher.git
 
 # need this for cool ltx 2.3 workflows.
 https://github.com/rgthree/rgthree-comfy.git

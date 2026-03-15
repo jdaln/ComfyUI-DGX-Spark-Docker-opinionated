@@ -13,8 +13,7 @@ fi
 echo "Checking/updating base packages..."
 export PIP_CONSTRAINT="$CONSTRAINTS_FILE"
 pip install --upgrade pip
-pip install torch torchvision torchaudio --pre --index-url https://download.pytorch.org/whl/cu130
-pip install sageattention || true
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
 # Backup built wheels into mounted directory (update if missing or different)
 WHEELS_BACKUP_DIR="/workspace/SelfBuiltWheels"
@@ -39,9 +38,9 @@ sync_wheel() {
         fi
     fi
 }
-for src in /opt/flash-attn3/*.whl; do
+for src in /opt/flash-attn/*.whl; do
     [ -e "$src" ] || continue
-    sync_wheel "$src" "flash-attn3"
+    sync_wheel "$src" "flash-attn"
 done
 for src in /opt/onnxruntime/onnxruntime_gpu-*.whl; do
     [ -e "$src" ] || continue
@@ -52,9 +51,9 @@ for src in /opt/decord/*.whl; do
     sync_wheel "$src" "decord"
 done
 
-# Install FlashAttention-3 from pre-built wheel (built in Docker image for CUDA 13.0)
-echo "Installing flash-attn3 from pre-built wheel..."
-pip install /opt/flash-attn3/*.whl
+# Install FlashAttention from pre-built wheel (built in Docker image for CUDA 13.0)
+echo "Installing flash-attn from pre-built wheel..."
+pip install /opt/flash-attn/*.whl
 
 # Install onnxruntime-gpu from pre-built wheel (built in Docker image for CUDA 13.0)
 echo "Installing onnxruntime-gpu from pre-built wheel..."
@@ -95,6 +94,12 @@ COMFY_ARGS=(
   --listen 0.0.0.0
   --port "${COMFY_PORT:-8188}"
 )
+
+# Optional extra args for ComfyUI (provided via docker-compose env).
+if [ -n "${COMFY_CMDLINE_EXTRA:-}" ]; then
+    read -r -a EXTRA_ARGS <<< "${COMFY_CMDLINE_EXTRA}"
+    COMFY_ARGS+=("${EXTRA_ARGS[@]}")
+fi
 
 # Debug mode for custom node bisection:
 # - If COMFY_NODE_WHITELIST is set (comma-separated), load only these nodes.

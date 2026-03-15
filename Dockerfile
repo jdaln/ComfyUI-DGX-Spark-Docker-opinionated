@@ -1,8 +1,9 @@
 FROM nvcr.io/nvidia/cuda:13.0.2-devel-ubuntu24.04
 ARG DEBIAN_FRONTEND=noninteractive
+ARG BUILD_JOBS=8
 
 # Install Python and dependencies (Ubuntu 24.04 has Python 3.12 by default)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     python3-venv \
@@ -17,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxrender1 \
     libxext6 \
+    libopengl0 \
     libcudnn9-dev-cuda-13 \
     cuda-cccl-13-0 \
     && rm -rf /var/lib/apt/lists/*
@@ -25,7 +27,7 @@ ENV CUDA_HOME=/usr/local/cuda-13.0
 ENV PATH="$CUDA_HOME/bin:${PATH}"
 ENV LD_LIBRARY_PATH="$CUDA_HOME/lib64:$CUDA_HOME/targets/sbsa-linux/lib:/usr/lib/aarch64-linux-gnu:${LD_LIBRARY_PATH}"
 ENV LIBRARY_PATH="$CUDA_HOME/lib64:$CUDA_HOME/targets/sbsa-linux/lib:/usr/lib/aarch64-linux-gnu:${LIBRARY_PATH}"
-ENV TORCH_CUDA_ARCH_LIST="12.1a"
+ENV TORCH_CUDA_ARCH_LIST="12.1+PTX"
 ENV TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas"
 
 # Add CCCL headers path (libcudacxx) so CUTLASS can find cuda/std/* headers
@@ -37,7 +39,7 @@ ENV C_INCLUDE_PATH="/usr/local/cuda-13.0/targets/sbsa-linux/include:${C_INCLUDE_
 # Only build the wheel, install happens in entrypoint to use mounted venv
 WORKDIR /tmp/onnxruntime-build
 RUN pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
-    git clone --recursive --depth 1 https://github.com/microsoft/onnxruntime.git && \
+    git clone --recursive --depth 1 --shallow-submodules https://github.com/microsoft/onnxruntime.git && \
     cd onnxruntime && \
     export CXXFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CXXFLAGS" && \
     export CFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CFLAGS" && \
@@ -48,8 +50,8 @@ RUN pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
         --cuda_home /usr/local/cuda-13.0 \
         --cudnn_home /usr/local/cuda-13.0 \
         --cuda_version 13.0 \
-        --parallel 6 \
-        --nvcc_threads 1 \
+        --parallel "${BUILD_JOBS}" \
+        --nvcc_threads 2 \
         --skip_tests \
         --compile_no_warning_as_error \
         --allow_running_as_root \
@@ -64,25 +66,28 @@ RUN pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
 
 
 # =====================================================================
-# Build FlashAttention-3 (Hopper beta) from source for CUDA 13.0 / sm_121
+# Build FlashAttention (official package) from source for CUDA 13.0 / sm_121
 # Only build the wheel; installation happens at runtime inside the venv.
 # Requires torch with CUDA 13.0 (using official cu130 wheels). [oai_citation:1‡GitHub](https://github.com/Dao-AILab/flash-attention)
 # =====================================================================
 WORKDIR /tmp/flash-attn-build
 RUN pip3 install --break-system-packages "packaging" "ninja" && \
     pip3 install --break-system-packages \
-        "torch==2.9.1+cu130" \
+        "torch==2.10.0+cu130" \
         --index-url https://download.pytorch.org/whl/cu130 && \
-    git clone --recursive https://github.com/Dao-AILab/flash-attention.git && \
+    git clone --recursive --depth 1 --shallow-submodules https://github.com/Dao-AILab/flash-attention.git && \
     cd flash-attention && \
-    git submodule update --init --recursive && \
-    cd hopper && \
     export CUDA_HOME=/usr/local/cuda-13.0 && \
-    export MAX_JOBS=8 && \
-    export TORCH_CUDA_ARCH_LIST="12.1a" && \
+    export MAX_JOBS="${BUILD_JOBS}" && \
+    export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
+    export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
+    export MAKEFLAGS="-j${BUILD_JOBS}" && \
+    export NVCC_THREADS=2 && \
+    export CMAKE_GENERATOR=Ninja && \
+    export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
     python3 -m pip wheel . --no-deps -w dist && \
-    mkdir -p /opt/flash-attn3 && \
-    cp dist/*.whl /opt/flash-attn3/ && \
+    mkdir -p /opt/flash-attn && \
+    cp dist/*.whl /opt/flash-attn/ && \
     cd / && rm -rf /tmp/flash-attn-build
 
 # =====================================================================
@@ -146,8 +151,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cd / \
     && rm -rf /tmp/decord-build
 
-
-RUN apt-get update && apt-get install -y --no-install-recommends libopengl0 && rm -rf /var/lib/apt/lists/*
 
 # Venv will be created at runtime in mounted volume
 ENV VENV_PATH="/workspace/venv"

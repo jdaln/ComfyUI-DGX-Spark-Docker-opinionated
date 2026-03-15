@@ -26,10 +26,10 @@ This project provides a ready-to-use Docker infrastructure for running ComfyUI �
 
 The most important part is the custom wheels built inside the Docker image. Currently:
 
-- **flash-attn3** — installed from a pre-built wheel inside the image
+- **flash-attn** — installed from a pre-built wheel inside the image
 - **onnxruntime-gpu** — built for CUDA 13.0
 
-Plan: rebuild **flash-attn4** in the future. If you do not want to rebuild, you can use the ready wheels from `SelfBuiltWheels/` (the container backs up built wheels there).
+If you do not want to rebuild, you can use the ready wheels from `SelfBuiltWheels/` (the container backs up built wheels there).
 
 ## Quick Start
 
@@ -237,10 +237,10 @@ rm -rf ../ComfyData/*
 
 ### PyTorch version pin in entrypoint
 
-In `entrypoint.sh`, PyTorch is always installed from the CUDA 13.0 pre-release index:
+In `entrypoint.sh`, PyTorch is always installed from the CUDA 13.0 index:
 
 ```bash
-pip install torch torchvision torchaudio --pre --index-url https://download.pytorch.org/whl/cu130
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 ```
 
 This is an intentional pin for DGX Spark; change the line in `entrypoint.sh` if you want a different version flow.
@@ -268,7 +268,7 @@ If you are on a recent ComfyUI build and get black images / hangs around `Reques
 ### 2026-02-23 — decord support for ComfyUI-RMBG / SAM3
 
 - Built **decord** wheel from [source](https://github.com/dr-vij/decord) (forked with FFmpeg 7 fixes) with CUDA/NVDEC enabled — no pre-built wheel exists for Python 3.12
-- Added decord wheel to `entrypoint.sh` (backup + install on startup, same as flash-attn3 and onnxruntime-gpu)
+- Added decord wheel to `entrypoint.sh` (backup + install on startup, same as flash-attn and onnxruntime-gpu)
 - Enabled `video` driver capability in `docker-compose.yml` so the container gets access to hardware video decoding
 - Added `libopengl0` to fix a missing library warning
 
