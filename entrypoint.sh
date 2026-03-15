@@ -15,6 +15,12 @@ export PIP_CONSTRAINT="$CONSTRAINTS_FILE"
 pip install --upgrade pip
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
+# Install SageAttention only when it is explicitly enabled in Comfy args.
+if [[ " ${COMFY_CMDLINE_EXTRA:-} " == *" --use-sage-attention "* ]]; then
+    echo "Sage attention enabled, ensuring sageattention package is installed..."
+    python -c "import sageattention" >/dev/null 2>&1 || pip install sageattention
+fi
+
 # Backup built wheels into mounted directory (update if missing or different)
 WHEELS_BACKUP_DIR="/workspace/SelfBuiltWheels"
 if ! mkdir -p "$WHEELS_BACKUP_DIR"; then
