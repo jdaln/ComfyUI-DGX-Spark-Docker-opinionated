@@ -35,60 +35,95 @@ ENV TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas"
 ENV CPLUS_INCLUDE_PATH="/usr/local/cuda-13.0/targets/sbsa-linux/include:${CPLUS_INCLUDE_PATH}"
 ENV C_INCLUDE_PATH="/usr/local/cuda-13.0/targets/sbsa-linux/include:${C_INCLUDE_PATH}"
 
-# Build onnxruntime-gpu from source for CUDA 13.0
+# Optional prebuilt wheels exported by DGX-Spark-WheelsBuilder
+# Use local wheel if compatible with this image (Py3.12/aarch64), else build from source.
+COPY DGX-Spark-WheelsBuilder/Wheels/ /opt/prebuilt-wheels/
+
+# Build onnxruntime-gpu from source for CUDA 13.0 only if no compatible prebuilt wheel was found
 # Only build the wheel, install happens in entrypoint to use mounted venv
-WORKDIR /tmp/onnxruntime-build
-RUN pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
-    git clone --recursive --depth 1 --shallow-submodules https://github.com/microsoft/onnxruntime.git && \
-    cd onnxruntime && \
-    export CXXFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CXXFLAGS" && \
-    export CFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CFLAGS" && \
-    ./build.sh --config Release \
-        --build_dir build/cuda13 \
-        --build_wheel \
-        --use_cuda \
-        --cuda_home /usr/local/cuda-13.0 \
-        --cudnn_home /usr/local/cuda-13.0 \
-        --cuda_version 13.0 \
-        --parallel "${BUILD_JOBS}" \
-        --nvcc_threads 2 \
-        --skip_tests \
-        --compile_no_warning_as_error \
-        --allow_running_as_root \
-        --cmake_generator Ninja \
-        --use_binskim_compliant_compile_flags \
-        --cmake_extra_defines CMAKE_CUDA_ARCHITECTURES="121" \
-            onnxruntime_BUILD_UNIT_TESTS=OFF \
-            CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="/usr/local/cuda-13.0/targets/sbsa-linux/include" && \
-    mkdir -p /opt/onnxruntime && \
-    cp build/cuda13/Release/dist/onnxruntime_gpu-*.whl /opt/onnxruntime/ && \
-    cd / && rm -rf /tmp/onnxruntime-build
+WORKDIR /tmp
+RUN mkdir -p /opt/onnxruntime && \
+    ONNXRUNTIME_WHEEL="" && \
+    for wheel in /opt/prebuilt-wheels/onnxruntime/onnxruntime_gpu-*-cp312-*-linux_aarch64.whl; do \
+        [ -e "$wheel" ] || continue; \
+        ONNXRUNTIME_WHEEL="$wheel"; \
+        break; \
+    done && \
+    if [ -n "${ONNXRUNTIME_WHEEL}" ]; then \
+        echo "Using prebuilt onnxruntime wheel: ${ONNXRUNTIME_WHEEL}"; \
+        cp "${ONNXRUNTIME_WHEEL}" /opt/onnxruntime/; \
+    else \
+        echo "No compatible prebuilt onnxruntime wheel found, building from source..."; \
+        mkdir -p /tmp/onnxruntime-build && \
+        cd /tmp/onnxruntime-build && \
+        pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
+        git clone --recursive --depth 1 --shallow-submodules https://github.com/microsoft/onnxruntime.git && \
+        cd onnxruntime && \
+        export CXXFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CXXFLAGS" && \
+        export CFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CFLAGS" && \
+        ./build.sh --config Release \
+            --build_dir build/cuda13 \
+            --build_wheel \
+            --use_cuda \
+            --cuda_home /usr/local/cuda-13.0 \
+            --cudnn_home /usr/local/cuda-13.0 \
+            --cuda_version 13.0 \
+            --parallel "${BUILD_JOBS}" \
+            --nvcc_threads 2 \
+            --skip_tests \
+            --compile_no_warning_as_error \
+            --allow_running_as_root \
+            --cmake_generator Ninja \
+            --use_binskim_compliant_compile_flags \
+            --cmake_extra_defines CMAKE_CUDA_ARCHITECTURES="121" \
+                onnxruntime_BUILD_UNIT_TESTS=OFF \
+                CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="/usr/local/cuda-13.0/targets/sbsa-linux/include" && \
+        cp build/cuda13/Release/dist/onnxruntime_gpu-*.whl /opt/onnxruntime/ && \
+        cd / && rm -rf /tmp/onnxruntime-build; \
+    fi
 
 
 # =====================================================================
-# Build FlashAttention (official package) from source for CUDA 13.0 / sm_121
+# Build FlashAttention from source for CUDA 13.0 / sm_121 only if no compatible prebuilt wheel was found
 # Only build the wheel; installation happens at runtime inside the venv.
-# Requires torch with CUDA 13.0 (using official cu130 wheels). [oai_citation:1‡GitHub](https://github.com/Dao-AILab/flash-attention)
+# Requires torch with CUDA 13.0 (using official cu130 wheels).
 # =====================================================================
-WORKDIR /tmp/flash-attn-build
-RUN pip3 install --break-system-packages "packaging" "ninja" && \
-    pip3 install --break-system-packages \
-        "torch==2.10.0+cu130" \
-        --index-url https://download.pytorch.org/whl/cu130 && \
-    git clone --recursive --depth 1 --shallow-submodules https://github.com/Dao-AILab/flash-attention.git && \
-    cd flash-attention && \
-    export CUDA_HOME=/usr/local/cuda-13.0 && \
-    export MAX_JOBS="${BUILD_JOBS}" && \
-    export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
-    export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
-    export MAKEFLAGS="-j${BUILD_JOBS}" && \
-    export NVCC_THREADS=2 && \
-    export CMAKE_GENERATOR=Ninja && \
-    export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
-    python3 -m pip wheel . --no-deps -w dist && \
-    mkdir -p /opt/flash-attn && \
-    cp dist/*.whl /opt/flash-attn/ && \
-    cd / && rm -rf /tmp/flash-attn-build
+WORKDIR /tmp
+RUN mkdir -p /opt/flash-attn && \
+    FLASH_ATTN_WHEEL="" && \
+    for wheel in \
+        /opt/prebuilt-wheels/flash-attn/flash_attn-*-cp312-*-linux_aarch64.whl \
+        /opt/prebuilt-wheels/flash-attn3/flash_attn_3-*-abi3-linux_aarch64.whl \
+        /opt/prebuilt-wheels/flash-attn3/flash_attn_3-*-cp312-*-linux_aarch64.whl; do \
+        [ -e "$wheel" ] || continue; \
+        FLASH_ATTN_WHEEL="$wheel"; \
+        break; \
+    done && \
+    if [ -n "${FLASH_ATTN_WHEEL}" ]; then \
+        echo "Using prebuilt flash-attn wheel: ${FLASH_ATTN_WHEEL}"; \
+        cp "${FLASH_ATTN_WHEEL}" /opt/flash-attn/; \
+    else \
+        echo "No compatible prebuilt flash-attn wheel found, building from source..."; \
+        mkdir -p /tmp/flash-attn-build && \
+        cd /tmp/flash-attn-build && \
+        pip3 install --break-system-packages "packaging" "ninja" && \
+        pip3 install --break-system-packages \
+            "torch==2.10.0+cu130" \
+            --index-url https://download.pytorch.org/whl/cu130 && \
+        git clone --recursive --depth 1 --shallow-submodules https://github.com/Dao-AILab/flash-attention.git && \
+        cd flash-attention && \
+        export CUDA_HOME=/usr/local/cuda-13.0 && \
+        export MAX_JOBS="${BUILD_JOBS}" && \
+        export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
+        export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
+        export MAKEFLAGS="-j${BUILD_JOBS}" && \
+        export NVCC_THREADS=2 && \
+        export CMAKE_GENERATOR=Ninja && \
+        export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
+        python3 -m pip wheel . --no-deps -w dist && \
+        cp dist/*.whl /opt/flash-attn/ && \
+        cd / && rm -rf /tmp/flash-attn-build; \
+    fi
 
 # =====================================================================
 # Build decord from source (Python 3.12 / Ubuntu 24.04)
