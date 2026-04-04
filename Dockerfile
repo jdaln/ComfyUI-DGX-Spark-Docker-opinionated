@@ -125,6 +125,32 @@ RUN mkdir -p /opt/flash-attn && \
         cd / && rm -rf /tmp/flash-attn-build; \
     fi
 
+
+
+# =====================================================================
+# Build SageAttention from source for CUDA 13.0 / sm_121.
+# Install happens at runtime from the local pre-built wheel only.
+# =====================================================================
+ARG SAGEATTN_REF=main
+WORKDIR /tmp
+RUN mkdir -p /opt/sageattention && \
+    mkdir -p /tmp/sageattention-build && \
+    cd /tmp/sageattention-build && \
+    pip3 install --break-system-packages \
+        "torch==2.10.0+cu130" \
+        --index-url https://download.pytorch.org/whl/cu130 && \
+    git clone --depth 1 --branch ${SAGEATTN_REF} https://github.com/thu-ml/SageAttention.git && \
+    cd SageAttention && \
+    export CUDA_HOME=/usr/local/cuda-13.0 && \
+    export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
+    export TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas" && \
+    export MAX_JOBS="${BUILD_JOBS}" && \
+    export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
+    export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
+    python3 -m pip wheel . --no-build-isolation --no-deps -w dist && \
+    cp dist/sageattention-*.whl /opt/sageattention/ && \
+    cd / && rm -rf /tmp/sageattention-build
+
 # =====================================================================
 # Build decord from source (Python 3.12 / Ubuntu 24.04)
 # =====================================================================
@@ -185,6 +211,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cp dist/*.whl /opt/decord/ \
     && cd / \
     && rm -rf /tmp/decord-build
+
+# =====================================================================
+# Build comfy-aimdo wheel with native aimdo.so for Linux aarch64/CUDA 13.0
+# (PyPI currently provides a stub wheel for this platform without aimdo.so)
+# =====================================================================
+ARG COMFY_AIMDO_VERSION=v0.2.12
+WORKDIR /tmp
+RUN mkdir -p /opt/comfy-aimdo && \
+    mkdir -p /tmp/comfy-aimdo-build && \
+    cd /tmp/comfy-aimdo-build && \
+    git clone --depth 1 --branch ${COMFY_AIMDO_VERSION} https://github.com/Comfy-Org/comfy-aimdo.git && \
+    cd comfy-aimdo && \
+    gcc -shared -fPIC -O2 -g src/*.c src-posix/*.c \
+        -Isrc \
+        -I/usr/local/cuda-13.0/include \
+        -L/usr/local/cuda-13.0/targets/sbsa-linux/lib/stubs \
+        -lcuda \
+        -o comfy_aimdo/aimdo.so && \
+    pip3 install --break-system-packages build && \
+    python3 -m pip wheel . --no-deps -w dist && \
+    cp dist/comfy_aimdo-*.whl /opt/comfy-aimdo/ && \
+    cd / && rm -rf /tmp/comfy-aimdo-build
 
 
 # Venv will be created at runtime in mounted volume

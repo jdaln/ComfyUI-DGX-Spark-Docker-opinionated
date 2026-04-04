@@ -9,16 +9,20 @@ if [ ! -f "$VENV_PATH/bin/activate" ]; then
     python3 -m venv "$VENV_PATH"
 fi
 
+# Ensure all pip operations target the project virtual environment.
+source "$VENV_PATH/bin/activate"
+
 # Update base packages (every run)
 echo "Checking/updating base packages..."
 export PIP_CONSTRAINT="$CONSTRAINTS_FILE"
-pip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+python -m pip install --upgrade pip
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
 # Install SageAttention only when it is explicitly enabled in Comfy args.
 if [[ " ${COMFY_CMDLINE_EXTRA:-} " == *" --use-sage-attention "* ]]; then
-    echo "Sage attention enabled, ensuring sageattention package is installed..."
-    python -c "import sageattention" >/dev/null 2>&1 || pip install sageattention
+    echo "Sage attention enabled, installing from local pre-built wheel..."
+    ls /opt/sageattention/sageattention-*.whl >/dev/null 2>&1
+    python -m pip install --no-deps --force-reinstall /opt/sageattention/sageattention-*.whl
 fi
 
 # Backup built wheels into mounted directory (update if missing or different)
@@ -56,18 +60,25 @@ for src in /opt/decord/*.whl; do
     [ -e "$src" ] || continue
     sync_wheel "$src" "decord"
 done
-
+for src in /opt/comfy-aimdo/comfy_aimdo-*.whl; do
+    [ -e "$src" ] || continue
+    sync_wheel "$src" "comfy-aimdo"
+done
+for src in /opt/sageattention/sageattention-*.whl; do
+    [ -e "$src" ] || continue
+    sync_wheel "$src" "sageattention"
+done
 # Install FlashAttention from pre-built wheel (built in Docker image for CUDA 13.0)
 echo "Installing flash-attn from pre-built wheel..."
-pip install /opt/flash-attn/*.whl
+python -m pip install /opt/flash-attn/*.whl
 
 # Install onnxruntime-gpu from pre-built wheel (built in Docker image for CUDA 13.0)
 echo "Installing onnxruntime-gpu from pre-built wheel..."
-pip install /opt/onnxruntime/onnxruntime_gpu-*.whl
+python -m pip install /opt/onnxruntime/onnxruntime_gpu-*.whl
 
 # Install decord from pre-built wheel (built in Docker image, no PyPI wheel for Python 3.12)
 echo "Installing decord from pre-built wheel..."
-pip install /opt/decord/*.whl || true
+python -m pip install /opt/decord/*.whl || true
 
 # Update ComfyUI repository if UPDATE_DEPS is true
 if [ "${UPDATE_DEPS}" = "true" ]; then
@@ -77,7 +88,18 @@ if [ "${UPDATE_DEPS}" = "true" ]; then
 fi
 
 # Install ComfyUI requirements
-pip install -r /workspace/ComfyUI/requirements.txt
+python -m pip install -r /workspace/ComfyUI/requirements.txt
+
+
+
+# Reinstall our local comfy-aimdo wheel after requirements to prevent
+# replacement by platform-stub wheels from PyPI on linux/aarch64.
+if ls /opt/comfy-aimdo/comfy_aimdo-*.whl >/dev/null 2>&1; then
+    echo "Installing comfy-aimdo from pre-built wheel..."
+    python -m pip install --no-deps --force-reinstall /opt/comfy-aimdo/comfy_aimdo-*.whl
+else
+    echo "WARNING: local comfy-aimdo wheel not found in /opt/comfy-aimdo"
+fi
 
 # Clone custom nodes from list
 cd /workspace/ComfyUI/custom_nodes || exit
@@ -92,7 +114,7 @@ while IFS= read -r repo || [ -n "$repo" ]; do
         git pull
         cd ..
     fi
-    [ -f "$dir/requirements.txt" ] && pip install -r "$dir/requirements.txt"
+    [ -f "$dir/requirements.txt" ] && python -m pip install -r "$dir/requirements.txt"
 done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt
 
 # Run ComfyUI
