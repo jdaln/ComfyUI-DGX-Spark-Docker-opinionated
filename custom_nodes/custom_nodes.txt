@@ -36,3 +36,5 @@ https://github.com/dr-vij/ComfyUI-DrViJ.git
 # need this for cool ltx 2.3 workflows.
 https://github.com/rgthree/rgthree-comfy.git
 https://github.com/yolain/ComfyUI-Easy-Use.git
+
+https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher
