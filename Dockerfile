@@ -57,7 +57,7 @@ RUN mkdir -p /opt/onnxruntime && \
         mkdir -p /tmp/onnxruntime-build && \
         cd /tmp/onnxruntime-build && \
         pip3 install --break-system-packages cmake ninja packaging "numpy>=2.0" && \
-        git clone --recursive --depth 1 --shallow-submodules https://github.com/microsoft/onnxruntime.git && \
+        git clone --recursive --depth 1 --branch v1.24.4 --shallow-submodules https://github.com/microsoft/onnxruntime.git && \
         cd onnxruntime && \
         export CXXFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CXXFLAGS" && \
         export CFLAGS="-I/usr/local/cuda-13.0/targets/sbsa-linux/include $CFLAGS" && \
