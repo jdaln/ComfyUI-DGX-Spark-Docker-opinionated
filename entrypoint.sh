@@ -12,6 +12,29 @@ fi
 # Ensure all pip operations target the project virtual environment.
 source "$VENV_PATH/bin/activate"
 
+require_writable_dir() {
+    dir="$1"
+    if ! mkdir -p "$dir"; then
+        echo "ERROR: cannot create required directory: $dir" >&2
+        exit 1
+    fi
+
+    probe="$dir/.write-test-$$"
+    if ! touch "$probe" 2>/dev/null; then
+        echo "ERROR: required path is not writable by $(id -u):$(id -g): $dir" >&2
+        exit 1
+    fi
+    rm -f "$probe"
+}
+
+for dir in \
+    /workspace/ComfyUI/input \
+    /workspace/ComfyUI/input/3d \
+    /workspace/ComfyUI/output \
+    /workspace/ComfyUI/user; do
+    require_writable_dir "$dir"
+done
+
 # Update base packages (every run)
 echo "Checking/updating base packages..."
 export PIP_CONSTRAINT="$CONSTRAINTS_FILE"
@@ -21,8 +44,14 @@ python -m pip install torch torchvision torchaudio --index-url https://download.
 # Install SageAttention only when it is explicitly enabled in Comfy args.
 if [[ " ${COMFY_CMDLINE_EXTRA:-} " == *" --use-sage-attention "* ]]; then
     echo "Sage attention enabled, installing from local pre-built wheel..."
-    ls /opt/sageattention/sageattention-*.whl >/dev/null 2>&1
-    python -m pip install --no-deps --force-reinstall /opt/sageattention/sageattention-*.whl
+    if ls /opt/sageattention/sageattention-*.whl >/dev/null 2>&1 && \
+        python -m pip install --no-deps --force-reinstall /opt/sageattention/sageattention-*.whl; then
+        :
+    else
+        echo "WARNING: Sage attention requested but local wheel is unavailable or invalid; continuing without --use-sage-attention"
+        COMFY_CMDLINE_EXTRA="${COMFY_CMDLINE_EXTRA/--use-sage-attention/}"
+        COMFY_CMDLINE_EXTRA="$(echo "${COMFY_CMDLINE_EXTRA}" | xargs)"
+    fi
 fi
 
 # Backup built wheels into mounted directory (update if missing or different)
@@ -92,30 +121,45 @@ python -m pip install -r /workspace/ComfyUI/requirements.txt
 
 
 
-# Reinstall our local comfy-aimdo wheel after requirements to prevent
-# replacement by platform-stub wheels from PyPI on linux/aarch64.
-if ls /opt/comfy-aimdo/comfy_aimdo-*.whl >/dev/null 2>&1; then
-    echo "Installing comfy-aimdo from pre-built wheel..."
-    python -m pip install --no-deps --force-reinstall /opt/comfy-aimdo/comfy_aimdo-*.whl
+# Keep the upstream comfy-aimdo version from requirements.txt by default.
+# Older local wheels can lag behind ComfyUI's Python package layout.
+if [ "${FORCE_LOCAL_COMFY_AIMDO:-false}" = "true" ]; then
+    if ls /opt/comfy-aimdo/comfy_aimdo-*.whl >/dev/null 2>&1; then
+        echo "Installing comfy-aimdo from pre-built wheel..."
+        python -m pip install --no-deps --force-reinstall /opt/comfy-aimdo/comfy_aimdo-*.whl
+    else
+        echo "WARNING: local comfy-aimdo wheel not found in /opt/comfy-aimdo"
+    fi
 else
-    echo "WARNING: local comfy-aimdo wheel not found in /opt/comfy-aimdo"
+    echo "Keeping comfy-aimdo from ComfyUI requirements.txt"
 fi
 
-# Clone custom nodes from list
-cd /workspace/ComfyUI/custom_nodes || exit
-while IFS= read -r repo || [ -n "$repo" ]; do
-    [[ -z "$repo" || "$repo" =~ ^# ]] && continue
-    dir=$(basename "$repo" .git)
-    [ -d "$dir" ] || git clone "$repo"
-    # Update existing custom node if UPDATE_DEPS is true
-    if [ "${UPDATE_DEPS}" = "true" ] && [ -d "$dir" ]; then
-        echo "Updating custom node: $dir"
-        cd "$dir" || exit
-        git pull
-        cd ..
-    fi
-    [ -f "$dir/requirements.txt" ] && python -m pip install -r "$dir/requirements.txt"
-done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt
+INSTALL_CUSTOM_NODES=true
+if [ -z "${COMFY_NODE_WHITELIST:-}" ] && \
+    [ -z "${COMFY_NODE_BLACKLIST:-}" ] && \
+    [ "${DISABLE_ALL_CUSTOM_NODES:-true}" = "true" ]; then
+    INSTALL_CUSTOM_NODES=false
+fi
+
+if [ "${INSTALL_CUSTOM_NODES}" = "true" ]; then
+    echo "Bootstrapping custom nodes from custom_nodes.txt"
+    cd /workspace/ComfyUI/custom_nodes || exit
+    while IFS= read -r repo || [ -n "$repo" ]; do
+        [[ -z "$repo" || "$repo" =~ ^# ]] && continue
+        dir=$(basename "$repo" .git)
+        [ -d "$dir" ] || git clone "$repo"
+        # Update existing custom node if UPDATE_DEPS is true
+        if [ "${UPDATE_DEPS}" = "true" ] && [ -d "$dir" ]; then
+            echo "Updating custom node: $dir"
+            cd "$dir" || exit
+            git pull
+            cd ..
+        fi
+        [ -f "$dir/requirements.txt" ] && python -m pip install -r "$dir/requirements.txt"
+    done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt
+else
+    echo "Skipping custom node clone/install because DISABLE_ALL_CUSTOM_NODES=true"
+fi
 
 # Run ComfyUI
 COMFY_ARGS=(
