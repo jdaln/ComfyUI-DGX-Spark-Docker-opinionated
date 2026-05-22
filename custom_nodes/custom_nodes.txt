@@ -22,6 +22,7 @@ https://github.com/jtydhr88/ComfyUI-qwenmultiangle
 https://github.com/kijai/ComfyUI-WanAnimatePreprocess
 https://github.com/kijai/ComfyUI-WanVideoWrapper
 https://github.com/kijai/ComfyUI-KJNodes.git
+https://github.com/kijai/ComfyUI-segment-anything-2.git
 
 # Remove background
 https://github.com/1038lab/ComfyUI-RMBG.git
