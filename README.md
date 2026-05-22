@@ -55,6 +55,7 @@ UID=1000
 GID=1000
 UPDATE_DEPS=true
 DISABLE_ALL_CUSTOM_NODES=false
+COMFY_SHM_SIZE=16g
 COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 ```
 
@@ -63,6 +64,7 @@ COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 - `GID` — group ID (find with: `id -g`)
 - `UPDATE_DEPS` — update ComfyUI and custom nodes on each startup (`true`/`false`)
 - `COMFY_PORT` — web interface port (default: `8188`)
+- `COMFY_SHM_SIZE` — private `/dev/shm` size for the container (default: `16g`)
 - `DISABLE_ALL_CUSTOM_NODES` — disable all custom nodes by default (`true`/`false`)
 - `COMFY_NODE_WHITELIST` — comma-separated list of custom node folders to allow
 - `COMFY_NODE_BLACKLIST` — comma-separated list of custom node folders to block
@@ -168,6 +170,7 @@ Priority:
 | `GID` | Group ID for running the container | — |
 | `UPDATE_DEPS` | Update ComfyUI and custom nodes | `false` |
 | `COMFY_PORT` | Web interface port | `8188` |
+| `COMFY_SHM_SIZE` | Private shared-memory allocation for the container | `16g` |
 | `DISABLE_ALL_CUSTOM_NODES` | Disable all custom nodes (fallback mode) | `true` |
 | `COMFY_NODE_WHITELIST` | Comma-separated custom node folders to allow | — |
 | `COMFY_NODE_BLACKLIST` | Comma-separated custom node folders to block | — |
@@ -190,6 +193,8 @@ Priority:
 ### Mounting folders one level above the repo
 
 The `../ComfyData/*` folders are mounted one level above the repo so user data (models, input/output, etc.) does not live in git and is not lost to accidental cleanup.
+
+The container uses a private `/dev/shm` allocation via `COMFY_SHM_SIZE` instead of `ipc: host`, following the same containment approach used in the main DGX Spark inference stack.
 
 ## Adding Models
 

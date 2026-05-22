@@ -3,9 +3,12 @@ services:
     build: .
     container_name: comfyui
     user: "${UID}:${GID}"
-    ipc: host
+    shm_size: "${COMFY_SHM_SIZE:-16g}"
+    ulimits:
+      memlock: -1
+      stack: 67108864
     ports:
-      - "${COMFY_PORT:-8188}:${COMFY_PORT:-8188}"
+      - "${COMFY_HOST_BIND:-127.0.0.1}:${COMFY_PORT:-8188}:${COMFY_PORT:-8188}"
     volumes:
 #     inner data, be careful not to wipe it with git clean. but it is not very important and can be reinited
       - ./venv:/workspace/venv
