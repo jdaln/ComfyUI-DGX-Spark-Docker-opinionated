@@ -44,11 +44,19 @@ COPY DGX-Spark-WheelsBuilder/Wheels/ /opt/prebuilt-wheels/
 WORKDIR /tmp
 RUN mkdir -p /opt/onnxruntime && \
     ONNXRUNTIME_WHEEL="" && \
+    mkdir -p /tmp/onnxruntime-validate && \
     for wheel in /opt/prebuilt-wheels/onnxruntime/onnxruntime_gpu-*-cp312-*-linux_aarch64.whl; do \
         [ -e "$wheel" ] || continue; \
-        ONNXRUNTIME_WHEEL="$wheel"; \
-        break; \
+        if python3 -m zipfile -t "$wheel" >/dev/null 2>&1 && \
+            python3 -m pip install --break-system-packages --no-deps --target /tmp/onnxruntime-validate "$wheel" >/dev/null 2>&1; then \
+            ONNXRUNTIME_WHEEL="$wheel"; \
+            rm -rf /tmp/onnxruntime-validate/*; \
+            break; \
+        fi; \
+        echo "Ignoring invalid onnxruntime wheel: ${wheel}"; \
+        rm -rf /tmp/onnxruntime-validate/*; \
     done && \
+    rmdir /tmp/onnxruntime-validate 2>/dev/null || true && \
     if [ -n "${ONNXRUNTIME_WHEEL}" ]; then \
         echo "Using prebuilt onnxruntime wheel: ${ONNXRUNTIME_WHEEL}"; \
         cp "${ONNXRUNTIME_WHEEL}" /opt/onnxruntime/; \
@@ -91,14 +99,22 @@ RUN mkdir -p /opt/onnxruntime && \
 WORKDIR /tmp
 RUN mkdir -p /opt/flash-attn && \
     FLASH_ATTN_WHEEL="" && \
+    mkdir -p /tmp/flash-attn-validate && \
     for wheel in \
         /opt/prebuilt-wheels/flash-attn/flash_attn-*-cp312-*-linux_aarch64.whl \
         /opt/prebuilt-wheels/flash-attn3/flash_attn_3-*-abi3-linux_aarch64.whl \
         /opt/prebuilt-wheels/flash-attn3/flash_attn_3-*-cp312-*-linux_aarch64.whl; do \
         [ -e "$wheel" ] || continue; \
-        FLASH_ATTN_WHEEL="$wheel"; \
-        break; \
+        if python3 -m zipfile -t "$wheel" >/dev/null 2>&1 && \
+            python3 -m pip install --break-system-packages --no-deps --target /tmp/flash-attn-validate "$wheel" >/dev/null 2>&1; then \
+            FLASH_ATTN_WHEEL="$wheel"; \
+            rm -rf /tmp/flash-attn-validate/*; \
+            break; \
+        fi; \
+        echo "Ignoring invalid flash-attn wheel: ${wheel}"; \
+        rm -rf /tmp/flash-attn-validate/*; \
     done && \
+    rmdir /tmp/flash-attn-validate 2>/dev/null || true && \
     if [ -n "${FLASH_ATTN_WHEEL}" ]; then \
         echo "Using prebuilt flash-attn wheel: ${FLASH_ATTN_WHEEL}"; \
         cp "${FLASH_ATTN_WHEEL}" /opt/flash-attn/; \
@@ -134,22 +150,43 @@ RUN mkdir -p /opt/flash-attn && \
 ARG SAGEATTN_REF=main
 WORKDIR /tmp
 RUN mkdir -p /opt/sageattention && \
-    mkdir -p /tmp/sageattention-build && \
-    cd /tmp/sageattention-build && \
-    pip3 install --break-system-packages \
-        "torch==2.10.0+cu130" \
-        --index-url https://download.pytorch.org/whl/cu130 && \
-    git clone --depth 1 --branch ${SAGEATTN_REF} https://github.com/thu-ml/SageAttention.git && \
-    cd SageAttention && \
-    export CUDA_HOME=/usr/local/cuda-13.0 && \
-    export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
-    export TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas" && \
-    export MAX_JOBS="${BUILD_JOBS}" && \
-    export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
-    export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
-    python3 -m pip wheel . --no-build-isolation --no-deps -w dist && \
-    cp dist/sageattention-*.whl /opt/sageattention/ && \
-    cd / && rm -rf /tmp/sageattention-build
+    SAGEATTN_WHEEL="" && \
+    mkdir -p /tmp/sageattention-validate && \
+    for wheel in /opt/prebuilt-wheels/sageattention/sageattention-*-cp312-*-linux_aarch64.whl; do \
+        [ -e "$wheel" ] || continue; \
+        if python3 -m zipfile -t "$wheel" >/dev/null 2>&1 && \
+            python3 -m pip install --break-system-packages --no-deps --target /tmp/sageattention-validate "$wheel" >/dev/null 2>&1; then \
+            SAGEATTN_WHEEL="$wheel"; \
+            rm -rf /tmp/sageattention-validate/*; \
+            break; \
+        fi; \
+        echo "Ignoring invalid SageAttention wheel: ${wheel}"; \
+        rm -rf /tmp/sageattention-validate/*; \
+    done && \
+    rmdir /tmp/sageattention-validate 2>/dev/null || true && \
+    if [ -n "${SAGEATTN_WHEEL}" ]; then \
+        echo "Using prebuilt SageAttention wheel: ${SAGEATTN_WHEEL}"; \
+        cp "${SAGEATTN_WHEEL}" /opt/sageattention/; \
+    else \
+        echo "No compatible prebuilt SageAttention wheel found, building from source..."; \
+        mkdir -p /tmp/sageattention-build && \
+        cd /tmp/sageattention-build && \
+        pip3 install --break-system-packages \
+            packaging \
+            "torch==2.10.0+cu130" \
+            --index-url https://download.pytorch.org/whl/cu130 && \
+        git clone --depth 1 --branch ${SAGEATTN_REF} https://github.com/thu-ml/SageAttention.git && \
+        cd SageAttention && \
+        export CUDA_HOME=/usr/local/cuda-13.0 && \
+        export TORCH_CUDA_ARCH_LIST="12.1+PTX" && \
+        export TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas" && \
+        export MAX_JOBS="${BUILD_JOBS}" && \
+        export CMAKE_BUILD_PARALLEL_LEVEL="${BUILD_JOBS}" && \
+        export NINJA_NUM_JOBS="${BUILD_JOBS}" && \
+        python3 -m pip wheel . --no-build-isolation --no-deps -w dist && \
+        cp dist/sageattention-*.whl /opt/sageattention/ && \
+        cd / && rm -rf /tmp/sageattention-build; \
+    fi
 
 # =====================================================================
 # Build decord from source (Python 3.12 / Ubuntu 24.04)

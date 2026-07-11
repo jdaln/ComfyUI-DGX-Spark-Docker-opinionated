@@ -101,10 +101,6 @@ done
 echo "Installing flash-attn from pre-built wheel..."
 python -m pip install /opt/flash-attn/*.whl
 
-# Install onnxruntime-gpu from pre-built wheel (built in Docker image for CUDA 13.0)
-echo "Installing onnxruntime-gpu from pre-built wheel..."
-python -m pip install /opt/onnxruntime/onnxruntime_gpu-*.whl
-
 # Install decord from pre-built wheel (built in Docker image, no PyPI wheel for Python 3.12)
 echo "Installing decord from pre-built wheel..."
 python -m pip install /opt/decord/*.whl || true
@@ -160,6 +156,21 @@ if [ "${INSTALL_CUSTOM_NODES}" = "true" ]; then
 else
     echo "Skipping custom node clone/install because DISABLE_ALL_CUSTOM_NODES=true"
 fi
+
+# Defer ONNX runtime finalization until every base and custom-node dependency
+# has finished installing. Some dependency resolution paths reintroduce the
+# CPU-only `onnxruntime` package, so the last word needs to be the CUDA wheel.
+if ls /opt/onnxruntime/onnxruntime_gpu-*.whl >/dev/null 2>&1; then
+    echo "Finalizing onnxruntime-gpu after dependency resolution..."
+    python -m pip uninstall -y onnxruntime >/dev/null 2>&1 || true
+    python -m pip install --no-deps --force-reinstall /opt/onnxruntime/onnxruntime_gpu-*.whl
+else
+    echo "WARNING: onnxruntime-gpu wheel not found in /opt/onnxruntime"
+fi
+
+# GLSL nodes recommend the optional acceleration extension when available.
+echo "Installing PyOpenGL-accelerate..."
+python -m pip install PyOpenGL-accelerate || true
 
 # Run ComfyUI
 COMFY_ARGS=(
