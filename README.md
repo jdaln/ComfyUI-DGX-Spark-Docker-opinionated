@@ -68,6 +68,8 @@ COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 - `COMFY_SHM_SIZE` — private `/dev/shm` size for the container (default: `16g`)
 - `DISABLE_ALL_CUSTOM_NODES` — disable all custom nodes by default (`true`/`false`)
 - `COMFY_ASSET_PROFILES` — comma-separated asset profiles to bootstrap inside the container; some profiles also expose the matching custom-node example workflows automatically
+- `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED` — expose third-party `custom_nodes/*/example_workflows` templates in the UI (`true`/`false`)
+- `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` — comma-separated list of custom node folders whose example workflows remain visible and whose referenced assets should be bootstrapped at container startup
 - `HF_TOKEN` — optional Hugging Face token; required for any gated asset profile
 - `COMFY_NODE_WHITELIST` — comma-separated list of custom node folders to allow
 - `COMFY_NODE_BLACKLIST` — comma-separated list of custom node folders to block
@@ -163,6 +165,55 @@ Priority:
 2. `COMFY_NODE_BLACKLIST`
 3. `DISABLE_ALL_CUSTOM_NODES`
 
+### Custom Node Example Workflows
+
+The default container startup exposes a curated set of third-party example workflow families:
+
+- `ComfyUI-WanVideoWrapper`
+- `ComfyUI-KJNodes`
+- `ComfyUI-WanAnimatePreprocess`
+- `ComfyUI-qwenmultiangle`
+
+When a module is present in `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`, the container now bootstraps its referenced workflow assets during startup using the repo manifest, embedded workflow metadata, and the Hugging Face repo hints shipped with those example JSON files.
+
+Upstream ComfyUI does not read the `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_*` variables yet. Until that feature lands upstream, the entrypoint applies `patches/comfyui/custom-node-example-workflow-gating.patch` to the mounted ComfyUI checkout at startup, together with the other patches in `patches/comfyui/` (each is skipped automatically when its content is already present in the checkout). If a patch does not apply, the container keeps stock ComfyUI behavior for that piece: for this one, every installed custom node's example workflows stay visible, and asset bootstrap still works.
+
+Direct file downloads now leave `.part` files in place for resume and emit periodic size updates to the container log, so `docker logs comfyui` shows startup asset progress instead of looking silent on large pulls.
+
+`COMFY_ASSET_PROFILES` is still the preferred high-level path for repo-owned bundles. Selecting a supported profile also exposes the matching example workflow set automatically.
+
+For example, this profile bootstraps the HunyuanVideo + Leapfusion stack used by the KJNodes example workflow and exposes that example in the template browser:
+
+```dotenv
+COMFY_ASSET_PROFILES=leapfusion-hunyuanvideo-i2v
+```
+
+To hide all third-party example workflow sets again, set:
+
+```dotenv
+COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED=false
+```
+
+To replace the curated default set with your own selection, set:
+
+```dotenv
+COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST=ComfyUI-WanVideoWrapper,ComfyUI-KJNodes
+```
+
+To expose every third-party example workflow set regardless of profile selection, set:
+
+```dotenv
+COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED=true
+```
+
+and leave `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` empty.
+
+If you want a different explicit subset instead of the curated default, use:
+
+```dotenv
+COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST=ComfyUI-WanVideoWrapper,ComfyUI-KJNodes
+```
+
 ## Configuration
 
 ### Environment Variables
@@ -176,6 +227,8 @@ Priority:
 | `COMFY_SHM_SIZE` | Private shared-memory allocation for the container | `16g` |
 | `DISABLE_ALL_CUSTOM_NODES` | Disable all custom nodes (fallback mode) | `true` |
 | `COMFY_ASSET_PROFILES` | Comma-separated asset profiles to bootstrap; some profiles also expose the matching custom-node example workflows | — |
+| `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED` | Enable the curated third-party example workflow set, or disable all third-party example workflows when set to `false` | `true` |
+| `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` | Comma-separated custom node folders whose example workflows stay visible and trigger startup asset bootstrap | `ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle` |
 | `HF_TOKEN` | Hugging Face token used for gated model downloads | — |
 | `COMFY_ASSET_MANIFEST_PATH` | Override path to the asset profile manifest inside the container | `/workspace/asset-profiles.json` |
 | `WAN_PREPROCESS_VITPOSE_URL` | Override URL for `vitpose-l-wholebody.onnx` | built-in default |

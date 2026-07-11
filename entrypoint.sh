@@ -38,6 +38,16 @@ asset_bootstrap_helper() {
     "$ASSET_BOOTSTRAP_HELPER" "$@"
 }
 
+configure_custom_node_example_workflows() {
+    allowlist="$(asset_bootstrap_helper allowlist)"
+    if [ -z "$allowlist" ]; then
+        return 0
+    fi
+
+    export COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST="$allowlist"
+    echo "Exposing custom node example workflows for: $allowlist"
+}
+
 # Opinionated adjustments to the mounted ComfyUI checkout (example-workflow
 # gating pending upstream support, LTX blueprint/profile alignment, bundled
 # template smoke harness). Each patch is skipped when already present; a patch
@@ -216,6 +226,7 @@ python -m pip install PyOpenGL-accelerate || true
 
 apply_comfyui_patches
 bootstrap_asset_profiles
+configure_custom_node_example_workflows
 
 # Run ComfyUI
 COMFY_ARGS=(
