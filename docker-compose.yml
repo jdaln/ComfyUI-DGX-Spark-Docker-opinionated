@@ -15,6 +15,7 @@ services:
       - ./pip_cache:/workspace/pip_cache
       - ./hf_cache:/workspace/cache/huggingface
       - ./ultralytics_cache:/workspace/cache/ultralytics
+      - ./asset-profiles.json:/workspace/asset-profiles.json:ro
       - ./ComfyUI:/workspace/ComfyUI
       - ./custom_nodes:/workspace/ComfyUI/custom_nodes
       - ./SelfBuiltWheels:/workspace/SelfBuiltWheels
@@ -41,14 +42,19 @@ services:
       PIP_CACHE_DIR: /workspace/pip_cache
       PIP_CONSTRAINT: /workspace/constraints.txt
       YOLO_CONFIG_DIR: /workspace/cache/ultralytics
+      COMFY_ASSET_PROFILES: ${COMFY_ASSET_PROFILES:-}
       COMFY_PORT: ${COMFY_PORT:-8188}
       COMFY_CMDLINE_EXTRA: ${COMFY_CMDLINE_EXTRA:---bf16-unet --bf16-vae --bf16-text-enc --use-sage-attention}
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${COMFY_PORT:-8188}/ || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://localhost:${COMFY_PORT:-8188}/ >/dev/null || pgrep -af 'curl .* /workspace/ComfyUI/models/.*\\.part|wget .* /workspace/ComfyUI/models/' >/dev/null",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 30m
     env_file:
       - .env
     working_dir: /workspace

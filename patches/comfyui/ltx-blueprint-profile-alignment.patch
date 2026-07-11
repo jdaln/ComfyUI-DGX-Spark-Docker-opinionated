@@ -1,0 +1,351 @@
+diff --git a/blueprints/Canny to Video (LTX 2.0).json b/blueprints/Canny to Video (LTX 2.0).json
+index fae8321..b73a4c5 100644
+--- a/blueprints/Canny to Video (LTX 2.0).json	
++++ b/blueprints/Canny to Video (LTX 2.0).json	
+@@ -169,7 +169,7 @@
+         null,
+         null,
+         false,
+-        "ltx-2-19b-dev-fp8.safetensors",
++          "ltx-2-19b-dev.safetensors",
+         "ltx-2-19b-ic-lora-canny-control.safetensors",
+         "gemma_3_12B_it_fp4_mixed.safetensors",
+         "ltx-2-19b-distilled-lora-384.safetensors",
+@@ -2568,8 +2568,8 @@
+               "Node name for S&R": "CheckpointLoaderSimple",
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ],
+@@ -2582,7 +2582,7 @@
+               "secondTabWidth": 65
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++              "ltx-2-19b-dev.safetensors"
+             ]
+           },
+           {
+@@ -2645,8 +2645,8 @@
+               "Node name for S&R": "LTXAVTextEncoderLoader",
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 },
+                 {
+@@ -2665,7 +2665,7 @@
+             },
+             "widgets_values": [
+               "gemma_3_12B_it_fp4_mixed.safetensors",
+-              "ltx-2-19b-dev-fp8.safetensors",
++              "ltx-2-19b-dev.safetensors",
+               "default"
+             ]
+           },
+@@ -2869,7 +2869,7 @@
+               "Node name for S&R": "LTXVAudioVAELoader"
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++              "ltx-2-19b-dev.safetensors"
+             ]
+           }
+         ],
+diff --git a/blueprints/Depth to Video (ltx 2.0).json b/blueprints/Depth to Video (ltx 2.0).json
+index f152125..36b272d 100644
+--- a/blueprints/Depth to Video (ltx 2.0).json	
++++ b/blueprints/Depth to Video (ltx 2.0).json	
+@@ -236,7 +236,7 @@
+         121,
+         null,
+         null,
+-        "ltx-2-19b-dev-fp8.safetensors",
++          "ltx-2-19b-dev.safetensors",
+         "ltx-2-19b-ic-lora-depth-control.safetensors",
+         "gemma_3_12B_it_fp4_mixed.safetensors",
+         "ltx-2-19b-distilled-lora-384.safetensors",
+@@ -2555,8 +2555,8 @@
+               "Node name for S&R": "LTXVAudioVAELoader",
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ],
+@@ -2569,7 +2569,7 @@
+               "secondTabWidth": 65
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++              "ltx-2-19b-dev.safetensors"
+             ]
+           },
+           {
+@@ -2630,8 +2630,8 @@
+               "Node name for S&R": "CheckpointLoaderSimple",
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ],
+@@ -2644,7 +2644,7 @@
+               "secondTabWidth": 65
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++              "ltx-2-19b-dev.safetensors"
+             ]
+           },
+           {
+@@ -3375,8 +3375,8 @@
+               "Node name for S&R": "LTXAVTextEncoderLoader",
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 },
+                 {
+@@ -3395,7 +3395,7 @@
+             },
+             "widgets_values": [
+               "gemma_3_12B_it_fp4_mixed.safetensors",
+-              "ltx-2-19b-dev-fp8.safetensors",
++              "ltx-2-19b-dev.safetensors",
+               "default"
+             ]
+           }
+diff --git a/blueprints/Image to Video (LTX-2.3).json b/blueprints/Image to Video (LTX-2.3).json
+index 86a6011..30c27b6 100644
+--- a/blueprints/Image to Video (LTX-2.3).json	
++++ b/blueprints/Image to Video (LTX-2.3).json	
+@@ -593,14 +593,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-dev-fp8.safetensors"
++                "ltx-2.3-22b-dev.safetensors"
+             ]
+           },
+           {
+@@ -1015,14 +1015,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-distilled-lora-384.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384.safetensors",
++                    "name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+                   "directory": "loras"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-distilled-lora-384.safetensors",
++                "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+               0.5
+             ]
+           },
+@@ -3172,14 +3172,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-dev-fp8.safetensors"
++                "ltx-2.3-22b-dev.safetensors"
+             ]
+           },
+           {
+@@ -3255,8 +3255,8 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 },
+                 {
+@@ -3268,7 +3268,7 @@
+             },
+             "widgets_values": [
+               "gemma_3_12B_it_fp4_mixed.safetensors",
+-              "ltx-2.3-22b-dev-fp8.safetensors",
++              "ltx-2.3-22b-dev.safetensors",
+               "default"
+             ]
+           },
+diff --git a/blueprints/Pose to Video (LTX 2.0).json b/blueprints/Pose to Video (LTX 2.0).json
+index 580900b..8bd171d 100644
+--- a/blueprints/Pose to Video (LTX 2.0).json	
++++ b/blueprints/Pose to Video (LTX 2.0).json	
+@@ -2618,14 +2618,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++                "ltx-2-19b-dev.safetensors"
+             ]
+           },
+           {
+@@ -2700,8 +2700,8 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 },
+                 {
+@@ -2713,7 +2713,7 @@
+             },
+             "widgets_values": [
+               "gemma_3_12B_it_fp4_mixed.safetensors",
+-              "ltx-2-19b-dev-fp8.safetensors",
++              "ltx-2-19b-dev.safetensors",
+               "default"
+             ]
+           },
+@@ -2787,14 +2787,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2-19b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
++                    "name": "ltx-2-19b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2-19b-dev-fp8.safetensors"
++                "ltx-2-19b-dev.safetensors"
+             ]
+           },
+           {
+diff --git a/blueprints/Text to Video (LTX-2.3).json b/blueprints/Text to Video (LTX-2.3).json
+index ff9bc6c..b1d2bb4 100644
+--- a/blueprints/Text to Video (LTX-2.3).json	
++++ b/blueprints/Text to Video (LTX-2.3).json	
+@@ -571,14 +571,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-dev-fp8.safetensors"
++                "ltx-2.3-22b-dev.safetensors"
+             ]
+           },
+           {
+@@ -993,14 +993,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-distilled-lora-384.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384.safetensors",
++                    "name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+                   "directory": "loras"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-distilled-lora-384.safetensors",
++                "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+               0.5
+             ]
+           },
+@@ -3151,14 +3151,14 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 }
+               ]
+             },
+             "widgets_values": [
+-              "ltx-2.3-22b-dev-fp8.safetensors"
++                "ltx-2.3-22b-dev.safetensors"
+             ]
+           },
+           {
+@@ -3233,8 +3233,8 @@
+               "secondTabWidth": 65,
+               "models": [
+                 {
+-                  "name": "ltx-2.3-22b-dev-fp8.safetensors",
+-                  "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-dev-fp8.safetensors",
++                    "name": "ltx-2.3-22b-dev.safetensors",
++                    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                   "directory": "checkpoints"
+                 },
+                 {
+@@ -3246,7 +3246,7 @@
+             },
+             "widgets_values": [
+               "gemma_3_12B_it_fp4_mixed.safetensors",
+-              "ltx-2.3-22b-dev-fp8.safetensors",
++              "ltx-2.3-22b-dev.safetensors",
+               "default"
+             ]
+           },

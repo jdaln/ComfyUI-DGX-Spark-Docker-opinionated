@@ -2,6 +2,8 @@
 
 VENV_PATH="/workspace/venv"
 CONSTRAINTS_FILE="/workspace/constraints.txt"
+ASSET_BOOTSTRAP_HELPER="${COMFY_ASSET_BOOTSTRAP_HELPER:-/usr/local/bin/bootstrap_comfy_assets.sh}"
+COMFY_PATCH_DIR="${COMFY_PATCH_DIR:-/workspace/patches/comfyui}"
 
 # Create venv if not exists (first run only)
 if [ ! -f "$VENV_PATH/bin/activate" ]; then
@@ -25,6 +27,46 @@ require_writable_dir() {
         exit 1
     fi
     rm -f "$probe"
+}
+
+asset_bootstrap_helper() {
+    if [ ! -x "$ASSET_BOOTSTRAP_HELPER" ]; then
+        echo "ERROR: asset bootstrap helper is missing or not executable: $ASSET_BOOTSTRAP_HELPER" >&2
+        return 1
+    fi
+
+    "$ASSET_BOOTSTRAP_HELPER" "$@"
+}
+
+# Opinionated adjustments to the mounted ComfyUI checkout (example-workflow
+# gating pending upstream support, LTX blueprint/profile alignment, bundled
+# template smoke harness). Each patch is skipped when already present; a patch
+# that no longer fits the checkout only costs its own behavior, never startup.
+apply_comfyui_patches() {
+    comfy_dir="/workspace/ComfyUI"
+
+    ls "$COMFY_PATCH_DIR"/*.patch >/dev/null 2>&1 || return 0
+
+    if ! command -v patch >/dev/null 2>&1; then
+        echo "WARNING: 'patch' is unavailable; skipping ComfyUI startup patches" >&2
+        return 0
+    fi
+
+    for patch_file in "$COMFY_PATCH_DIR"/*.patch; do
+        patch_name="$(basename "$patch_file")"
+        if (cd "$comfy_dir" && patch -p1 -N --dry-run < "$patch_file" >/dev/null 2>&1); then
+            echo "Applying ComfyUI patch: $patch_name..."
+            (cd "$comfy_dir" && patch -p1 -N --no-backup-if-mismatch < "$patch_file")
+        elif (cd "$comfy_dir" && patch -p1 -R --dry-run < "$patch_file" >/dev/null 2>&1); then
+            : # already applied
+        else
+            echo "WARNING: ComfyUI patch does not apply to this checkout, skipping: $patch_name" >&2
+        fi
+    done
+}
+
+bootstrap_asset_profiles() {
+    asset_bootstrap_helper bootstrap
 }
 
 for dir in \
@@ -171,6 +213,9 @@ fi
 # GLSL nodes recommend the optional acceleration extension when available.
 echo "Installing PyOpenGL-accelerate..."
 python -m pip install PyOpenGL-accelerate || true
+
+apply_comfyui_patches
+bootstrap_asset_profiles
 
 # Run ComfyUI
 COMFY_ARGS=(

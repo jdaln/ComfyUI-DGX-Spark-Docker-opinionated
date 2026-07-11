@@ -56,6 +56,7 @@ GID=1000
 UPDATE_DEPS=true
 DISABLE_ALL_CUSTOM_NODES=false
 COMFY_SHM_SIZE=16g
+COMFY_ASSET_PROFILES=wananimate-preprocess
 COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 ```
 
@@ -66,6 +67,8 @@ COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 - `COMFY_PORT` — web interface port (default: `8188`)
 - `COMFY_SHM_SIZE` — private `/dev/shm` size for the container (default: `16g`)
 - `DISABLE_ALL_CUSTOM_NODES` — disable all custom nodes by default (`true`/`false`)
+- `COMFY_ASSET_PROFILES` — comma-separated asset profiles to bootstrap inside the container; some profiles also expose the matching custom-node example workflows automatically
+- `HF_TOKEN` — optional Hugging Face token; required for any gated asset profile
 - `COMFY_NODE_WHITELIST` — comma-separated list of custom node folders to allow
 - `COMFY_NODE_BLACKLIST` — comma-separated list of custom node folders to block
 
@@ -172,6 +175,11 @@ Priority:
 | `COMFY_PORT` | Web interface port | `8188` |
 | `COMFY_SHM_SIZE` | Private shared-memory allocation for the container | `16g` |
 | `DISABLE_ALL_CUSTOM_NODES` | Disable all custom nodes (fallback mode) | `true` |
+| `COMFY_ASSET_PROFILES` | Comma-separated asset profiles to bootstrap; some profiles also expose the matching custom-node example workflows | — |
+| `HF_TOKEN` | Hugging Face token used for gated model downloads | — |
+| `COMFY_ASSET_MANIFEST_PATH` | Override path to the asset profile manifest inside the container | `/workspace/asset-profiles.json` |
+| `WAN_PREPROCESS_VITPOSE_URL` | Override URL for `vitpose-l-wholebody.onnx` | built-in default |
+| `WAN_PREPROCESS_YOLO_URL` | Override URL for `yolov10m.onnx` | built-in default |
 | `COMFY_NODE_WHITELIST` | Comma-separated custom node folders to allow | — |
 | `COMFY_NODE_BLACKLIST` | Comma-separated custom node folders to block | — |
 
@@ -210,6 +218,61 @@ ComfyData/models/
 ├── upscale_models/   # Upscale models
 └── ...
 ```
+
+### Asset Profiles
+
+Startup can now resolve repo-managed asset profiles from `asset-profiles.json` inside the container. Profiles remain the main opt-in surface for both asset bootstrap and any matching custom-node example workflow exposure.
+
+Current bundled profiles:
+
+- `wananimate-preprocess` — downloads the helper detection assets used by the bundled WanAnimate preprocessing templates
+- `ltx-2.0-*` and `ltx-2.3-*` — opt-in LTX workflow asset profiles for the explicitly bundled LTX templates
+- `leapfusion-hunyuanvideo-i2v` — downloads the HunyuanVideo + Leapfusion assets and sample input expected by the KJNodes Leapfusion image-to-video example, then exposes that example workflow in the template browser
+
+Note: the LTX profile layer currently bootstraps the model assets referenced by the bundled templates. The two `LTX-2_*_Full_wLora` workflows still also expect the external `RES4LYF` custom node, which is not auto-added by the asset profile system.
+
+The current profile system bootstraps model/helper assets and can expose matching third-party example workflows when the manifest explicitly maps them. If a workflow also depends on an extra custom node repository that is not already in `custom_nodes/custom_nodes.txt`, that node dependency still needs to be added separately.
+
+The LTX 2.0 profiles keep the official upstream Google Gemma repo-snapshot layout expected by the bundled 2.0 example workflows. The LTX 2.3 profiles use the official `Comfy-Org/ltx-2` split text-encoder file and add the local alias expected by the bundled 2.3 example workflows.
+
+The bundled LTX blueprints are aligned at container startup (via `patches/comfyui/ltx-blueprint-profile-alignment.patch`) so `Text to Video (LTX-2.3)` and `Image to Video (LTX-2.3)` default to the same checkpoint and LoRA filenames that the `ltx-2.3-*` asset profiles bootstrap. For direct `/prompt` execution, use the tracked API graph at `ComfyUI/tests/inference/graphs/ltx23_text_to_video_smoke.json` instead of the UI blueprint wrapper; it is the validated low-cost smoke path and expects `example.png` in `ComfyUI/input/`.
+
+Bundled-template coverage is tracked in `ComfyUI/tests/inference/bundled_template_coverage.json` (installed at startup via `patches/comfyui/bundled-template-smoke-harness.patch`). That manifest scans the current `ComfyUI/blueprints` directory at runtime and applies per-template overrides for validated, blocked, smoke-enabled, and manual-prerequisite entries so new bundled templates do not silently fall out of coverage reporting.
+
+List the current bundled-template coverage matrix from inside the container:
+
+```bash
+docker exec comfyui python /workspace/ComfyUI/tests/inference/run_bundled_template_smokes.py --list
+```
+
+Run every currently enabled container-only smoke path from inside the container:
+
+```bash
+docker exec comfyui python /workspace/ComfyUI/tests/inference/run_bundled_template_smokes.py
+```
+
+This runner executes only tracked direct `/prompt` graphs. Blueprints that do not yet have a companion API graph remain in the matrix as `todo` or `blocked` until a real smoke path is added.
+
+Some bundled assets are gated on Hugging Face and will not download unless `HF_TOKEN` is set for an account that has accepted access to the corresponding repos. Public assets continue to bootstrap without a token.
+
+Currently gated bundled assets:
+
+- `google/gemma-3-12b-it-qat-q4_0-unquantized` — full snapshot used by `ltx-gemma3-snapshot-text-encoder`, which is required by `ltx-2.0-t2v-distilled`, `ltx-2.0-i2v-distilled`, `ltx-2.0-t2v-full`, `ltx-2.0-i2v-full`, `ltx-2.0-v2v-detailer`, `ltx-2.0-iclora-all-distilled`, and `ltx-2.0-iclora-all-distilled-ref0.5`
+- `Lightricks/LTX-2.3-22b-IC-LoRA-HDR` — `ltx-2.3-22b-ic-lora-hdr-0.9.safetensors`, required by `ltx-2.3-iclora-hdr-distilled`
+- `Lightricks/LTX-2.3-22b-IC-LoRA-LipDub` — `ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors`, required by `ltx-2.3-iclora-lipdub-two-stage-distilled`
+
+Hugging Face approval is per repo. A token that works for the official Gemma repo or the HDR LoRA can still be denied for LipDub until that specific repo access has been accepted.
+
+### Automatic WanAnimate Detection Models
+
+When `COMFY_ASSET_PROFILES=wananimate-preprocess`, startup will create the detection-model directories and download the default example-workflow assets if they are missing:
+
+- `../ComfyData/models/detection/vitpose-l-wholebody.onnx`
+- `../ComfyData/models/detection/onnx/yolov10m.onnx`
+
+This keeps the bundled WanAnimate example workflows closer to turnkey on a fresh setup.
+
+Unset `COMFY_ASSET_PROFILES` if you prefer to manage these model files manually.
 
 ### Clearing caches
 

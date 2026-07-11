@@ -278,8 +278,11 @@ ENV PATH="${VENV_PATH}/bin:${PATH}"
 
 WORKDIR /workspace
 
+COPY asset-profiles.json /workspace/asset-profiles.json
+COPY patches /workspace/patches
+COPY scripts/bootstrap_comfy_assets.sh /usr/local/bin/bootstrap_comfy_assets.sh
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh /usr/local/bin/bootstrap_comfy_assets.sh
 # Keep this copy near the end to avoid rebuilding heavy layers when cutter changes.
 COPY ["models-cutter", "/workspace/models-cutter"]
 

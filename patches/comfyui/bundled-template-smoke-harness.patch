@@ -1,0 +1,6383 @@
+diff --git a/tests/inference/bundled_template_coverage.json b/tests/inference/bundled_template_coverage.json
+new file mode 100644
+index 0000000..3056eef
+--- /dev/null
++++ b/tests/inference/bundled_template_coverage.json
+@@ -0,0 +1,477 @@
++{
++  "version": 1,
++  "blueprint_root": "blueprints",
++  "defaults": {
++    "status": "todo",
++    "smoke": {
++      "enabled": false,
++      "api_graph": null,
++      "expected_output": null,
++      "fixtures": []
++    },
++    "prerequisites": {
++      "asset_profiles": [],
++      "custom_nodes": [],
++      "gated_repos": [],
++      "external_services": [],
++      "manual_models": []
++    }
++  },
++  "entries": {
++    "Brightness and Contrast.json": {
++      "status": "blocked",
++      "block_reason": "Uses GLSLShader and currently fails in this container because no OpenGL or EGL or OSMesa context can be created.",
++      "notes": [
++        "A tracked repro graph exists, but the current runtime image cannot create an OpenGL context for GLSLShader execution.",
++        "Fixing this lane requires runtime OpenGL backend support rather than only a prompt-graph change."
++      ]
++    },
++    "Canny to Image (Z-Image-Turbo).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "z-image-turbo-union-control"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is z-image-turbo-union-control.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Canny to Video (LTX 2.0).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx20_canny_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.0-iclora-all-bundled"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is ltx-2.0-iclora-all-bundled.",
++        "Bundled defaults were normalized to the current non-fp8 dev checkpoint filename and matched to the file-based Gemma text encoder these templates expect.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph reuses the compact LTX family shape with the LTX 2.0 dev checkpoint, distilled LoRA, and canny-control LoRA."
++      ]
++    },
++    "Depth to Video (ltx 2.0).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx20_depth_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.0-iclora-all-bundled",
++          "lotus-depth-support"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profiles are ltx-2.0-iclora-all-bundled and lotus-depth-support.",
++        "Bundled defaults were normalized to the current non-fp8 dev checkpoint filename and matched to the file-based Gemma text encoder these templates expect.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph reuses the compact LTX family shape and generates its depth guide with the proven Lotus API subgraph before applying the LTX 2.0 depth-control LoRA."
++      ]
++    },
++    "Depth to Image (Z-Image-Turbo).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "z-image-turbo-union-control",
++          "lotus-depth-support"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profiles are z-image-turbo-union-control and lotus-depth-support.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Text to Video (LTX-2.3).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx23_text_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.3-t2v-i2v-two-stage-distilled"
++        ]
++      },
++      "notes": [
++        "Validated container-only via the tracked direct /prompt smoke graph."
++      ]
++    },
++    "Image to Video (LTX-2.3).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx23_image_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.3-t2v-i2v-two-stage-distilled"
++        ]
++      },
++      "notes": [
++        "Blueprint defaults were updated to the canonical checkpoint and distilled LoRA filenames.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph reuses the proven LTX-2.3 family shape and flips the existing image-conditioning bypass for a compact example.png-driven run."
++      ]
++    },
++    "First-Last-Frame to Video (LTX-2.3).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx23_first_last_frame_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.3-t2v-i2v-two-stage-distilled"
++        ]
++      },
++      "notes": [
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The direct smoke reuses example.png for both the first and last frame so the lane can be validated with the shared fixture set.",
++        "The smoke graph exercises LTXVAddGuide at frame 0 and frame -1 while staying within the existing compact LTX-2.3 validation envelope."
++      ]
++    },
++    "Crop Images 2x2.json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/crop_images_2x2_smoke.json",
++        "expected_output": "image",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "notes": [
++        "Validated container-only via the tracked direct /prompt smoke graph."
++      ]
++    },
++    "Image Edit (Qwen 2511).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/qwen_image_edit_2511_smoke.json",
++        "expected_output": "image",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-edit-2511-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-edit-2511-core.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph uses the edit-specific TextEncodeQwenImageEditPlus path with example.png as a single reference image so the lane stays compact while still exercising the dedicated edit checkpoint."
++      ]
++    },
++    "Image Inpainting (Qwen-image).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/qwen_image_inpainting_smoke.json",
++        "expected_output": "image",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-inpaint-lightning-4step"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-inpaint-lightning-4step.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph uses the InstantX inpainting controlnet with a generated full-image mask so the lane can be validated without adding a dedicated binary mask fixture."
++      ]
++    },
++    "Image Outpainting (Qwen-Image).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/qwen_image_outpainting_smoke.json",
++        "expected_output": "image",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-inpaint-lightning-4step"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-inpaint-lightning-4step.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph uses ImagePadForOutpaint and composites the generated result back over the padded canvas so the lane stays self-contained around example.png."
++      ]
++    },
++    "Image Upscale(Z-image-Turbo).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "z-image-turbo-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is z-image-turbo-core.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Pose to Video (LTX 2.0).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ltx20_pose_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ltx-2.0-iclora-all-bundled"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is ltx-2.0-iclora-all-bundled.",
++        "Bundled defaults were normalized to the current non-fp8 dev checkpoint filename and matched to the file-based Gemma text encoder these templates expect.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph reuses the compact LTX family shape with the LTX 2.0 dev checkpoint, distilled LoRA, and pose-control LoRA."
++      ]
++    },
++    "Pose to Image (Z-Image-Turbo).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "z-image-turbo-union-control"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is z-image-turbo-union-control.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Prompt Enhance.json": {
++      "status": "blocked",
++      "block_reason": "Uses GeminiNode and therefore requires external Gemini service credentials and a service-backed validation path.",
++      "prerequisites": {
++        "external_services": [
++          "gemini"
++        ]
++      },
++      "notes": [
++        "This template is not purely local; it routes through GeminiNode for prompt expansion."
++      ]
++    },
++    "Text to Audio (ACE-Step 1.5).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/ace_step_text_to_audio_smoke.json",
++        "expected_output": "audio",
++        "fixtures": []
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "ace-step-1.5-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is ace-step-1.5-core.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The live smoke produced a FLAC artifact through SaveAudio and recorded it in ComfyUI history."
++      ]
++    },
++    "Text to Image (Qwen-Image 2512).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/qwen_image_2512_text_to_image_smoke.json",
++        "expected_output": "image",
++        "fixtures": []
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-2512-t2i-lightning-4step"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-2512-t2i-lightning-4step.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph mirrors the compact Qwen family text-to-image shape but switches to the 2512 checkpoint and 4-step lightning LoRA."
++      ]
++    },
++    "Text to Image (Qwen-Image).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/qwen_image_text_to_image_smoke.json",
++        "expected_output": "image",
++        "fixtures": []
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-t2i-lightning-8step"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-t2i-lightning-8step.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke runner now uniquifies filename_prefix inputs so repeated executions keep recording fresh output artifacts."
++      ]
++    },
++    "Text to Image (Z-Image-Turbo).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "z-image-turbo-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is z-image-turbo-core.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Text to Video (Wan 2.2).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/wan22_text_to_video_smoke.json",
++        "expected_output": "video"
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "wan2.2-t2v-bundled"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is wan2.2-t2v-bundled.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph uses VHS_VideoCombine and a reduced 320x320x9 clip so the lane remains practical to validate on this host."
++      ]
++    },
++    "Image to Video (Wan 2.2).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/wan22_image_to_video_smoke.json",
++        "expected_output": "video",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "wan2.2-i2v-bundled"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is wan2.2-i2v-bundled.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The smoke graph uses VHS_VideoCombine and a reduced 320x320x9 clip so the lane remains practical to validate on this host."
++      ]
++    },
++    "Image to Depth Map (Lotus).json": {
++      "status": "validated",
++      "smoke": {
++        "enabled": true,
++        "api_graph": "tests/inference/graphs/lotus_depth_smoke.json",
++        "expected_output": "image",
++        "fixtures": [
++          "example.png"
++        ]
++      },
++      "prerequisites": {
++        "asset_profiles": [
++          "lotus-depth-support"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is lotus-depth-support.",
++        "Validated container-only via the tracked direct /prompt smoke graph.",
++        "The Lotus depth asset must live under diffusion_models for the bundled blueprint and the direct smoke graph to resolve the checkpoint correctly."
++      ]
++    },
++    "Image Captioning (gemini).json": {
++      "status": "blocked",
++      "block_reason": "Requires external Gemini service credentials and a service-backed validation path.",
++      "prerequisites": {
++        "external_services": [
++          "gemini"
++        ]
++      },
++      "notes": [
++        "Kept in scope but blocked until service-backed validation is wired."
++      ]
++    },
++    "Image to Model (Hunyuan3d 2.1).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "hunyuan3d-2.1-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is hunyuan3d-2.1-core.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Image to Layers(Qwen-Image-Layered).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "qwen-image-layered-core"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is qwen-image-layered-core.",
++        "This workflow still needs a companion API graph before smoke validation."
++      ]
++    },
++    "Video Captioning (Gemini).json": {
++      "status": "blocked",
++      "block_reason": "Requires external Gemini service credentials and a service-backed validation path.",
++      "prerequisites": {
++        "external_services": [
++          "gemini"
++        ]
++      },
++      "notes": [
++        "Kept in scope but blocked until service-backed validation is wired."
++      ]
++    },
++    "Video Inpaint(Wan2.1 VACE).json": {
++      "prerequisites": {
++        "asset_profiles": [
++          "wan2.1-vace-bundled"
++        ]
++      },
++      "notes": [
++        "The exact bootstrap profile is wan2.1-vace-bundled.",
++        "This template also requires video, mask, and reference-image fixtures in addition to the Wan 2.1 VACE model set."
++      ]
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ace_step_text_to_audio_smoke.json b/tests/inference/graphs/ace_step_text_to_audio_smoke.json
+new file mode 100644
+index 0000000..f42bc65
+--- /dev/null
++++ b/tests/inference/graphs/ace_step_text_to_audio_smoke.json
+@@ -0,0 +1,123 @@
++{
++  "3": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "78",
++        0
++      ],
++      "positive": [
++        "94",
++        0
++      ],
++      "negative": [
++        "47",
++        0
++      ],
++      "latent_image": [
++        "98",
++        0
++      ],
++      "seed": 42,
++      "steps": 8,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "18": {
++    "class_type": "VAEDecodeAudio",
++    "inputs": {
++      "samples": [
++        "3",
++        0
++      ],
++      "vae": [
++        "106",
++        0
++      ]
++    }
++  },
++  "47": {
++    "class_type": "ConditioningZeroOut",
++    "inputs": {
++      "conditioning": [
++        "94",
++        0
++      ]
++    }
++  },
++  "78": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "104",
++        0
++      ],
++      "shift": 3
++    }
++  },
++  "94": {
++    "class_type": "TextEncodeAceStepAudio1.5",
++    "inputs": {
++      "clip": [
++        "105",
++        0
++      ],
++      "tags": "ambient electronic instrumental",
++      "lyrics": "instrumental",
++      "seed": 42,
++      "bpm": 120,
++      "duration": 4,
++      "timesignature": "4",
++      "language": "en",
++      "keyscale": "E minor",
++      "generate_audio_codes": true,
++      "cfg_scale": 2,
++      "temperature": 0.85,
++      "top_p": 0.9,
++      "top_k": 0,
++      "min_p": 0
++    }
++  },
++  "98": {
++    "class_type": "EmptyAceStep1.5LatentAudio",
++    "inputs": {
++      "seconds": 4,
++      "batch_size": 1
++    }
++  },
++  "104": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "acestep_v1.5_turbo.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "105": {
++    "class_type": "DualCLIPLoader",
++    "inputs": {
++      "clip_name1": "qwen_0.6b_ace15.safetensors",
++      "clip_name2": "qwen_4b_ace15.safetensors",
++      "type": "ace",
++      "device": "default"
++    }
++  },
++  "106": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "ace_1.5_vae.safetensors"
++    }
++  },
++  "107": {
++    "class_type": "SaveAudio",
++    "inputs": {
++      "audio": [
++        "18",
++        0
++      ],
++      "filename_prefix": "smoke/ace_step_15"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/brightness_and_contrast_smoke.json b/tests/inference/graphs/brightness_and_contrast_smoke.json
+new file mode 100644
+index 0000000..8a8f0ec
+--- /dev/null
++++ b/tests/inference/graphs/brightness_and_contrast_smoke.json
+@@ -0,0 +1,49 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "2": {
++    "class_type": "PrimitiveFloat",
++    "inputs": {
++      "value": 18.0
++    }
++  },
++  "3": {
++    "class_type": "PrimitiveFloat",
++    "inputs": {
++      "value": 14.0
++    }
++  },
++  "4": {
++    "class_type": "GLSLShader",
++    "inputs": {
++      "fragment_shader": "#version 300 es\nprecision highp float;\n\nuniform sampler2D u_image0;\nuniform float u_float0;\nuniform float u_float1;\n\nin vec2 v_texCoord;\nlayout(location = 0) out vec4 fragColor0;\n\nconst float MID_GRAY = 0.18;\n\nvec3 srgbToLinear(vec3 c) {\n    return pow(max(c, 0.0), vec3(2.2));\n}\n\nvec3 linearToSrgb(vec3 c) {\n    return pow(max(c, 0.0), vec3(1.0 / 2.2));\n}\n\nfloat mapBrightness(float b) {\n    return clamp(b / 100.0, -1.0, 1.0);\n}\n\nfloat mapContrast(float c) {\n    return clamp(c / 100.0 + 1.0, 0.0, 2.0);\n}\n\nvoid main() {\n    vec4 orig = texture(u_image0, v_texCoord);\n    float brightness = mapBrightness(u_float0);\n    float contrast = mapContrast(u_float1);\n    vec3 lin = srgbToLinear(orig.rgb);\n    lin = (lin - MID_GRAY) * contrast + brightness + MID_GRAY;\n    vec3 result = linearToSrgb(clamp(lin, 0.0, 1.0));\n    fragColor0 = vec4(result, orig.a);\n}\n",
++      "size_mode": "from_input",
++      "images.image0": [
++        "1",
++        0
++      ],
++      "floats.u_float0": [
++        "2",
++        0
++      ],
++      "floats.u_float1": [
++        "3",
++        0
++      ]
++    }
++  },
++  "5": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "4",
++        0
++      ],
++      "filename_prefix": "smoke/brightness_and_contrast"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/crop_images_2x2_smoke.json b/tests/inference/graphs/crop_images_2x2_smoke.json
+new file mode 100644
+index 0000000..e23bae7
+--- /dev/null
++++ b/tests/inference/graphs/crop_images_2x2_smoke.json
+@@ -0,0 +1,206 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "2": {
++    "class_type": "GetImageSize",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ]
++    }
++  },
++  "3": {
++    "class_type": "PrimitiveInt",
++    "inputs": {
++      "value": 2
++    }
++  },
++  "4": {
++    "class_type": "ComfyMathExpression",
++    "inputs": {
++      "expression": "max(1, int(a/b))",
++      "values.a": [
++        "2",
++        0
++      ],
++      "values.b": [
++        "3",
++        0
++      ]
++    }
++  },
++  "5": {
++    "class_type": "ComfyMathExpression",
++    "inputs": {
++      "expression": "max(1, int(a/b))",
++      "values.a": [
++        "2",
++        1
++      ],
++      "values.b": [
++        "3",
++        0
++      ]
++    }
++  },
++  "6": {
++    "class_type": "PrimitiveBoundingBox",
++    "inputs": {
++      "x": 0,
++      "y": 0,
++      "width": [
++        "4",
++        1
++      ],
++      "height": [
++        "5",
++        1
++      ]
++    }
++  },
++  "7": {
++    "class_type": "ImageCropV2",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ],
++      "crop_region": [
++        "6",
++        0
++      ]
++    }
++  },
++  "8": {
++    "class_type": "PrimitiveBoundingBox",
++    "inputs": {
++      "x": 0,
++      "y": [
++        "5",
++        1
++      ],
++      "width": [
++        "4",
++        1
++      ],
++      "height": [
++        "5",
++        1
++      ]
++    }
++  },
++  "9": {
++    "class_type": "ImageCropV2",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ],
++      "crop_region": [
++        "8",
++        0
++      ]
++    }
++  },
++  "10": {
++    "class_type": "PrimitiveBoundingBox",
++    "inputs": {
++      "x": [
++        "4",
++        1
++      ],
++      "y": 0,
++      "width": [
++        "4",
++        1
++      ],
++      "height": [
++        "5",
++        1
++      ]
++    }
++  },
++  "11": {
++    "class_type": "ImageCropV2",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ],
++      "crop_region": [
++        "10",
++        0
++      ]
++    }
++  },
++  "12": {
++    "class_type": "PrimitiveBoundingBox",
++    "inputs": {
++      "x": [
++        "4",
++        1
++      ],
++      "y": [
++        "5",
++        1
++      ],
++      "width": [
++        "4",
++        1
++      ],
++      "height": [
++        "5",
++        1
++      ]
++    }
++  },
++  "13": {
++    "class_type": "ImageCropV2",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ],
++      "crop_region": [
++        "12",
++        0
++      ]
++    }
++  },
++  "14": {
++    "class_type": "BatchImagesNode",
++    "inputs": {
++      "images.image0": [
++        "7",
++        0
++      ],
++      "images.image1": [
++        "9",
++        0
++      ],
++      "images.image2": [
++        "11",
++        0
++      ],
++      "images.image3": [
++        "13",
++        0
++      ]
++    }
++  },
++  "15": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "14",
++        0
++      ],
++      "filename_prefix": "smoke/crop_images_2x2"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/lotus_depth_smoke.json b/tests/inference/graphs/lotus_depth_smoke.json
+new file mode 100644
+index 0000000..2fcf0fe
+--- /dev/null
++++ b/tests/inference/graphs/lotus_depth_smoke.json
+@@ -0,0 +1,140 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "8": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "16",
++        0
++      ],
++      "vae": [
++        "14",
++        0
++      ]
++    }
++  },
++  "10": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "lotus-depth-d-v1-1.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "14": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
++    }
++  },
++  "16": {
++    "class_type": "SamplerCustomAdvanced",
++    "inputs": {
++      "noise": [
++        "18",
++        0
++      ],
++      "guider": [
++        "19",
++        0
++      ],
++      "sampler": [
++        "21",
++        0
++      ],
++      "sigmas": [
++        "28",
++        0
++      ],
++      "latent_image": [
++        "23",
++        0
++      ]
++    }
++  },
++  "18": {
++    "class_type": "DisableNoise",
++    "inputs": {}
++  },
++  "19": {
++    "class_type": "BasicGuider",
++    "inputs": {
++      "model": [
++        "10",
++        0
++      ],
++      "conditioning": [
++        "68",
++        0
++      ]
++    }
++  },
++  "20": {
++    "class_type": "BasicScheduler",
++    "inputs": {
++      "model": [
++        "10",
++        0
++      ],
++      "scheduler": "normal",
++      "steps": 1,
++      "denoise": 1
++    }
++  },
++  "21": {
++    "class_type": "KSamplerSelect",
++    "inputs": {
++      "sampler_name": "euler"
++    }
++  },
++  "22": {
++    "class_type": "ImageInvert",
++    "inputs": {
++      "image": [
++        "8",
++        0
++      ]
++    }
++  },
++  "23": {
++    "class_type": "VAEEncode",
++    "inputs": {
++      "pixels": [
++        "1",
++        0
++      ],
++      "vae": [
++        "14",
++        0
++      ]
++    }
++  },
++  "28": {
++    "class_type": "SetFirstSigma",
++    "inputs": {
++      "sigmas": [
++        "20",
++        0
++      ],
++      "sigma": 999
++    }
++  },
++  "68": {
++    "class_type": "LotusConditioning",
++    "inputs": {}
++  },
++  "69": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "22",
++        0
++      ],
++      "filename_prefix": "smoke/lotus_depth"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx20_canny_to_video_smoke.json b/tests/inference/graphs/ltx20_canny_to_video_smoke.json
+new file mode 100644
+index 0000000..1a34125
+--- /dev/null
++++ b/tests/inference/graphs/ltx20_canny_to_video_smoke.json
+@@ -0,0 +1,582 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                0
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "324",
++                0
++            ],
++            "lora_name": "ltx-2-19b-distilled-lora-384.safetensors",
++            "strength_model": 1
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "strength": 1,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "322",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "strength": 0.7,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": false
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2-spatial-upscaler-x2-1.0.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2-19b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A gentle cinematic motion over the provided canny-guided landscape."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                0
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx20_canny_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    },
++    "324": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltx-2-19b-ic-lora-canny-control.safetensors",
++            "strength_model": 1
++        }
++    },
++    "325": {
++        "class_type": "LTXVAddGuide",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "latent": [
++                "298",
++                0
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "frame_idx": 0,
++            "strength": 1
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx20_depth_to_video_smoke.json b/tests/inference/graphs/ltx20_depth_to_video_smoke.json
+new file mode 100644
+index 0000000..4be3733
+--- /dev/null
++++ b/tests/inference/graphs/ltx20_depth_to_video_smoke.json
+@@ -0,0 +1,704 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                0
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "324",
++                0
++            ],
++            "lora_name": "ltx-2-19b-distilled-lora-384.safetensors",
++            "strength_model": 1
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "strength": 1,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "411",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "strength": 0.7,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": false
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2-spatial-upscaler-x2-1.0.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2-19b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A gentle cinematic motion over the provided depth-guided landscape."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                0
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx20_depth_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    },
++    "324": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltx-2-19b-ic-lora-depth-control.safetensors",
++            "strength_model": 1
++        }
++    },
++    "325": {
++        "class_type": "LTXVAddGuide",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "latent": [
++                "298",
++                0
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "frame_idx": 0,
++            "strength": 1
++        }
++    },
++    "400": {
++        "class_type": "UNETLoader",
++        "inputs": {
++            "unet_name": "lotus-depth-d-v1-1.safetensors",
++            "weight_dtype": "default"
++        }
++    },
++    "401": {
++        "class_type": "VAELoader",
++        "inputs": {
++            "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
++        }
++    },
++    "402": {
++        "class_type": "DisableNoise",
++        "inputs": {}
++    },
++    "403": {
++        "class_type": "BasicGuider",
++        "inputs": {
++            "model": [
++                "400",
++                0
++            ],
++            "conditioning": [
++                "409",
++                0
++            ]
++        }
++    },
++    "404": {
++        "class_type": "BasicScheduler",
++        "inputs": {
++            "model": [
++                "400",
++                0
++            ],
++            "scheduler": "normal",
++            "steps": 1,
++            "denoise": 1
++        }
++    },
++    "405": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler"
++        }
++    },
++    "406": {
++        "class_type": "VAEEncode",
++        "inputs": {
++            "pixels": [
++                "322",
++                0
++            ],
++            "vae": [
++                "401",
++                0
++            ]
++        }
++    },
++    "407": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "402",
++                0
++            ],
++            "guider": [
++                "403",
++                0
++            ],
++            "sampler": [
++                "405",
++                0
++            ],
++            "sigmas": [
++                "408",
++                0
++            ],
++            "latent_image": [
++                "406",
++                0
++            ]
++        }
++    },
++    "408": {
++        "class_type": "SetFirstSigma",
++        "inputs": {
++            "sigmas": [
++                "404",
++                0
++            ],
++            "sigma": 999
++        }
++    },
++    "409": {
++        "class_type": "LotusConditioning",
++        "inputs": {}
++    },
++    "410": {
++        "class_type": "VAEDecode",
++        "inputs": {
++            "samples": [
++                "407",
++                0
++            ],
++            "vae": [
++                "401",
++                0
++            ]
++        }
++    },
++    "411": {
++        "class_type": "ImageInvert",
++        "inputs": {
++            "image": [
++                "410",
++                0
++            ]
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx20_pose_to_video_smoke.json b/tests/inference/graphs/ltx20_pose_to_video_smoke.json
+new file mode 100644
+index 0000000..0e9789c
+--- /dev/null
++++ b/tests/inference/graphs/ltx20_pose_to_video_smoke.json
+@@ -0,0 +1,582 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                0
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "324",
++                0
++            ],
++            "lora_name": "ltx-2-19b-distilled-lora-384.safetensors",
++            "strength_model": 1
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "strength": 1,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "322",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "strength": 0.7,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": false
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2-spatial-upscaler-x2-1.0.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "325",
++                0
++            ],
++            "negative": [
++                "325",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2-19b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2-19b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A gentle cinematic motion following the provided pose-guided subject."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                0
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx20_pose_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    },
++    "324": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltx-2-19b-ic-lora-pose-control.safetensors",
++            "strength_model": 1
++        }
++    },
++    "325": {
++        "class_type": "LTXVAddGuide",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "latent": [
++                "298",
++                0
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "frame_idx": 0,
++            "strength": 1
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx23_first_last_frame_to_video_smoke.json b/tests/inference/graphs/ltx23_first_last_frame_to_video_smoke.json
+new file mode 100644
+index 0000000..10fb946
+--- /dev/null
++++ b/tests/inference/graphs/ltx23_first_last_frame_to_video_smoke.json
+@@ -0,0 +1,554 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                2
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "290",
++                0
++            ],
++            "negative": [
++                "290",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "298",
++                0
++            ],
++            "negative": [
++                "298",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
++            "strength_model": 0.5
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVAddGuide",
++        "inputs": {
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "frame_idx": -1,
++            "strength": 0.7
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "322",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVAddGuide",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "frame_idx": 0,
++            "strength": 0.7
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": false
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "298",
++                0
++            ],
++            "negative": [
++                "298",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A gentle cinematic motion between the first and last frame of a calm sunrise landscape."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                2
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx23_first_last_frame_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx23_image_to_video_smoke.json b/tests/inference/graphs/ltx23_image_to_video_smoke.json
+new file mode 100644
+index 0000000..dfdcbf2
+--- /dev/null
++++ b/tests/inference/graphs/ltx23_image_to_video_smoke.json
+@@ -0,0 +1,544 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                0
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
++            "strength_model": 0.5
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "strength": 1,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "322",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "strength": 0.7,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": false
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A gentle cinematic camera drift across a calm sunrise landscape."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                0
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx23_image_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/ltx23_text_to_video_smoke.json b/tests/inference/graphs/ltx23_text_to_video_smoke.json
+new file mode 100644
+index 0000000..8efa22e
+--- /dev/null
++++ b/tests/inference/graphs/ltx23_text_to_video_smoke.json
+@@ -0,0 +1,544 @@
++{
++    "278": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 42
++        }
++    },
++    "279": {
++        "class_type": "RandomNoise",
++        "inputs": {
++            "noise_seed": 424242
++        }
++    },
++    "280": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "290",
++                0
++            ],
++            "audio_latent": [
++                "309",
++                1
++            ]
++        }
++    },
++    "281": {
++        "class_type": "LTXVAudioVAELoader",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "282": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_cfg_pp"
++        }
++    },
++    "283": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "0.85, 0.7250, 0.4219, 0.0"
++        }
++    },
++    "284": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "286",
++                0
++            ],
++            "negative": [
++                "286",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "285": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "279",
++                0
++            ],
++            "guider": [
++                "316",
++                0
++            ],
++            "sampler": [
++                "293",
++                0
++            ],
++            "sigmas": [
++                "308",
++                0
++            ],
++            "latent_image": [
++                "321",
++                0
++            ]
++        }
++    },
++    "286": {
++        "class_type": "LTXVCropGuides",
++        "inputs": {
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "latent": [
++                "309",
++                0
++            ]
++        }
++    },
++    "287": {
++        "class_type": "LoraLoaderModelOnly",
++        "inputs": {
++            "model": [
++                "318",
++                0
++            ],
++            "lora_name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
++            "strength_model": 0.5
++        }
++    },
++    "288": {
++        "class_type": "ResizeImagesByLongerEdge",
++        "inputs": {
++            "images": [
++                "292",
++                0
++            ],
++            "longer_edge": 1536
++        }
++    },
++    "289": {
++        "class_type": "LTXVLatentUpsampler",
++        "inputs": {
++            "samples": [
++                "309",
++                0
++            ],
++            "upscale_model": [
++                "313",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ]
++        }
++    },
++    "290": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "289",
++                0
++            ],
++            "strength": 1,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "291": {
++        "class_type": "LTXVPreprocess",
++        "inputs": {
++            "image": [
++                "288",
++                0
++            ],
++            "img_compression": 18
++        }
++    },
++    "292": {
++        "class_type": "ResizeImageMaskNode",
++        "inputs": {
++            "input": [
++                "322",
++                0
++            ],
++            "resize_type": "scale dimensions",
++            "resize_type.width": [
++                "314",
++                0
++            ],
++            "resize_type.height": [
++                "301",
++                0
++            ],
++            "resize_type.crop": "center",
++            "scale_method": "lanczos"
++        }
++    },
++    "293": {
++        "class_type": "KSamplerSelect",
++        "inputs": {
++            "sampler_name": "euler_ancestral_cfg_pp"
++        }
++    },
++    "294": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "314",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "296": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "301",
++                0
++            ],
++            "expression": "a/2"
++        }
++    },
++    "297": {
++        "class_type": "EmptyLTXVLatentVideo",
++        "inputs": {
++            "width": [
++                "294",
++                1
++            ],
++            "height": [
++                "296",
++                1
++            ],
++            "length": [
++                "323",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "298": {
++        "class_type": "LTXVImgToVideoInplace",
++        "inputs": {
++            "vae": [
++                "318",
++                2
++            ],
++            "image": [
++                "291",
++                0
++            ],
++            "latent": [
++                "297",
++                0
++            ],
++            "strength": 0.7,
++            "bypass": [
++                "304",
++                0
++            ]
++        }
++    },
++    "299": {
++        "class_type": "LTXVAudioVAEDecode",
++        "inputs": {
++            "samples": [
++                "311",
++                1
++            ],
++            "audio_vae": [
++                "281",
++                0
++            ]
++        }
++    },
++    "300": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "302",
++                0
++            ],
++            "expression": "a"
++        }
++    },
++    "301": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 192
++        }
++    },
++    "302": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 6
++        }
++    },
++    "303": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 1
++        }
++    },
++    "304": {
++        "class_type": "PrimitiveBoolean",
++        "inputs": {
++            "value": true
++        }
++    },
++    "305": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": [
++                "320",
++                0
++            ]
++        }
++    },
++    "306": {
++        "class_type": "LTXVConditioning",
++        "inputs": {
++            "positive": [
++                "305",
++                0
++            ],
++            "negative": [
++                "315",
++                0
++            ],
++            "frame_rate": [
++                "300",
++                0
++            ]
++        }
++    },
++    "307": {
++        "class_type": "LTXVEmptyLatentAudio",
++        "inputs": {
++            "audio_vae": [
++                "281",
++                0
++            ],
++            "frames_number": [
++                "323",
++                1
++            ],
++            "frame_rate": [
++                "300",
++                1
++            ],
++            "batch_size": 1
++        }
++    },
++    "308": {
++        "class_type": "ManualSigmas",
++        "inputs": {
++            "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
++        }
++    },
++    "309": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "285",
++                0
++            ]
++        }
++    },
++    "310": {
++        "class_type": "SamplerCustomAdvanced",
++        "inputs": {
++            "noise": [
++                "278",
++                0
++            ],
++            "guider": [
++                "284",
++                0
++            ],
++            "sampler": [
++                "282",
++                0
++            ],
++            "sigmas": [
++                "283",
++                0
++            ],
++            "latent_image": [
++                "280",
++                0
++            ]
++        }
++    },
++    "311": {
++        "class_type": "LTXVSeparateAVLatent",
++        "inputs": {
++            "av_latent": [
++                "310",
++                0
++            ]
++        }
++    },
++    "312": {
++        "class_type": "CreateVideo",
++        "inputs": {
++            "images": [
++                "317",
++                0
++            ],
++            "audio": [
++                "299",
++                0
++            ],
++            "fps": [
++                "300",
++                0
++            ]
++        }
++    },
++    "313": {
++        "class_type": "LatentUpscaleModelLoader",
++        "inputs": {
++            "model_name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
++        }
++    },
++    "314": {
++        "class_type": "PrimitiveInt",
++        "inputs": {
++            "value": 320
++        }
++    },
++    "315": {
++        "class_type": "CLIPTextEncode",
++        "inputs": {
++            "clip": [
++                "319",
++                0
++            ],
++            "text": "pc game, console game, video game, cartoon, childish, ugly"
++        }
++    },
++    "316": {
++        "class_type": "CFGGuider",
++        "inputs": {
++            "model": [
++                "287",
++                0
++            ],
++            "positive": [
++                "306",
++                0
++            ],
++            "negative": [
++                "306",
++                1
++            ],
++            "cfg": 1
++        }
++    },
++    "317": {
++        "class_type": "VAEDecodeTiled",
++        "inputs": {
++            "samples": [
++                "311",
++                0
++            ],
++            "vae": [
++                "318",
++                2
++            ],
++            "tile_size": 768,
++            "overlap": 64,
++            "temporal_size": 4096,
++            "temporal_overlap": 4
++        }
++    },
++    "318": {
++        "class_type": "CheckpointLoaderSimple",
++        "inputs": {
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors"
++        }
++    },
++    "319": {
++        "class_type": "LTXAVTextEncoderLoader",
++        "inputs": {
++            "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
++            "ckpt_name": "ltx-2.3-22b-dev.safetensors",
++            "device": "default"
++        }
++    },
++    "320": {
++        "class_type": "PrimitiveStringMultiline",
++        "inputs": {
++            "value": "A calm sunrise over a mountain ridge with drifting clouds, cinematic natural light."
++        }
++    },
++    "321": {
++        "class_type": "LTXVConcatAVLatent",
++        "inputs": {
++            "video_latent": [
++                "298",
++                0
++            ],
++            "audio_latent": [
++                "307",
++                0
++            ]
++        }
++    },
++    "322": {
++        "class_type": "LoadImage",
++        "inputs": {
++            "image": "example.png"
++        }
++    },
++    "323": {
++        "class_type": "ComfyMathExpression",
++        "inputs": {
++            "values.a": [
++                "303",
++                0
++            ],
++            "values.b": [
++                "302",
++                0
++            ],
++            "expression": "a * b + 1"
++        }
++    },
++    "9000": {
++        "class_type": "SaveVideo",
++        "inputs": {
++            "video": [
++                "312",
++                0
++            ],
++            "filename_prefix": "smoke/ltx23_text_to_video",
++            "format": "mp4",
++            "codec": "h264"
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/qwen_image_2512_text_to_image_smoke.json b/tests/inference/graphs/qwen_image_2512_text_to_image_smoke.json
+new file mode 100644
+index 0000000..358b564
+--- /dev/null
++++ b/tests/inference/graphs/qwen_image_2512_text_to_image_smoke.json
+@@ -0,0 +1,122 @@
++{
++  "1": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "qwen_image_2512_fp8_e4m3fn.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "2": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "1",
++        0
++      ],
++      "lora_name": "Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
++      "strength_model": 1
++    }
++  },
++  "3": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "2",
++        0
++      ],
++      "shift": 3.1
++    }
++  },
++  "4": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
++      "type": "qwen_image",
++      "device": "default"
++    }
++  },
++  "5": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "4",
++        0
++      ],
++      "text": "A minimal poster of a seaside town at golden hour, crisp lines, soft shadows, tasteful color palette"
++    }
++  },
++  "6": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "4",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "7": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "qwen_image_vae.safetensors"
++    }
++  },
++  "8": {
++    "class_type": "EmptySD3LatentImage",
++    "inputs": {
++      "width": 512,
++      "height": 512,
++      "batch_size": 1
++    }
++  },
++  "9": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "3",
++        0
++      ],
++      "positive": [
++        "5",
++        0
++      ],
++      "negative": [
++        "6",
++        0
++      ],
++      "latent_image": [
++        "8",
++        0
++      ],
++      "seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "10": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "9",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "11": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "10",
++        0
++      ],
++      "filename_prefix": "smoke/qwen_image_2512_text_to_image"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/qwen_image_edit_2511_smoke.json b/tests/inference/graphs/qwen_image_edit_2511_smoke.json
+new file mode 100644
+index 0000000..aba40c0
+--- /dev/null
++++ b/tests/inference/graphs/qwen_image_edit_2511_smoke.json
+@@ -0,0 +1,157 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "2": {
++    "class_type": "FluxKontextImageScale",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ]
++    }
++  },
++  "3": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
++      "type": "qwen_image",
++      "device": "default"
++    }
++  },
++  "4": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "qwen_image_edit_2511_bf16.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "5": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "4",
++        0
++      ],
++      "shift": 3.1
++    }
++  },
++  "6": {
++    "class_type": "CFGNorm",
++    "inputs": {
++      "model": [
++        "5",
++        0
++      ],
++      "strength": 1
++    }
++  },
++  "7": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "qwen_image_vae.safetensors"
++    }
++  },
++  "8": {
++    "class_type": "TextEncodeQwenImageEditPlus",
++    "inputs": {
++      "clip": [
++        "3",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ],
++      "image1": [
++        "2",
++        0
++      ],
++      "prompt": "Turn the reference into a watercolor travel postcard while preserving the main subject and composition."
++    }
++  },
++  "9": {
++    "class_type": "TextEncodeQwenImageEditPlus",
++    "inputs": {
++      "clip": [
++        "3",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ],
++      "image1": [
++        "2",
++        0
++      ],
++      "prompt": ""
++    }
++  },
++  "10": {
++    "class_type": "VAEEncode",
++    "inputs": {
++      "pixels": [
++        "2",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "11": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "6",
++        0
++      ],
++      "positive": [
++        "8",
++        0
++      ],
++      "negative": [
++        "9",
++        0
++      ],
++      "latent_image": [
++        "10",
++        0
++      ],
++      "seed": 42,
++      "steps": 8,
++      "cfg": 4,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "12": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "11",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "13": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "12",
++        0
++      ],
++      "filename_prefix": "smoke/qwen_image_edit_2511"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/qwen_image_inpainting_smoke.json b/tests/inference/graphs/qwen_image_inpainting_smoke.json
+new file mode 100644
+index 0000000..cf6a813
+--- /dev/null
++++ b/tests/inference/graphs/qwen_image_inpainting_smoke.json
+@@ -0,0 +1,216 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "2": {
++    "class_type": "FluxKontextImageScale",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ]
++    }
++  },
++  "3": {
++    "class_type": "GetImageSize",
++    "inputs": {
++      "image": [
++        "2",
++        0
++      ]
++    }
++  },
++  "4": {
++    "class_type": "SolidMask",
++    "inputs": {
++      "value": 1,
++      "width": [
++        "3",
++        0
++      ],
++      "height": [
++        "3",
++        1
++      ]
++    }
++  },
++  "5": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
++      "type": "qwen_image",
++      "device": "default"
++    }
++  },
++  "6": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "5",
++        0
++      ],
++      "text": "Restore the image as a clean hand-painted illustration with coherent details and balanced color."
++    }
++  },
++  "7": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "5",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "8": {
++    "class_type": "ControlNetLoader",
++    "inputs": {
++      "control_net_name": "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors"
++    }
++  },
++  "9": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "qwen_image_vae.safetensors"
++    }
++  },
++  "10": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "qwen_image_fp8_e4m3fn.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "11": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "10",
++        0
++      ],
++      "lora_name": "Qwen-Image-Lightning-4steps-V1.0.safetensors",
++      "strength_model": 1
++    }
++  },
++  "12": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "11",
++        0
++      ],
++      "shift": 3.1
++    }
++  },
++  "13": {
++    "class_type": "VAEEncode",
++    "inputs": {
++      "pixels": [
++        "2",
++        0
++      ],
++      "vae": [
++        "9",
++        0
++      ]
++    }
++  },
++  "14": {
++    "class_type": "SetLatentNoiseMask",
++    "inputs": {
++      "samples": [
++        "13",
++        0
++      ],
++      "mask": [
++        "4",
++        0
++      ]
++    }
++  },
++  "15": {
++    "class_type": "ControlNetInpaintingAliMamaApply",
++    "inputs": {
++      "positive": [
++        "6",
++        0
++      ],
++      "negative": [
++        "7",
++        0
++      ],
++      "control_net": [
++        "8",
++        0
++      ],
++      "vae": [
++        "9",
++        0
++      ],
++      "image": [
++        "2",
++        0
++      ],
++      "mask": [
++        "4",
++        0
++      ],
++      "strength": 1,
++      "start_percent": 0,
++      "end_percent": 1
++    }
++  },
++  "16": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "12",
++        0
++      ],
++      "positive": [
++        "15",
++        0
++      ],
++      "negative": [
++        "15",
++        1
++      ],
++      "latent_image": [
++        "14",
++        0
++      ],
++      "seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "17": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "16",
++        0
++      ],
++      "vae": [
++        "9",
++        0
++      ]
++    }
++  },
++  "18": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "17",
++        0
++      ],
++      "filename_prefix": "smoke/qwen_image_inpainting"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/qwen_image_outpainting_smoke.json b/tests/inference/graphs/qwen_image_outpainting_smoke.json
+new file mode 100644
+index 0000000..487ed69
+--- /dev/null
++++ b/tests/inference/graphs/qwen_image_outpainting_smoke.json
+@@ -0,0 +1,205 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "2": {
++    "class_type": "ImagePadForOutpaint",
++    "inputs": {
++      "image": [
++        "1",
++        0
++      ],
++      "left": 64,
++      "top": 64,
++      "right": 64,
++      "bottom": 64,
++      "feathering": 16
++    }
++  },
++  "3": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
++      "type": "qwen_image",
++      "device": "default"
++    }
++  },
++  "4": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "3",
++        0
++      ],
++      "text": "Extend the scene beyond the original frame with believable surroundings, consistent lighting, and the same subject."
++    }
++  },
++  "5": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "3",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "6": {
++    "class_type": "ControlNetLoader",
++    "inputs": {
++      "control_net_name": "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors"
++    }
++  },
++  "7": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "qwen_image_vae.safetensors"
++    }
++  },
++  "8": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "qwen_image_fp8_e4m3fn.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "9": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "8",
++        0
++      ],
++      "lora_name": "Qwen-Image-Lightning-4steps-V1.0.safetensors",
++      "strength_model": 1
++    }
++  },
++  "10": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "9",
++        0
++      ],
++      "shift": 3.1
++    }
++  },
++  "11": {
++    "class_type": "ControlNetInpaintingAliMamaApply",
++    "inputs": {
++      "positive": [
++        "4",
++        0
++      ],
++      "negative": [
++        "5",
++        0
++      ],
++      "control_net": [
++        "6",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ],
++      "image": [
++        "2",
++        0
++      ],
++      "mask": [
++        "2",
++        1
++      ],
++      "strength": 1,
++      "start_percent": 0,
++      "end_percent": 1
++    }
++  },
++  "12": {
++    "class_type": "VAEEncode",
++    "inputs": {
++      "pixels": [
++        "2",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "13": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "10",
++        0
++      ],
++      "positive": [
++        "11",
++        0
++      ],
++      "negative": [
++        "11",
++        1
++      ],
++      "latent_image": [
++        "12",
++        0
++      ],
++      "seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "14": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "13",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "15": {
++    "class_type": "ImageCompositeMasked",
++    "inputs": {
++      "destination": [
++        "2",
++        0
++      ],
++      "source": [
++        "14",
++        0
++      ],
++      "mask": [
++        "2",
++        1
++      ],
++      "x": 0,
++      "y": 0,
++      "resize_source": false
++    }
++  },
++  "16": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "15",
++        0
++      ],
++      "filename_prefix": "smoke/qwen_image_outpainting"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/qwen_image_text_to_image_smoke.json b/tests/inference/graphs/qwen_image_text_to_image_smoke.json
+new file mode 100644
+index 0000000..5499274
+--- /dev/null
++++ b/tests/inference/graphs/qwen_image_text_to_image_smoke.json
+@@ -0,0 +1,122 @@
++{
++  "1": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "qwen_image_fp8_e4m3fn.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "2": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "1",
++        0
++      ],
++      "lora_name": "Qwen-Image-Lightning-8steps-V1.0.safetensors",
++      "strength_model": 1
++    }
++  },
++  "3": {
++    "class_type": "ModelSamplingAuraFlow",
++    "inputs": {
++      "model": [
++        "2",
++        0
++      ],
++      "shift": 3.1
++    }
++  },
++  "4": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
++      "type": "qwen_image",
++      "device": "default"
++    }
++  },
++  "5": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "4",
++        0
++      ],
++      "text": "A studio product photo of a bright red ceramic mug on a clean white table, soft daylight, sharp focus"
++    }
++  },
++  "6": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "4",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "7": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "qwen_image_vae.safetensors"
++    }
++  },
++  "8": {
++    "class_type": "EmptySD3LatentImage",
++    "inputs": {
++      "width": 512,
++      "height": 512,
++      "batch_size": 1
++    }
++  },
++  "9": {
++    "class_type": "KSampler",
++    "inputs": {
++      "model": [
++        "3",
++        0
++      ],
++      "positive": [
++        "5",
++        0
++      ],
++      "negative": [
++        "6",
++        0
++      ],
++      "latent_image": [
++        "8",
++        0
++      ],
++      "seed": 42,
++      "steps": 8,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "denoise": 1
++    }
++  },
++  "10": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "9",
++        0
++      ],
++      "vae": [
++        "7",
++        0
++      ]
++    }
++  },
++  "11": {
++    "class_type": "SaveImage",
++    "inputs": {
++      "images": [
++        "10",
++        0
++      ],
++      "filename_prefix": "smoke/qwen_image_text_to_image"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/wan22_image_to_video_smoke.json b/tests/inference/graphs/wan22_image_to_video_smoke.json
+new file mode 100644
+index 0000000..817bad1
+--- /dev/null
++++ b/tests/inference/graphs/wan22_image_to_video_smoke.json
+@@ -0,0 +1,215 @@
++{
++  "1": {
++    "class_type": "LoadImage",
++    "inputs": {
++      "image": "example.png"
++    }
++  },
++  "84": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
++      "type": "wan",
++      "device": "default"
++    }
++  },
++  "89": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "84",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "90": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "wan_2.1_vae.safetensors"
++    }
++  },
++  "93": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "84",
++        0
++      ],
++      "text": "A slow cinematic pan across a calm sunrise landscape."
++    }
++  },
++  "95": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "96": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "98": {
++    "class_type": "WanImageToVideo",
++    "inputs": {
++      "positive": [
++        "93",
++        0
++      ],
++      "negative": [
++        "89",
++        0
++      ],
++      "vae": [
++        "90",
++        0
++      ],
++      "start_image": [
++        "1",
++        0
++      ],
++      "width": 320,
++      "height": 320,
++      "length": 9,
++      "batch_size": 1
++    }
++  },
++  "101": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "95",
++        0
++      ],
++      "lora_name": "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
++      "strength_model": 1
++    }
++  },
++  "102": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "96",
++        0
++      ],
++      "lora_name": "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
++      "strength_model": 1
++    }
++  },
++  "103": {
++    "class_type": "ModelSamplingSD3",
++    "inputs": {
++      "model": [
++        "102",
++        0
++      ],
++      "shift": 5
++    }
++  },
++  "104": {
++    "class_type": "ModelSamplingSD3",
++    "inputs": {
++      "model": [
++        "101",
++        0
++      ],
++      "shift": 5
++    }
++  },
++  "85": {
++    "class_type": "KSamplerAdvanced",
++    "inputs": {
++      "add_noise": "disable",
++      "noise_seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "start_at_step": 2,
++      "end_at_step": 4,
++      "return_with_leftover_noise": "disable",
++      "model": [
++        "103",
++        0
++      ],
++      "positive": [
++        "98",
++        0
++      ],
++      "negative": [
++        "98",
++        1
++      ],
++      "latent_image": [
++        "86",
++        0
++      ]
++    }
++  },
++  "86": {
++    "class_type": "KSamplerAdvanced",
++    "inputs": {
++      "add_noise": "enable",
++      "noise_seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "start_at_step": 0,
++      "end_at_step": 2,
++      "return_with_leftover_noise": "enable",
++      "model": [
++        "104",
++        0
++      ],
++      "positive": [
++        "98",
++        0
++      ],
++      "negative": [
++        "98",
++        1
++      ],
++      "latent_image": [
++        "98",
++        2
++      ]
++    }
++  },
++  "87": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "85",
++        0
++      ],
++      "vae": [
++        "90",
++        0
++      ]
++    }
++  },
++  "117": {
++    "class_type": "VHS_VideoCombine",
++    "inputs": {
++      "images": [
++        "87",
++        0
++      ],
++      "frame_rate": 8,
++      "loop_count": 0,
++      "filename_prefix": "smoke/wan22_image_to_video",
++      "format": "video/h264-mp4",
++      "pix_fmt": "yuv420p",
++      "crf": 23,
++      "save_metadata": false,
++      "trim_to_audio": false,
++      "pingpong": false,
++      "save_output": true
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/graphs/wan22_text_to_video_smoke.json b/tests/inference/graphs/wan22_text_to_video_smoke.json
+new file mode 100644
+index 0000000..5a57e79
+--- /dev/null
++++ b/tests/inference/graphs/wan22_text_to_video_smoke.json
+@@ -0,0 +1,193 @@
++{
++  "72": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "71",
++        0
++      ],
++      "text": ""
++    }
++  },
++  "73": {
++    "class_type": "VAELoader",
++    "inputs": {
++      "vae_name": "wan_2.1_vae.safetensors"
++    }
++  },
++  "74": {
++    "class_type": "EmptyHunyuanLatentVideo",
++    "inputs": {
++      "width": 320,
++      "height": 320,
++      "length": 9,
++      "batch_size": 1
++    }
++  },
++  "75": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "76": {
++    "class_type": "UNETLoader",
++    "inputs": {
++      "unet_name": "wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
++      "weight_dtype": "default"
++    }
++  },
++  "78": {
++    "class_type": "KSamplerAdvanced",
++    "inputs": {
++      "add_noise": "disable",
++      "noise_seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "start_at_step": 2,
++      "end_at_step": 4,
++      "return_with_leftover_noise": "disable",
++      "model": [
++        "86",
++        0
++      ],
++      "positive": [
++        "89",
++        0
++      ],
++      "negative": [
++        "72",
++        0
++      ],
++      "latent_image": [
++        "81",
++        0
++      ]
++    }
++  },
++  "81": {
++    "class_type": "KSamplerAdvanced",
++    "inputs": {
++      "add_noise": "enable",
++      "noise_seed": 42,
++      "steps": 4,
++      "cfg": 1,
++      "sampler_name": "euler",
++      "scheduler": "simple",
++      "start_at_step": 0,
++      "end_at_step": 2,
++      "return_with_leftover_noise": "enable",
++      "model": [
++        "82",
++        0
++      ],
++      "positive": [
++        "89",
++        0
++      ],
++      "negative": [
++        "72",
++        0
++      ],
++      "latent_image": [
++        "74",
++        0
++      ]
++    }
++  },
++  "82": {
++    "class_type": "ModelSamplingSD3",
++    "inputs": {
++      "model": [
++        "83",
++        0
++      ],
++      "shift": 5
++    }
++  },
++  "83": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "75",
++        0
++      ],
++      "lora_name": "wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
++      "strength_model": 1
++    }
++  },
++  "85": {
++    "class_type": "LoraLoaderModelOnly",
++    "inputs": {
++      "model": [
++        "76",
++        0
++      ],
++      "lora_name": "wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors",
++      "strength_model": 1
++    }
++  },
++  "86": {
++    "class_type": "ModelSamplingSD3",
++    "inputs": {
++      "model": [
++        "85",
++        0
++      ],
++      "shift": 5
++    }
++  },
++  "87": {
++    "class_type": "VAEDecode",
++    "inputs": {
++      "samples": [
++        "78",
++        0
++      ],
++      "vae": [
++        "73",
++        0
++      ]
++    }
++  },
++  "89": {
++    "class_type": "CLIPTextEncode",
++    "inputs": {
++      "clip": [
++        "71",
++        0
++      ],
++      "text": "A calm lake at sunrise with light mist drifting over the water."
++    }
++  },
++  "114": {
++    "class_type": "VHS_VideoCombine",
++    "inputs": {
++      "images": [
++        "87",
++        0
++      ],
++      "frame_rate": 8,
++      "loop_count": 0,
++      "filename_prefix": "smoke/wan22_text_to_video",
++      "format": "video/h264-mp4",
++      "pix_fmt": "yuv420p",
++      "crf": 23,
++      "save_metadata": false,
++      "trim_to_audio": false,
++      "pingpong": false,
++      "save_output": true
++    }
++  },
++  "71": {
++    "class_type": "CLIPLoader",
++    "inputs": {
++      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
++      "type": "wan",
++      "device": "default"
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/tests/inference/run_bundled_template_smokes.py b/tests/inference/run_bundled_template_smokes.py
+new file mode 100644
+index 0000000..b46b290
+--- /dev/null
++++ b/tests/inference/run_bundled_template_smokes.py
+@@ -0,0 +1,515 @@
++#!/usr/bin/env python3
++
++from __future__ import annotations
++
++import argparse
++import copy
++import json
++import sys
++import time
++import urllib.parse
++import urllib.request
++from io import BytesIO
++from pathlib import Path
++
++try:
++    from PIL import Image
++except ImportError:  # pragma: no cover - Pillow is expected in the runtime image.
++    Image = None
++
++
++IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"}
++VIDEO_SUFFIXES = {".mp4", ".mov", ".mkv", ".webm", ".avi"}
++AUDIO_SUFFIXES = {".wav", ".mp3", ".flac", ".ogg", ".m4a"}
++ARTIFACT_KEYS = ("images", "audio", "gifs", "files")
++
++
++def deep_merge(base, override):
++    if isinstance(base, dict) and isinstance(override, dict):
++        merged = copy.deepcopy(base)
++        for key, value in override.items():
++            if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
++                merged[key] = deep_merge(merged[key], value)
++            else:
++                merged[key] = copy.deepcopy(value)
++        return merged
++    return copy.deepcopy(override)
++
++
++def classify_blueprint(name: str) -> dict[str, str]:
++    family = "other"
++    input_kind = "none"
++    output_kind = "artifact"
++
++    if name.startswith("Text to Image"):
++        family = "text-to-image"
++        input_kind = "text"
++        output_kind = "image"
++    elif name.startswith("Text to Video"):
++        family = "text-to-video"
++        input_kind = "text"
++        output_kind = "video"
++    elif name.startswith("Image to Video"):
++        family = "image-to-video"
++        input_kind = "image"
++        output_kind = "video"
++    elif name.startswith("First-Last-Frame to Video"):
++        family = "video-interpolation"
++        input_kind = "image-pair"
++        output_kind = "video"
++    elif name.startswith("Text to Audio"):
++        family = "text-to-audio"
++        input_kind = "text"
++        output_kind = "audio"
++    elif name.startswith("Video Captioning"):
++        family = "video-analysis"
++        input_kind = "video"
++        output_kind = "text"
++    elif name.startswith("Video "):
++        family = "video-utility"
++        input_kind = "video"
++        output_kind = "video"
++    elif name.startswith("Prompt Enhance"):
++        family = "text-utility"
++        input_kind = "text"
++        output_kind = "text"
++    elif name.startswith("Image Captioning"):
++        family = "image-analysis"
++        input_kind = "image"
++        output_kind = "text"
++    elif name.startswith("Image to Model"):
++        family = "image-analysis"
++        input_kind = "image"
++        output_kind = "model"
++    elif name.startswith("Image to Depth Map"):
++        family = "image-analysis"
++        input_kind = "image"
++        output_kind = "image"
++    elif name.startswith("Image to Layers"):
++        family = "image-analysis"
++        input_kind = "image"
++        output_kind = "artifact"
++    elif name.startswith("Image Outpainting"):
++        family = "image-generation"
++        input_kind = "image"
++        output_kind = "image"
++    elif name.startswith("Image Inpainting") or name.startswith("Image Edit") or name.startswith("Image Upscale"):
++        family = "image-generation"
++        input_kind = "image"
++        output_kind = "image"
++    elif name.startswith("Pose to Image") or name.startswith("Depth to Image") or name.startswith("Canny to Image"):
++        family = "image-generation"
++        input_kind = "image"
++        output_kind = "image"
++    elif name.startswith("Pose to Video") or name.startswith("Depth to Video") or name.startswith("Canny to Video"):
++        family = "video-generation"
++        input_kind = "image"
++        output_kind = "video"
++    elif name in {
++        "Brightness and Contrast",
++        "Chromatic Aberration",
++        "Color Adjustment",
++        "Color Balance",
++        "Color Curves",
++        "Crop Images 2x2",
++        "Crop Images 3x3",
++        "Edge-Preserving Blur",
++        "Film Grain",
++        "Glow",
++        "Hue and Saturation",
++        "Image Blur",
++        "Image Channels",
++        "Image Levels",
++        "Sharpen",
++        "Unsharp Mask",
++    }:
++        family = "image-utility"
++        input_kind = "image"
++        output_kind = "image"
++
++    return {
++        "family": family,
++        "input_kind": input_kind,
++        "output_kind": output_kind,
++    }
++
++
++def load_manifest(manifest_path: Path) -> dict:
++    with manifest_path.open(encoding="utf-8") as handle:
++        return json.load(handle)
++
++
++def materialize_entries(repo_root: Path, manifest: dict) -> list[dict]:
++    blueprint_root = repo_root / manifest["blueprint_root"]
++    defaults = manifest.get("defaults", {})
++    overrides = manifest.get("entries", {})
++    entries = []
++    seen = set()
++
++    for path in sorted(blueprint_root.glob("*.json")):
++        name = path.stem
++        base_entry = {
++            "name": name,
++            "blueprint": f"{manifest['blueprint_root']}/{path.name}",
++            **classify_blueprint(name),
++            "status": defaults.get("status", "todo"),
++            "block_reason": None,
++            "smoke": copy.deepcopy(defaults.get("smoke", {})),
++            "prerequisites": copy.deepcopy(defaults.get("prerequisites", {})),
++            "notes": [],
++        }
++        entry = deep_merge(base_entry, overrides.get(path.name, {}))
++        if entry["smoke"].get("expected_output") is None:
++            entry["smoke"]["expected_output"] = entry["output_kind"]
++        entries.append(entry)
++        seen.add(path.name)
++
++    unknown = sorted(set(overrides) - seen)
++    if unknown:
++        raise SystemExit(f"Manifest overrides refer to missing blueprints: {', '.join(unknown)}")
++
++    return entries
++
++
++def parse_templates(raw_values: list[str]) -> set[str]:
++    selected = set()
++    for raw_value in raw_values:
++        for piece in raw_value.split(","):
++            piece = piece.strip()
++            if piece:
++                selected.add(piece)
++    return selected
++
++
++def filter_entries(entries: list[dict], selected_templates: set[str]) -> list[dict]:
++    if not selected_templates:
++        return entries
++
++    filtered = []
++    for entry in entries:
++        blueprint_name = Path(entry["blueprint"]).name
++        if entry["name"] in selected_templates or blueprint_name in selected_templates:
++            filtered.append(entry)
++    return filtered
++
++
++def queue_prompt(base_url: str, prompt: dict) -> str:
++    request = urllib.request.Request(
++        f"{base_url}/prompt",
++        data=json.dumps({"prompt": prompt}).encode("utf-8"),
++        headers={"Content-Type": "application/json"},
++    )
++    with urllib.request.urlopen(request, timeout=30) as response:
++        payload = json.loads(response.read().decode("utf-8"))
++    return payload["prompt_id"]
++
++
++def get_history(base_url: str, prompt_id: str) -> dict:
++    with urllib.request.urlopen(f"{base_url}/history/{prompt_id}", timeout=30) as response:
++        return json.loads(response.read().decode("utf-8"))
++
++
++def wait_for_completion(base_url: str, prompt_id: str, timeout_seconds: int) -> dict:
++    deadline = time.time() + timeout_seconds
++    while time.time() < deadline:
++        history = get_history(base_url, prompt_id)
++        record = history.get(prompt_id)
++        if record:
++            status = record.get("status", {})
++            if status.get("completed"):
++                if status.get("status_str") != "success":
++                    raise RuntimeError(f"Prompt {prompt_id} completed with status {status.get('status_str')}")
++                return record
++        time.sleep(2)
++    raise TimeoutError(f"Timed out waiting for prompt {prompt_id} after {timeout_seconds} seconds")
++
++
++def refresh_completed_record(base_url: str, prompt_id: str, record: dict, retries: int = 5, delay_seconds: float = 1.0) -> dict:
++    refreshed = record
++    for _ in range(retries):
++        if refreshed.get("outputs"):
++            return refreshed
++        time.sleep(delay_seconds)
++        history = get_history(base_url, prompt_id)
++        refreshed = history.get(prompt_id, refreshed)
++    return refreshed
++
++
++def fetch_output_bytes(base_url: str, artifact: dict) -> bytes:
++    query = urllib.parse.urlencode(
++        {
++            "filename": artifact["filename"],
++            "subfolder": artifact.get("subfolder", ""),
++            "type": artifact.get("type", "output"),
++        }
++    )
++    with urllib.request.urlopen(f"{base_url}/view?{query}", timeout=30) as response:
++        return response.read()
++
++
++def validate_image_bytes(filename: str, payload: bytes) -> None:
++    if Image is None:
++        if not payload:
++            raise RuntimeError(f"Image output is empty: {filename}")
++        return
++
++    with Image.open(BytesIO(payload)) as image:
++        image.load()
++        if image.getbbox() is None:
++            raise RuntimeError(f"Image output appears blank: {filename}")
++
++
++def artifact_kind(filename: str) -> str:
++    suffix = Path(filename).suffix.lower()
++    if suffix in IMAGE_SUFFIXES:
++        return "image"
++    if suffix in VIDEO_SUFFIXES:
++        return "video"
++    if suffix in AUDIO_SUFFIXES:
++        return "audio"
++    return "artifact"
++
++
++def validate_outputs(base_url: str, entry: dict, record: dict) -> list[dict]:
++    outputs = record.get("outputs", {})
++    if not outputs:
++        raise RuntimeError(f"No outputs recorded for {entry['name']}")
++
++    summaries = []
++    matched_expected_output = False
++    expected_output = entry["smoke"]["expected_output"]
++
++    for node_id, node_output in outputs.items():
++        node_had_artifact = False
++        for key in ARTIFACT_KEYS:
++            for artifact in node_output.get(key, []):
++                if not isinstance(artifact, dict) or "filename" not in artifact:
++                    continue
++                payload = fetch_output_bytes(base_url, artifact)
++                if not payload:
++                    raise RuntimeError(f"Downloaded empty artifact for {entry['name']}: {artifact['filename']}")
++
++                kind = artifact_kind(artifact["filename"])
++                if kind == "image":
++                    validate_image_bytes(artifact["filename"], payload)
++                if kind == expected_output or expected_output == "artifact":
++                    matched_expected_output = True
++
++                summaries.append(
++                    {
++                        "node_id": node_id,
++                        "artifact_key": key,
++                        "filename": artifact["filename"],
++                        "size": len(payload),
++                        "kind": kind,
++                    }
++                )
++                node_had_artifact = True
++
++        if not node_had_artifact and node_output:
++            summaries.append(
++                {
++                    "node_id": node_id,
++                    "artifact_key": "metadata",
++                    "keys": sorted(node_output.keys()),
++                }
++            )
++            if expected_output == "text":
++                matched_expected_output = True
++
++    if not summaries:
++        raise RuntimeError(f"No usable output artifacts recorded for {entry['name']}")
++    if not matched_expected_output:
++        raise RuntimeError(
++            f"Outputs for {entry['name']} did not include the expected output kind: {expected_output}"
++        )
++
++    return summaries
++
++
++def ensure_fixtures(repo_root: Path, entry: dict) -> None:
++    missing = []
++    input_root = repo_root / "input"
++    for fixture in entry["smoke"].get("fixtures", []):
++        if not (input_root / fixture).exists():
++            missing.append(fixture)
++    if missing:
++        raise FileNotFoundError(
++            f"Missing required fixture(s) for {entry['name']}: {', '.join(missing)}"
++        )
++
++
++def uniquify_filename_prefixes(prompt: dict, suffix: str) -> None:
++    for node in prompt.values():
++        if not isinstance(node, dict):
++            continue
++        inputs = node.get("inputs")
++        if not isinstance(inputs, dict):
++            continue
++        prefix = inputs.get("filename_prefix")
++        if isinstance(prefix, str) and prefix:
++            inputs["filename_prefix"] = f"{prefix}_{suffix}"
++
++
++def run_smoke(repo_root: Path, base_url: str, entry: dict, timeout_seconds: int) -> dict:
++    ensure_fixtures(repo_root, entry)
++
++    graph_path = repo_root / entry["smoke"]["api_graph"]
++    if not graph_path.exists():
++        raise FileNotFoundError(f"Missing API graph for {entry['name']}: {graph_path}")
++
++    with graph_path.open(encoding="utf-8") as handle:
++        prompt = json.load(handle)
++
++    uniquify_filename_prefixes(prompt, str(int(time.time() * 1000)))
++
++    prompt_id = queue_prompt(base_url, prompt)
++    record = wait_for_completion(base_url, prompt_id, timeout_seconds)
++    record = refresh_completed_record(base_url, prompt_id, record)
++    artifacts = validate_outputs(base_url, entry, record)
++    return {
++        "name": entry["name"],
++        "prompt_id": prompt_id,
++        "status": record.get("status", {}).get("status_str"),
++        "artifacts": artifacts,
++    }
++
++
++def print_entry_table(entries: list[dict]) -> None:
++    counts = {}
++    enabled = 0
++    for entry in entries:
++        counts[entry["status"]] = counts.get(entry["status"], 0) + 1
++        if entry["smoke"].get("enabled") and entry["smoke"].get("api_graph"):
++            enabled += 1
++
++    print(f"Bundled blueprints: {len(entries)}")
++    print(f"Smoke-enabled entries: {enabled}")
++    print("Status counts:")
++    for status in sorted(counts):
++        print(f"  {status}: {counts[status]}")
++    print()
++    print(f"{'STATUS':<10} {'SMOKE':<7} {'FAMILY':<20} NAME")
++    for entry in entries:
++        smoke_state = "enabled" if entry["smoke"].get("enabled") and entry["smoke"].get("api_graph") else "-"
++        print(f"{entry['status']:<10} {smoke_state:<7} {entry['family']:<20} {entry['name']}")
++
++
++def build_parser() -> argparse.ArgumentParser:
++    parser = argparse.ArgumentParser(
++        description="List or run container-only smoke coverage for bundled ComfyUI blueprints."
++    )
++    parser.add_argument(
++        "--manifest",
++        default="tests/inference/bundled_template_coverage.json",
++        help="Manifest path relative to the ComfyUI repo root.",
++    )
++    parser.add_argument(
++        "--base-url",
++        default="http://127.0.0.1:8188",
++        help="Base URL for the ComfyUI HTTP API.",
++    )
++    parser.add_argument(
++        "--template",
++        action="append",
++        default=[],
++        help="Template name or blueprint filename to include. Can be repeated or comma-separated.",
++    )
++    parser.add_argument(
++        "--list",
++        action="store_true",
++        help="List the materialized bundled-template coverage matrix instead of running smoke tests.",
++    )
++    parser.add_argument(
++        "--json",
++        action="store_true",
++        help="Emit machine-readable JSON when used with --list.",
++    )
++    parser.add_argument(
++        "--run-all-smokes",
++        action="store_true",
++        help="Run every entry that has an API graph, even if its smoke entry is not enabled yet.",
++    )
++    parser.add_argument(
++        "--timeout-seconds",
++        type=int,
++        default=900,
++        help="Per-template timeout while waiting for ComfyUI history completion.",
++    )
++    parser.add_argument(
++        "--report-path",
++        help="Optional path for a JSON result report.",
++    )
++    return parser
++
++
++def main() -> int:
++    parser = build_parser()
++    args = parser.parse_args()
++
++    repo_root = Path(__file__).resolve().parents[2]
++    manifest_path = repo_root / args.manifest
++    manifest = load_manifest(manifest_path)
++    entries = materialize_entries(repo_root, manifest)
++    entries = filter_entries(entries, parse_templates(args.template))
++
++    if not entries:
++        parser.error("No bundled templates matched the provided filters.")
++
++    if args.json and not args.list:
++        parser.error("--json currently requires --list.")
++
++    if args.list:
++        if args.json:
++            print(json.dumps(entries, indent=2))
++            return 0
++        print_entry_table(entries)
++        return 0
++
++    runnable = []
++    for entry in entries:
++        smoke = entry.get("smoke", {})
++        if entry["status"] == "blocked":
++            print(f"BLOCKED  {entry['name']}: {entry['block_reason']}", file=sys.stderr)
++            continue
++        if not smoke.get("api_graph"):
++            print(f"SKIP     {entry['name']}: no API graph is tracked yet", file=sys.stderr)
++            continue
++        if not smoke.get("enabled") and not args.run_all_smokes:
++            print(f"SKIP     {entry['name']}: smoke entry is not enabled yet", file=sys.stderr)
++            continue
++        runnable.append(entry)
++
++    if not runnable:
++        print("No runnable bundled-template smokes matched the current selection.", file=sys.stderr)
++        return 1
++
++    results = []
++    failures = []
++    for entry in runnable:
++        print(f"RUN      {entry['name']}")
++        try:
++            result = run_smoke(repo_root, args.base_url, entry, args.timeout_seconds)
++        except Exception as exc:  # pragma: no cover - exercised by live smoke execution.
++            failures.append({"name": entry["name"], "error": str(exc)})
++            print(f"FAIL     {entry['name']}: {exc}", file=sys.stderr)
++            continue
++
++        results.append(result)
++        print(f"PASS     {entry['name']} ({result['prompt_id']})")
++
++    if args.report_path:
++        report_path = Path(args.report_path)
++        report_path.parent.mkdir(parents=True, exist_ok=True)
++        report_path.write_text(
++            json.dumps({"results": results, "failures": failures}, indent=2),
++            encoding="utf-8",
++        )
++
++    if failures:
++        return 1
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+\ No newline at end of file
