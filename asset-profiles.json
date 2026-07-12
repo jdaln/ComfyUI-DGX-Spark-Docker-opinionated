@@ -134,6 +134,23 @@
       "ltx-2.3-distilled-lora",
       "ltx-2.3-upscaler",
       "ltx-2.3-iclora-lipdub"
+    ],
+    "krea-2-turbo": [
+      "krea-2-support-assets",
+      "krea-2-turbo-fp8"
+    ],
+    "krea-2-turbo-styleloras": [
+      "krea-2-support-assets",
+      "krea-2-turbo-fp8",
+      "krea-2-style-loras"
+    ],
+    "krea-2-turbo-nvfp4": [
+      "krea-2-support-assets",
+      "krea-2-turbo-nvfp4-model"
+    ],
+    "krea-2-raw": [
+      "krea-2-support-assets",
+      "krea-2-raw-fp8"
     ]
   },
   "selection_metadata": {
@@ -567,6 +584,86 @@
         "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-LipDub/resolve/main/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
         "label": "LTX-2.3 lipdub IC LoRA"
+      }
+    ],
+    "krea-2-support-assets": [
+      {
+        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+        "label": "Krea 2 Qwen3-VL-4B text encoder"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+        "label": "Qwen-Image VAE"
+      }
+    ],
+    "krea-2-turbo-fp8": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+        "label": "Krea 2 Turbo diffusion model (fp8)"
+      }
+    ],
+    "krea-2-turbo-nvfp4-model": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_nvfp4.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_nvfp4.safetensors",
+        "label": "Krea 2 Turbo diffusion model (nvfp4)"
+      }
+    ],
+    "krea-2-raw-fp8": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_raw_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_raw_fp8_scaled.safetensors",
+        "label": "Krea 2 RAW diffusion model (fp8)"
+      }
+    ],
+    "krea-2-style-loras": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_darkbrush.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_darkbrush.safetensors",
+        "label": "Krea 2 style LoRA (darkbrush)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_dotmatrix.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_dotmatrix.safetensors",
+        "label": "Krea 2 style LoRA (dotmatrix)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_kidsdrawing.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_kidsdrawing.safetensors",
+        "label": "Krea 2 style LoRA (kidsdrawing)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_neondrip.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_neondrip.safetensors",
+        "label": "Krea 2 style LoRA (neondrip)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_rainywindow.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_rainywindow.safetensors",
+        "label": "Krea 2 style LoRA (rainywindow)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_retroanime.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_retroanime.safetensors",
+        "label": "Krea 2 style LoRA (retroanime)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_softwatercolor.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_softwatercolor.safetensors",
+        "label": "Krea 2 style LoRA (softwatercolor)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_sunsetblur.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_sunsetblur.safetensors",
+        "label": "Krea 2 style LoRA (sunsetblur)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/krea2_vintagetarot.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_vintagetarot.safetensors",
+        "label": "Krea 2 style LoRA (vintagetarot)"
       }
     ]
   }

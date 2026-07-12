@@ -281,6 +281,7 @@ Current bundled profiles:
 - `wananimate-preprocess` — downloads the helper detection assets used by the bundled WanAnimate preprocessing templates
 - `ltx-2.0-*` and `ltx-2.3-*` — opt-in LTX workflow asset profiles for the explicitly bundled LTX templates
 - `leapfusion-hunyuanvideo-i2v` — downloads the HunyuanVideo + Leapfusion assets and sample input expected by the KJNodes Leapfusion image-to-video example, then exposes that example workflow in the template browser
+- `krea-2-turbo`, `krea-2-turbo-styleloras`, `krea-2-turbo-nvfp4`, `krea-2-raw` — opt-in Krea 2 text-to-image profiles (Turbo fp8 is the standard path; `-styleloras` adds the nine official style LoRAs, `-nvfp4` is the half-size Blackwell-optimized quant, `-raw` is the 52-step undistilled base). Krea 2 requires a ComfyUI checkout from 2026-06-22 or newer — newer than the currently pinned submodule commit — and all Krea 2 downloads are gated (see below)
 
 Note: the LTX profile layer currently bootstraps the model assets referenced by the bundled templates. The two `LTX-2_*_Full_wLora` workflows still also expect the external `RES4LYF` custom node, which is not auto-added by the asset profile system.
 
@@ -313,6 +314,7 @@ Currently gated bundled assets:
 - `google/gemma-3-12b-it-qat-q4_0-unquantized` — full snapshot used by `ltx-gemma3-snapshot-text-encoder`, which is required by `ltx-2.0-t2v-distilled`, `ltx-2.0-i2v-distilled`, `ltx-2.0-t2v-full`, `ltx-2.0-i2v-full`, `ltx-2.0-v2v-detailer`, `ltx-2.0-iclora-all-distilled`, and `ltx-2.0-iclora-all-distilled-ref0.5`
 - `Lightricks/LTX-2.3-22b-IC-LoRA-HDR` — `ltx-2.3-22b-ic-lora-hdr-0.9.safetensors`, required by `ltx-2.3-iclora-hdr-distilled`
 - `Lightricks/LTX-2.3-22b-IC-LoRA-LipDub` — `ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors`, required by `ltx-2.3-iclora-lipdub-two-stage-distilled`
+- `Comfy-Org/Krea-2` — every Krea 2 diffusion model, the Qwen3-VL-4B text encoder, and the style LoRAs used by all `krea-2-*` profiles (the Krea 2 Community License must be accepted on Hugging Face; the shared `qwen_image_vae.safetensors` comes from the ungated Qwen-Image repo instead)
 
 Hugging Face approval is per repo. A token that works for the official Gemma repo or the HDR LoRA can still be denied for LipDub until that specific repo access has been accepted.
 
