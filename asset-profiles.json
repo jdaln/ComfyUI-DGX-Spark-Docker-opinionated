@@ -151,6 +151,14 @@
     "krea-2-raw": [
       "krea-2-support-assets",
       "krea-2-raw-fp8"
+    ],
+    "ideogram-4": [
+      "ideogram-4-support-assets",
+      "ideogram-4-fp8"
+    ],
+    "ideogram-4-nvfp4": [
+      "ideogram-4-support-assets",
+      "ideogram-4-nvfp4-models"
     ]
   },
   "selection_metadata": {
@@ -664,6 +672,42 @@
         "dest": "/workspace/ComfyUI/models/loras/krea2_vintagetarot.safetensors",
         "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_vintagetarot.safetensors",
         "label": "Krea 2 style LoRA (vintagetarot)"
+      }
+    ],
+    "ideogram-4-support-assets": [
+      {
+        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Qwen3-VL/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+        "label": "Ideogram 4 Qwen3-VL-8B text encoder"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors",
+        "label": "Flux 2 VAE"
+      }
+    ],
+    "ideogram-4-fp8": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
+        "label": "Ideogram 4 diffusion model (fp8)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+        "label": "Ideogram 4 unconditional diffusion model (fp8)"
+      }
+    ],
+    "ideogram-4-nvfp4-models": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
+        "label": "Ideogram 4 diffusion model (nvfp4)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
+        "label": "Ideogram 4 unconditional diffusion model (nvfp4)"
       }
     ]
   }
