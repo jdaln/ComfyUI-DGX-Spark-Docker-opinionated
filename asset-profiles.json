@@ -677,7 +677,7 @@
     "ideogram-4-support-assets": [
       {
         "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen3-VL/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
         "label": "Ideogram 4 Qwen3-VL-8B text encoder"
       },
       {
