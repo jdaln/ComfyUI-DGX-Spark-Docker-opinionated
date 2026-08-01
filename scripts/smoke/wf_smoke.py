@@ -6,7 +6,7 @@ BASE = "http://127.0.0.1:8188"
 TARGET = sys.argv[1] if len(sys.argv) > 1 else "image_z_image_turbo"
 TIMEOUT = int(sys.argv[2]) if len(sys.argv) > 2 else 600
 TPL_DIR = "/workspace/venv/lib/python3*/site-packages/comfyui_workflow_templates_json/templates"
-SKIP_TYPES = {"Note", "MarkdownNote", "Reroute", "PrimitiveNode"}
+SKIP_TYPES = {"Note", "MarkdownNote", "Reroute", "PrimitiveNode", "SetNode", "GetNode"}
 
 SUBS = {
     "Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors": "Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
@@ -133,11 +133,27 @@ def ui_to_api(wf, object_info):
     by_dst = {}
     for l in linklist:
         by_dst.setdefault(str(l[3]), {})[l[4]] = l[0]
+    # KJNodes virtual Set/Get nodes: SetNode stores its input under a key that a
+    # matching GetNode reads back, so resolve GetNode to the SetNode's source
+    setnode_link = {}
+    for nid, n in nodes.items():
+        if n.get("type") == "SetNode":
+            wvals = n.get("widgets_values") or []
+            key = wvals[0] if wvals else None
+            lid = by_dst.get(nid, {}).get(0)
+            if key is not None and lid is not None:
+                setnode_link[key] = lid
     def resolve(link_id):
         src, slot, ltype = links[link_id]
         for _ in range(100):
             n = nodes.get(src)
             if n is None: return None
+            if n["type"] == "GetNode":
+                wvals = n.get("widgets_values") or []
+                lid = setnode_link.get(wvals[0] if wvals else None)
+                if lid is None: return None
+                src, slot, _t = links[lid]
+                continue
             if n["type"] == "Reroute" or n.get("mode") == 4:
                 # pass-through: follow input of matching type (Reroute: slot 0)
                 nxt = None
