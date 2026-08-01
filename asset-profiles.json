@@ -50,7 +50,8 @@
       "leapfusion-hunyuanvideo-i2v-assets"
     ],
     "wan2.1-vace-bundled": [
-      "wan2.1-vace-core-assets"
+      "wan2.1-vace-core-assets",
+      "sam3-segmentation"
     ],
     "ltx-2.0-t2v-distilled": [
       "ltx-gemma3-snapshot-text-encoder",
@@ -446,6 +447,13 @@
         "dest": "/workspace/ComfyUI/input/Mona-Lisa-oil-wood-panel-Leonardo-da.webp",
         "url": "https://www.gstatic.com/webp/gallery/1.webp",
         "label": "Leapfusion sample input image"
+      }
+    ],
+    "sam3-segmentation": [
+      {
+        "dest": "/workspace/ComfyUI/models/checkpoints/sam3.1_multiplex_fp16.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/sam3.1/resolve/main/checkpoints/sam3.1_multiplex_fp16.safetensors",
+        "label": "SAM 3.1 multiplex fp16 (segmentation)"
       }
     ],
     "wan2.1-vace-core-assets": [
