@@ -28,8 +28,7 @@
     ["ltx-2.3-t2v-i2v-single-stage-distilled-full", "/workspace/ComfyUI/blueprints/Image to Video (LTX-2.3).json"],
     ["ltx-2.3-iclora-union-control-distilled",      "/workspace/ComfyUI/blueprints/First-Last-Frame to Video (LTX-2.3).json"],
     ["krea-2-turbo",                                "image_krea2_turbo_t2i"],
-    ["krea-2-raw",                                  "image_krea2_turbo_t2i",
-      {"krea2_turbo_fp8_scaled.safetensors": "krea2_raw_fp8_scaled.safetensors"}],
+    ["krea-2-raw",                                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 RAW).json"],
     ["krea-2-turbo-nvfp4",                          "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 Turbo NVFP4).json"],
     ["ideogram-4",                                  "/workspace/ComfyUI/blueprints/Text to Image (Ideogram v4).json"],
     ["ideogram-4-nvfp4",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Ideogram v4 NVFP4).json"]
