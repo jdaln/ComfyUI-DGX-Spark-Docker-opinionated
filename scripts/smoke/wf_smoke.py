@@ -69,6 +69,14 @@ def expand_subgraphs(wf):
                 links.append([next(_newlink), pre + str(og), l["origin_slot"], pre + str(tg), l["target_slot"], l.get("type", "*")])
         # outer widget values map in order to widget-inputs
         wv = list(o.get("widgets_values") or [])
+        widget_inputs = [i for i in o.get("inputs", []) if i.get("widget")]
+        # widgets_values order is only trustworthy when its length matches the
+        # promoted widget count; otherwise fall back to the inner nodes' own
+        # widgets_values (which carry the blueprint's intended defaults).
+        align = len(wv) == len(widget_inputs)
+        if wv and not align:
+            print(f"subgraph {sg.get('name', o['type'])[:40]}: widgets_values ({len(wv)}) "
+                  f"!= promoted widgets ({len(widget_inputs)}); using inner node defaults")
         wi = 0
         for idx, inp in enumerate(o.get("inputs", [])):
             targets = in_links.get(idx, [])
@@ -86,10 +94,11 @@ def expand_subgraphs(wf):
                 v = wv[wi]; wi += 1
                 if inp.get("name") in ("seed", "noise_seed") and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
                     wi += 1
-                for (tid, tslot) in targets:
-                    tin = nodes[tid].get("inputs", [])
-                    if tslot < len(tin):
-                        forced[(tid, tin[tslot]["name"])] = v
+                if align:
+                    for (tid, tslot) in targets:
+                        tin = nodes[tid].get("inputs", [])
+                        if tslot < len(tin):
+                            forced[(tid, tin[tslot]["name"])] = v
             elif inp.get("widget"):
                 pass
         # rewire outer outputs
@@ -170,6 +179,23 @@ def ui_to_api(wf, object_info):
             for name, spec in order:
                 typ = spec[0]
                 cfg = spec[1] if len(spec) > 1 and isinstance(spec[1], dict) else {}
+                if typ == "COMFY_DYNAMICCOMBO_V3":
+                    # consumes the key slot plus one slot per nested input of the
+                    # selected option; nested inputs are named "<parent>.<child>"
+                    key = inputs.get(name)
+                    if key is None and wi < len(wv):
+                        key = wv[wi]; wi += 1
+                        inputs[name] = key
+                    sel = next((o for o in (cfg.get("options") or []) if o.get("key") == key), None)
+                    if sel:
+                        nested = list((sel["inputs"].get("required") or {}).items()) + \
+                                 list((sel["inputs"].get("optional") or {}).items())
+                        for cname, _cspec in nested:
+                            if wi >= len(wv): break
+                            inputs[f"{name}.{cname}"] = sub(wv[wi]); wi += 1
+                            if cname in ("seed", "noise_seed") and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
+                                wi += 1
+                    continue
                 is_widget = isinstance(typ, list) or typ in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO") or cfg.get("widget") or "default" in cfg
                 if not is_widget: continue
                 if name in inputs:
@@ -191,7 +217,21 @@ def ui_to_api(wf, object_info):
             if name in inputs: continue
             typ = spec[0]
             cfg = spec[1] if len(spec) > 1 and isinstance(spec[1], dict) else {}
-            if "default" in cfg:
+            if typ == "COMFY_DYNAMICCOMBO_V3":
+                opts = cfg.get("options") or []
+                if not opts: continue
+                sel = opts[0]
+                inputs[name] = sel["key"]
+                nested = list((sel["inputs"].get("required") or {}).items()) + \
+                         list((sel["inputs"].get("optional") or {}).items())
+                for cname, cspec in nested:
+                    ccfg = cspec[1] if len(cspec) > 1 and isinstance(cspec[1], dict) else {}
+                    if "default" in ccfg:
+                        inputs[f"{name}.{cname}"] = ccfg["default"]
+                    elif isinstance(cspec[0], list) and cspec[0]:
+                        inputs[f"{name}.{cname}"] = cspec[0][0]
+                print(f"defaulted dynamic combo {t}.{name} = {sel['key']!r}")
+            elif "default" in cfg:
                 inputs[name] = cfg["default"]
             elif isinstance(typ, list) and typ:
                 inputs[name] = typ[0]

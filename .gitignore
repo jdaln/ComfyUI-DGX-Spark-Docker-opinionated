@@ -21,3 +21,5 @@ custom_nodes/*
 !custom_nodes/ComfyUI-DGX-Spark-Templates/
 
 tmp/
+TODO.txt
+__pycache__/
