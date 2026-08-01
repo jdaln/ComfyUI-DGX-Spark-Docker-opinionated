@@ -15,6 +15,10 @@ SUBS = {
     "ltx-2-19b-dev-fp8.safetensors": "ltx-2-19b-dev.safetensors",
     "ltx-2.3-22b-distilled-fp8.safetensors": "ltx-2.3-22b-dev.safetensors",
 }
+# optional per-lane substitutions (argv[3], JSON object) let two lanes share a
+# template while pointing at different checkpoints
+if len(sys.argv) > 3:
+    SUBS.update(json.loads(sys.argv[3]))
 def sub(v):
     if not isinstance(v, str): return v
     if "\\" in v and v.rsplit(".", 1)[-1] in ("safetensors", "gguf", "pt", "sft", "ckpt"):

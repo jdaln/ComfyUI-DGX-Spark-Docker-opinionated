@@ -5,13 +5,17 @@ import json, subprocess, sys, time
 lanes = json.load(open('/tmp/lanes.json'))['lanes']
 only = sys.argv[1:] if len(sys.argv) > 1 else None
 report = {}
-for prof, wf in lanes:
+for lane in lanes:
+    prof, wf = lane[0], lane[1]
+    lane_subs = lane[2] if len(lane) > 2 else None
     if only and prof not in only:
         continue
     print(f'=== {prof} :: {wf}', flush=True)
     t0 = time.time()
-    r = subprocess.run(['python3', '/tmp/wf_smoke.py', wf, '1800'],
-                       capture_output=True, text=True)
+    cmd = ['python3', '/tmp/wf_smoke.py', wf, '1800']
+    if lane_subs:
+        cmd.append(json.dumps(lane_subs))
+    r = subprocess.run(cmd, capture_output=True, text=True)
     out = (r.stdout + r.stderr).strip()
     status = 'PASS' if r.returncode == 0 else 'FAIL'
     report[prof] = {'workflow': wf, 'status': status,
