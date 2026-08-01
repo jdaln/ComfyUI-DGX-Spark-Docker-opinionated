@@ -78,8 +78,11 @@ def expand_subgraphs(wf):
             print(f"subgraph {sg.get('name', o['type'])[:40]}: widgets_values ({len(wv)}) "
                   f"!= promoted widgets ({len(widget_inputs)}); using inner node defaults")
         wi = 0
+        # the outer node's inputs[] can be a reordered subset of the subgraph's
+        # promoted inputs, so resolve the inner slot by NAME, not by position
+        sg_slot_by_name = {inp.get("name"): k for k, inp in enumerate(sg.get("inputs", []))}
         for idx, inp in enumerate(o.get("inputs", [])):
-            targets = in_links.get(idx, [])
+            targets = in_links.get(sg_slot_by_name.get(inp.get("name"), idx), [])
             ext = [l for l in links if str(l[3]) == oid and l[4] == idx]
             if ext:
                 l = ext[0]
