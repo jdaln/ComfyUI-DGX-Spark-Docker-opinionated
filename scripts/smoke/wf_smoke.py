@@ -13,6 +13,7 @@ SUBS = {
     "ltx2-squish.safetensors": "ltx-2-19b-ic-lora-detailer.safetensors",
     "gemma_3_12B_it.safetensors": "gemma_3_12B_it_fp4_mixed.safetensors",
     "ltx-2-19b-dev-fp8.safetensors": "ltx-2-19b-dev.safetensors",
+    "ltx-2.3-22b-distilled-fp8.safetensors": "ltx-2.3-22b-dev.safetensors",
 }
 def sub(v):
     if not isinstance(v, str): return v
@@ -270,19 +271,30 @@ def ui_to_api(wf, object_info):
                     attached = True
                     break
             if attached: break
-    # feed unconnected required IMAGE/MASK inputs from a stub LoadImage
-    stub_added = False
+    # feed unconnected required IMAGE/MASK/VIDEO inputs from stub loaders
+    stubs = {}
+    def stub(kind):
+        if kind not in stubs:
+            if kind == "VIDEO":
+                prompt["autoload_video"] = {"class_type": "LoadVideo", "inputs": {"file": "bedroom.mp4"}}
+                stubs[kind] = ["autoload_video", 0]
+            else:
+                prompt["autoload_img"] = {"class_type": "LoadImage", "inputs": {"image": "example.png"}}
+                stubs["IMAGE"] = ["autoload_img", 0]
+                stubs["MASK"] = ["autoload_img", 1]
+        return stubs[kind]
     for nid, node in list(prompt.items()):
         info = object_info.get(node["class_type"]) or {}
         for name, spec in (info.get("input", {}).get("required") or {}).items():
             typ = spec[0]
-            if name in node["inputs"] or typ not in ("IMAGE", "MASK"):
+            if name in node["inputs"] or not isinstance(typ, str):
                 continue
-            if not stub_added:
-                prompt["autoload_img"] = {"class_type": "LoadImage", "inputs": {"image": "example.png"}}
-                stub_added = True
-            node["inputs"][name] = ["autoload_img", 0 if typ == "IMAGE" else 1]
-            print(f"fed unconnected {typ} input {node['class_type']}.{name} from stub LoadImage")
+            # COMFY_MATCHTYPE_V3 is a wildcard slot; an image satisfies it
+            kind = typ if typ in ("IMAGE", "MASK", "VIDEO") else ("IMAGE" if typ == "COMFY_MATCHTYPE_V3" else None)
+            if kind is None:
+                continue
+            node["inputs"][name] = stub(kind)
+            print(f"fed unconnected {typ} input {node['class_type']}.{name} from stub loader")
     # fill missing required scalar/combo inputs with object_info defaults
     for nid, node in prompt.items():
         info = object_info.get(node["class_type"]) or {}
