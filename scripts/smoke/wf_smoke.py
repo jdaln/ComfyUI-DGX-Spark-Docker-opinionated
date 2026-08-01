@@ -14,6 +14,7 @@ SUBS = {
     "gemma_3_12B_it.safetensors": "gemma_3_12B_it_fp4_mixed.safetensors",
     "ltx-2-19b-dev-fp8.safetensors": "ltx-2-19b-dev.safetensors",
     "ltx-2.3-22b-distilled-fp8.safetensors": "ltx-2.3-22b-dev.safetensors",
+    "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors": "ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
 }
 # optional per-lane substitutions (argv[3], JSON object) let two lanes share a
 # template while pointing at different checkpoints
@@ -309,8 +310,19 @@ def ui_to_api(wf, object_info):
             typ = spec[0]
             if name in node["inputs"] or not isinstance(typ, str):
                 continue
-            # COMFY_MATCHTYPE_V3 is a wildcard slot; an image satisfies it
-            kind = typ if typ in ("IMAGE", "MASK", "VIDEO") else ("IMAGE" if typ == "COMFY_MATCHTYPE_V3" else None)
+            if typ == "COMFY_MATCHTYPE_V3":
+                # wildcard slot: mirror a connected sibling input so the type is
+                # right by construction (e.g. a switch's other branch); only
+                # fall back to an image when nothing else is connected
+                sib = next((v for k2, v in node["inputs"].items()
+                            if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)), None)
+                if sib is not None:
+                    node["inputs"][name] = sib
+                    print(f"mirrored sibling into wildcard {node['class_type']}.{name}")
+                    continue
+                kind = "IMAGE"
+            else:
+                kind = typ if typ in ("IMAGE", "MASK", "VIDEO") else None
             if kind is None:
                 continue
             node["inputs"][name] = stub(kind)

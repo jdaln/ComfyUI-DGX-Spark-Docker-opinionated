@@ -115,18 +115,21 @@
       "ltx-gemma3-comfy-text-encoder",
       "ltx-2.3-dev-checkpoint",
       "ltx-2.3-distilled-lora",
+      "ltx-2.3-iclora-support",
       "ltx-2.3-iclora-union"
     ],
     "ltx-2.3-iclora-motion-track-distilled": [
       "ltx-gemma3-comfy-text-encoder",
       "ltx-2.3-dev-checkpoint",
       "ltx-2.3-distilled-lora",
+      "ltx-2.3-iclora-support",
       "ltx-2.3-iclora-motion-track"
     ],
     "ltx-2.3-iclora-hdr-distilled": [
       "ltx-gemma3-comfy-text-encoder",
       "ltx-2.3-dev-checkpoint",
       "ltx-2.3-distilled-lora",
+      "ltx-2.3-iclora-support",
       "ltx-2.3-iclora-hdr"
     ],
     "ltx-2.3-iclora-lipdub-two-stage-distilled": [
@@ -134,6 +137,7 @@
       "ltx-2.3-dev-checkpoint",
       "ltx-2.3-distilled-lora",
       "ltx-2.3-upscaler",
+      "ltx-2.3-iclora-support",
       "ltx-2.3-iclora-lipdub"
     ],
     "krea-2-turbo": [
@@ -577,6 +581,18 @@
         "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
         "label": "LTX-2.3 distilled LoRA"
+      }
+    ],
+    "ltx-2.3-iclora-support": [
+      {
+        "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+        "label": "MoGe 2 ViT-L normal (LTX 2.3 IC-LoRA control preprocessing)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+        "label": "Gemma 3 12B abliterated LoRA (LTX 2.3 prompt enhance)"
       }
     ],
     "ltx-2.3-iclora-union": [
