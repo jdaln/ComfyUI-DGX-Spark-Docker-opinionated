@@ -184,6 +184,11 @@
         "dest": "/workspace/ComfyUI/models/detection/onnx/yolov10m.onnx",
         "url": "https://huggingface.co/Wan-AI/Wan2.2-Animate-14B/resolve/main/process_checkpoint/det/yolov10m.onnx",
         "label": "WanAnimate YOLOv10m detection model"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/sam2/sam2.1_hiera_base_plus.safetensors",
+        "url": "https://huggingface.co/Kijai/sam2-safetensors/resolve/main/sam2.1_hiera_base_plus.safetensors",
+        "label": "SAM2.1 Hiera base+ (WanAnimate segmentation)"
       }
     ],
     "wan2.2-t2v-core-assets": [

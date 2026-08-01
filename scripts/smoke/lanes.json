@@ -1,6 +1,7 @@
 {
   "_comment": "profile -> [workflow (container path or template name), needs_input]",
   "lanes": [
+    ["wananimate-preprocess",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-WanAnimatePreprocess/example_workflows/WanAnimate_native_example_01.json"],
     ["wan2.2-t2v-bundled",                          "video_wan2_2_14B_t2v"],
     ["wan2.2-i2v-bundled",                          "video_wan2_2_14B_i2v"],
     ["z-image-turbo-core",                          "image_z_image_turbo"],

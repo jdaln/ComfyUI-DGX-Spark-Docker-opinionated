@@ -326,7 +326,8 @@ while time.time() - t0 < TIMEOUT:
         st = hist[pid].get("status", {})
         if st.get("completed"):
             outs = [o.get("filename") for node in hist[pid].get("outputs", {}).values()
-                    for k in ("images", "video", "audio", "gifs") for o in node.get(k, [])]
+                    for v in node.values() if isinstance(v, list)
+                    for o in v if isinstance(o, dict) and o.get("filename")]
             print(f"COMPLETED in {time.time()-t0:.0f}s, outputs:", outs); sys.exit(0)
         if st.get("status_str") == "error":
             msgs = [m for m in st.get("messages", []) if m[0] == "execution_error"]
