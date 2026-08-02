@@ -4,6 +4,8 @@ Docker container for running [ComfyUI](https://github.com/Comfy-Org/ComfyUI) wit
 
 **Project version: 0.1**
 
+> **Which workflows can I run?** See [WORKFLOWS.md](WORKFLOWS.md) — every provisioned workflow, what it is for, the profile that installs it, and how long it takes.
+
 ## About
 
 **Disclaimer:** this is a strongly opinionated setup for my personal DGX Spark. Do whatever you want with it — I am sharing because DGX Spark is a new platform and I keep hunting for details myself.
