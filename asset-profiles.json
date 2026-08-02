@@ -73,6 +73,7 @@
       "ltx-gemma3-snapshot-text-encoder",
       "ltx-2-dev-checkpoint",
       "ltx-2-distilled-lora",
+      "ltx-2-squish-lora",
       "ltx-2-upscaler"
     ],
     "ltx-2.0-v2v-detailer": [
@@ -535,6 +536,13 @@
         "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-distilled-lora-384.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
         "label": "LTX-2 distilled LoRA"
+      }
+    ],
+    "ltx-2-squish-lora": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/ltx2-squish.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/ltx2-squish.safetensors",
+        "label": "LTX-2 squish style LoRA (bundled i2v LoRA template)"
       }
     ],
     "ltx-2-detailer-lora": [
