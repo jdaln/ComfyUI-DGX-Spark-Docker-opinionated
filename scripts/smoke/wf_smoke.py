@@ -8,12 +8,11 @@ TIMEOUT = int(sys.argv[2]) if len(sys.argv) > 2 else 600
 TPL_DIR = "/workspace/venv/lib/python3*/site-packages/comfyui_workflow_templates_json/templates"
 SKIP_TYPES = {"Note", "MarkdownNote", "Reroute", "PrimitiveNode", "SetNode", "GetNode"}
 
-SUBS = {
-    "Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors": "Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
-    "ltx2-squish.safetensors": "ltx-2-19b-ic-lora-detailer.safetensors",
-    "gemma_3_12B_it.safetensors": "gemma_3_12B_it_fp4_mixed.safetensors",
-    "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors": "ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
-}
+# Global substitutions should stay EMPTY: a workflow that only runs because the
+# harness swapped a model is a workflow that is broken for users. Provision the
+# real file or add a manifest symlink alias instead. Per-lane subs (lanes.json)
+# are still fine - those express "this profile is about a different LoRA".
+SUBS = {}
 # optional per-lane substitutions (argv[3], JSON object) let two lanes share a
 # template while pointing at different checkpoints
 if len(sys.argv) > 3:

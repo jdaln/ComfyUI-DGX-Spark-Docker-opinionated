@@ -78,6 +78,7 @@
     ],
     "ltx-2.0-v2v-detailer": [
       "ltx-gemma3-snapshot-text-encoder",
+      "ltx-gemma3-comfy-text-encoder",
       "ltx-2-dev-checkpoint",
       "ltx-2-detailer-lora"
     ],
@@ -502,6 +503,12 @@
         "dest": "/workspace/ComfyUI/models/text_encoders/comfy_gemma_3_12B_it.safetensors",
         "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
         "label": "LTX Gemma 3 text encoder alias"
+      },
+      {
+        "type": "symlink",
+        "dest": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it.safetensors",
+        "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+        "label": "LTX Gemma 3 text encoder plain-name alias (bundled LTX 2.0 LoRA template)"
       }
     ],
     "ltx-2-distilled-checkpoint": [
@@ -620,6 +627,12 @@
         "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control/resolve/main/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
         "label": "LTX-2.3 union control IC LoRA"
+      },
+      {
+        "type": "symlink",
+        "dest": "/workspace/ComfyUI/models/loras/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+        "target": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+        "label": "LTX-2.3 union control IC LoRA flat-name alias (bundled template)"
       }
     ],
     "ltx-2.3-iclora-motion-track": [
