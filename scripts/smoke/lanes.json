@@ -34,6 +34,7 @@
     ["ltx-2.3-iclora-lipdub-two-stage-distilled",   "video_ltx2_3_ic_lora",
       {"ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors": "ltxv/ltx2/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors"}],
     ["krea-2-turbo",                                "image_krea2_turbo_t2i"],
+    ["krea-2-turbo-styleloras",                     "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 Turbo Style LoRA).json"],
     ["krea-2-raw",                                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 RAW).json"],
     ["krea-2-turbo-nvfp4",                          "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 Turbo NVFP4).json"],
     ["ideogram-4",                                  "/workspace/ComfyUI/blueprints/Text to Image (Ideogram v4).json"],
