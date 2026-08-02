@@ -356,8 +356,24 @@ Every asset profile has a smoke lane that loads a real bundled workflow, queues 
 | `lanes.json` | Profile → workflow mapping; an optional third element is a per-lane model substitution map |
 | `audit_refs.py` | Checks that every model a lane's workflow loads actually resolves on disk |
 | `build_matrix.py` | Cross-checks profile files against the model references in every workflow |
+| `validate_manifest.py` | Offline checks on the manifest, the bundled templates and the lanes — no container, no downloads |
 
-Run it against the running container:
+Start with the offline check. It runs from the checkout in under a second and catches
+the mistakes that would otherwise only surface after a multi-GiB download: a profile
+naming a group that does not exist, a symlink pointing at a file nothing downloads, a
+template using a node from a pack `custom_nodes.txt` never installs, a broken link in a
+workflow graph, or a lane whose workflow loads a model its profile does not provision.
+
+```bash
+python3 scripts/smoke/validate_manifest.py
+```
+
+Node types that come from a custom node rather than ComfyUI core are declared in
+`scripts/smoke/external_node_types.json`, which maps each type to the pack that provides
+it — so a bundled template can never quietly acquire a dependency the container will not
+install.
+
+Then run the real thing against the running container:
 
 ```bash
 docker cp scripts/smoke/wf_smoke.py  comfyui:/tmp/wf_smoke.py
