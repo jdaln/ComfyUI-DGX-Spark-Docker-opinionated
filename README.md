@@ -199,11 +199,19 @@ The default container startup exposes a curated set of third-party example workf
 | Text to Speech (LTX-2.3 Prompted Voice) | uses LTX-2.3's audio branch as a TTS engine for voices you can only describe |
 | Text to Speech (Prompted Voices to Conversation) | joins the two so a described voice becomes a VibeVoice clone source |
 
-Most of these carry `properties.models`, so they also provision themselves through the
-example-workflow scan with no profile selected. The exceptions are the ones whose stack is
-both large and ungated — the LTX-2.3 base and the Mage-Flow models — where that would mean
-tens of gigabytes landing on every container that merely has the templates installed. Those
-are provisioned by their profile only.
+**Bundled templates provision themselves, profile or no profile.** Every module in
+`COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` is scanned at every startup, and
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so anything these templates can
+resolve gets downloaded even with `COMFY_ASSET_PROFILES` empty. Two mechanisms do it:
+embedded `properties.models` metadata, and — less obviously — a bare Hugging Face repo link
+anywhere in the file, which is enough for the resolver to match a loader's filename against
+that repo's contents.
+
+That is the intended behaviour, but it is easy to acquire by accident, so
+`validate_manifest.py` prints the full list of what lands with no profile selected and warns
+about any template that can self-provision without declaring it. Read that list before
+wondering where the disk went; to opt out of a family entirely, drop the module from the
+allowlist.
 
 When a module is present in `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`, the container now bootstraps its referenced workflow assets during startup using the repo manifest, embedded workflow metadata, and the Hugging Face repo hints shipped with those example JSON files.
 
@@ -315,7 +323,7 @@ Current bundled profiles:
 - `krea-2-turbo`, `krea-2-turbo-styleloras`, `krea-2-turbo-nvfp4`, `krea-2-raw` — opt-in Krea 2 text-to-image profiles (Turbo fp8 is the standard path; `-styleloras` adds the nine official style LoRAs, `-nvfp4` is the half-size Blackwell-optimized quant, `-raw` is the 52-step undistilled base). Krea 2 requires a ComfyUI checkout from 2026-06-22 or newer — newer than the currently pinned submodule commit — and all Krea 2 downloads are gated (see below)
 - `vibevoice-1.5b`, `vibevoice-large`, `ltx-2.3-tts-prompted-voice`, `tts-prompted-conversation` — multi-character text to speech. VibeVoice (via [Enemyx-net/VibeVoice-ComfyUI](https://github.com/Enemyx-net/VibeVoice-ComfyUI)) does up to four speakers in one script but needs an audio sample per voice; LTX-2.3 can be told in words what a voice sounds like but renders one line at a time. Both ship, plus a third template that feeds an LTX-2.3-described voice into VibeVoice as the clone source. `ltx-2.3-tts-prompted-voice` reuses the LTX-2.3 base groups and adds no new weights. Tokenizer files come from `Qwen/Qwen2.5-1.5B` as four individual files rather than a snapshot, to avoid 2.9 GB of weights VibeVoice never loads. Nothing gated
 - `heartmula-oss-3b`, `heartmula-transcribe` — the HeartMuLa 3B music model (15 GB generator + 6 GB codec) and its sung-lyrics transcriber (2.9 GB), all ungated, downloaded as Hugging Face snapshots into `models/HeartMuLa/`. Uses [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa), whose separate LLM and codec loaders keep the two models from being resident at once
-- `mage-flow-edit`, `mage-flow-edit-turbo`, `mage-flow-edit-int8`, `mage-flow-edit-turbo-int8` — Microsoft Mage-Flow-Edit from the ungated [Comfy-Org/Mage-Flow](https://huggingface.co/Comfy-Org/Mage-Flow) repo. ComfyUI supports Mage-Flow in core (`comfy/ldm/mage_flow`, the `mage` CLIP type, `TextEncodeMageFlowEdit`), so no custom node is installed. Turbo is 4 steps at cfg 1.0, the base model 30 steps at cfg 5.0; the `-int8` variants swap in the official `int8_convrot` quants. There is no ComfyUI-loadable NVFP4 build — the NVFP4 releases are standalone Diffusers pipelines with prebuilt CUDA kernels
+- `mage-flow-edit`, `mage-flow-edit-turbo` — Microsoft Mage-Flow-Edit from the ungated [Comfy-Org/Mage-Flow](https://huggingface.co/Comfy-Org/Mage-Flow) repo. ComfyUI supports Mage-Flow in core (`comfy/ldm/mage_flow`, the `mage` CLIP type, `TextEncodeMageFlowEdit`), so no custom node is installed. Turbo is 4 steps at cfg 1.0, the base model 30 steps at cfg 5.0, both bf16. The official `int8_convrot` quants are deliberately not provisioned: they are half the size and a straight quality loss on a machine with this much memory, and having both builds on disk is how you end up with two copies of Mage-Flow. There is no ComfyUI-loadable NVFP4 build — the NVFP4 releases are standalone Diffusers pipelines with prebuilt CUDA kernels
 - `bfs-ltx-2.3-*` — six LTX-2.3 task LoRAs from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes): `-edit-anything` (instruction-driven clip edits), `-style-swap` (anime ⇄ live action), `-inpaint` and `-masked-ref-inpaint`, `-head-swap`, and `-multishot` (ShotPlan multi-shot planning). All six reuse the same LTX-2.3 base groups as `ltx-2.3-t2v-i2v-two-stage-distilled`, so they cost one 0.3–1.3 GB LoRA each on top of a base you may already have. The `-multishot` LoRA is not published upstream yet — see `scripts/smoke/pending_models.json`
 - `lucida-background-removal` — the Lucida BiRefNet-HR fine-tune (0.9 GB, ungated) plus a bundled `Remove Background (Lucida)` template. Aimed at the mattes plain BiRefNet struggles with: semi-transparent objects, camouflage, text and logos with shadows, illustrations and print designs. Adapted from [egeorcun/lucida](https://github.com/egeorcun/lucida); the nodes are ComfyUI core, so nothing extra is installed
 - `ideogram-4`, `ideogram-4-nvfp4` — opt-in Ideogram 4 text-to-image profiles for the bundled `Text to Image (Ideogram v4)` blueprint. `ideogram-4` downloads exactly the fp8 files the blueprint references (two diffusion models — conditional and unconditional — plus the Qwen3-VL-8B text encoder and Flux 2 VAE, ~30GB); `ideogram-4-nvfp4` fetches the half-size nvfp4 quants instead, which requires switching the two model-loader selections in the blueprint by hand. Like Krea 2, Ideogram 4 needs a ComfyUI checkout newer than the pinned submodule commit, and most downloads are gated (see below)
@@ -394,6 +402,10 @@ python3 scripts/smoke/validate_manifest.py
 
 It needs nothing but the checkout and the `ComfyUI` submodule, so it also runs in CI on
 every push and pull request (`.github/workflows/validate-manifest.yml`).
+
+It also prints every file the bundled templates provision on their own with no profile
+selected — the answer to "why is it downloading that?" — and flags any template that can
+self-provision without declaring it in `properties.models`.
 
 Node types that come from a custom node rather than ComfyUI core are declared in
 `scripts/smoke/external_node_types.json`, which maps each type to the pack that provides

@@ -230,6 +230,36 @@ def self_provisioned(workflow):
     return names
 
 
+# The module scan resolves a widget's filename against any Hugging Face repo mentioned
+# anywhere in the file, so a bare repo link in a note is enough to make a template
+# self-provisioning even with no properties.models on it. Whether that is wanted or not,
+# it should never be a surprise.
+HF_URL_RE = re.compile(r"https://huggingface\.co/([^/\s)\]\"]+)/([^/\s)\]\"]+)")
+DIRECTORY_ROOTS = {
+    "UNETLoader": "diffusion_models", "CLIPLoader": "text_encoders",
+    "DualCLIPLoader": "text_encoders", "VAELoader": "vae",
+    "LoraLoaderModelOnly": "loras", "CLIPVisionLoader": "clip_vision",
+}
+
+
+def scan_provisioned(path, workflow):
+    """Refs the example-workflow scan can resolve on its own, and the repos it would use."""
+    text = open(path, encoding="utf-8").read()
+    repos = {f"{owner}/{name}" for owner, name in HF_URL_RE.findall(text)
+             if name not in ("resolve", "blob", "tree")}
+    if not repos:
+        return set(), repos
+    refs = set()
+    for _scope, nodes in iter_graph_nodes(workflow):
+        for node in nodes:
+            if node.get("mode") in (2, 4) or node.get("type") not in DIRECTORY_ROOTS:
+                continue
+            for widget in node.get("widgets_values") or []:
+                if isinstance(widget, str) and MODEL_RE.search(widget):
+                    refs.add(widget.replace("\\", "/"))
+    return refs, repos
+
+
 def check_models_metadata(label, workflow, problems):
     """Every embedded models entry must be complete, or bootstrap silently skips it."""
     for _scope, nodes in iter_graph_nodes(workflow):
@@ -383,6 +413,7 @@ def main():
         all_provided |= profile_files(manifest, profile)
 
     templates = sorted(glob.glob(os.path.join(root, "custom_nodes", "*", "example_workflows", "*.json")))
+    provisions_without_profile = {}
     for path in templates:
         label = os.path.relpath(path, root)
         try:
@@ -395,6 +426,21 @@ def main():
         check_node_types(label, workflow, known_types, external, node_dirs, problems)
         check_models_metadata(label, workflow, problems)
         check_workflow_models(label, workflow, all_provided, pending, problems, warnings)
+
+        # A template in the default allowlist provisions itself on every startup,
+        # profile or not. Report what each one pulls so that is always a decision.
+        declared = self_provisioned(workflow)
+        scanned, repos = scan_provisioned(path, workflow)
+        for name in declared | scanned:
+            provisions_without_profile.setdefault(os.path.basename(name), set()).add(os.path.basename(label))
+        undeclared = sorted(r for r in scanned
+                            if r not in declared and os.path.basename(r) not in declared
+                            and r not in pending)
+        if undeclared:
+            warn(warnings, f"{label}: no properties.models for {', '.join(undeclared)}, but the "
+                           f"module scan can still resolve them against {', '.join(sorted(repos))} "
+                           f"- they download with no profile selected. Add properties.models to "
+                           f"make that explicit, or drop the repo link from the notes.")
 
     lanes_path = os.path.join(root, "scripts", "smoke", "lanes.json")
     with open(lanes_path, encoding="utf-8") as handle:
@@ -434,6 +480,13 @@ def main():
 
     print(f"{len(manifest.get('profiles', {}))} profiles, {len(manifest.get('groups', {}))} groups")
     print(f"{len(templates)} bundled templates checked")
+    if provisions_without_profile:
+        # Anything listed here lands on a container that has the templates installed and
+        # COMFY_ASSET_PROFILES empty. Worth reading before wondering where the disk went.
+        print(f"\n{len(provisions_without_profile)} file(s) the bundled templates provision "
+              f"with no profile selected:")
+        for name in sorted(provisions_without_profile):
+            print(f"  {name}")
     print(f"{checked_lanes} lanes checked against this checkout, {skipped_lanes} skipped (only exist in the container)")
     if warnings:
         print(f"\n{len(warnings)} warning(s):")
