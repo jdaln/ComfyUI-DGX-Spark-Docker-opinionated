@@ -1,0 +1,212 @@
+{
+  "id": "b0f4e2d1-8c73-4a95-b6e8-3f1a90c27d54",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        -780,
+        -60
+      ],
+      "size": [
+        700,
+        700
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Lyrics Transcription (HeartMuLa)\n\nNodes: [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa). Model: [HeartMuLa/HeartTranscriptor-oss](https://huggingface.co/HeartMuLa/HeartTranscriptor-oss), a Whisper-based transcriber trained on sung vocals rather than speech.\n\n```dotenv\nCOMFY_ASSET_PROFILES=heartmula-transcribe\n```\n\n```\n📂 ComfyUI/models/HeartMuLa/\n└── 📂 HeartTranscriptor-oss/     ← 2.9 GB\n```\n\n**Drop your own audio into `ComfyUI/input/` first** and pick it in Load Audio — the repo ships no sample track, which is also why this template has no smoke lane.\n\n### Settings\n\n- `temperature` 0.0 turns on multi-temperature fallback decoding, which is the robust setting for music; a non-zero value pins it to that single temperature.\n- `num_beams` 2 is a reasonable quality/speed point; 1 is greedy and much faster.\n- `condition_on_prev_tokens` helps long-form continuity but lets an early mistake propagate through the rest of the track.\n- `no_speech_threshold` 0.4 decides what counts as an instrumental passage. Raise it if instrumental breaks come back as hallucinated words.\n\nPair it with **Text to Music (HeartMuLa 3B)**: transcribe a reference track, edit the lyrics, then regenerate."
+      ],
+      "title": "Credit, model and settings",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "HeartMuLaTranscriptionLoader",
+      "pos": [
+        -40,
+        -60
+      ],
+      "size": [
+        420,
+        60
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "transcriptor",
+          "type": "HEARTMULA_TRANSCRIPTOR",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaTranscriptionLoader"
+      },
+      "widgets_values": [
+        "HeartTranscriptor-oss"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadAudio",
+      "pos": [
+        -40,
+        60
+      ],
+      "size": [
+        420,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Your track (put it in ComfyUI/input/)"
+    },
+    {
+      "id": 4,
+      "type": "HeartMuLaLyricsTranscriber",
+      "pos": [
+        440,
+        -60
+      ],
+      "size": [
+        420,
+        210
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "transcriptor",
+          "type": "HEARTMULA_TRANSCRIPTOR",
+          "link": 1
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaLyricsTranscriber"
+      },
+      "widgets_values": [
+        256,
+        2,
+        false,
+        -1.0,
+        0.4,
+        0.0
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SaveText",
+      "pos": [
+        920,
+        -60
+      ],
+      "size": [
+        420,
+        110
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveText"
+      },
+      "widgets_values": [
+        "heartmula_lyrics",
+        "txt"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      4,
+      0,
+      "HEARTMULA_TRANSCRIPTOR"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      1,
+      "AUDIO"
+    ],
+    [
+      3,
+      4,
+      0,
+      5,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

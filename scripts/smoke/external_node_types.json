@@ -4,6 +4,13 @@
     "Ideogram4PromptBuilderKJ": "ComfyUI-KJNodes",
     "Seed (rgthree)": "rgthree-comfy",
     "LTXMultishotPrompt": "ComfyUI-BFSNodes",
-    "LTXIdentityTransfer": "ComfyUI-BFSNodes"
+    "LTXIdentityTransfer": "ComfyUI-BFSNodes",
+    "HeartMuLaLoader": "ComfyUI-HeartMuLa",
+    "HeartMuLaCodecLoader": "ComfyUI-HeartMuLa",
+    "HeartMuLaMusicGenerator": "ComfyUI-HeartMuLa",
+    "HeartMuLaAudioDecoder": "ComfyUI-HeartMuLa",
+    "HeartMuLaPostProcessor": "ComfyUI-HeartMuLa",
+    "HeartMuLaTranscriptionLoader": "ComfyUI-HeartMuLa",
+    "HeartMuLaLyricsTranscriber": "ComfyUI-HeartMuLa"
   }
 }

@@ -1,0 +1,339 @@
+{
+  "id": "4d9c1a37-6e52-4f8b-9a20-71c5d0e83b46",
+  "revision": 0,
+  "last_node_id": 8,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        -780,
+        -60
+      ],
+      "size": [
+        700,
+        760
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## HeartMuLa\n\nNodes: [BobRandomNumber/ComfyUI-HeartMuLa](https://github.com/BobRandomNumber/ComfyUI-HeartMuLa) — the V3-schema pack, with separate LLM and codec loaders so the 15 GB generator and the 6 GB codec are never resident at the same time.\n\nThe tag vocabulary below is adapted from [filliptm/ComfyUI_FL-HeartMuLa](https://github.com/filliptm/ComfyUI_FL-HeartMuLa)'s Tags Builder. [benjiyaya/HeartMuLa_ComfyUI](https://github.com/benjiyaya/HeartMuLa_ComfyUI) is the third wrapper — it adds bitsandbytes 4-bit storage aimed at 12 GB cards. That trades ~15% generation speed for ~4 GB, which is not a trade worth making on a Spark's unified memory, so it is not carried here.\n\nModels: [HeartMuLa](https://huggingface.co/HeartMuLa) — Apache-2.0, ungated.\n\n### Models\n\n```dotenv\nCOMFY_ASSET_PROFILES=heartmula-oss-3b\n```\n\n```\n📂 ComfyUI/models/HeartMuLa/\n├── gen_config.json\n├── tokenizer.json\n├── 📂 HeartMuLa-oss-3B-happy-new-year/     ← the generator (15 GB)\n└── 📂 HeartCodec-oss-20260123/             ← the decoder (6.2 GB)\n```\n\n`base_path` is resolved against `ComfyUI/models/HeartMuLa/`, so leave it as `HeartMuLa` unless you keep the weights somewhere else. The loaders' dropdowns also list `HeartMuLa-oss-3B` and `HeartMuLa-RL-oss-3B-20260123`; the profile provisions the happy-new-year pair, which is the one upstream recommends. Add the others by hand if you want to compare.\n"
+      ],
+      "title": "Credit and models",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "MarkdownNote",
+      "pos": [
+        -780,
+        740
+      ],
+      "size": [
+        700,
+        820
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Writing the tags\n\nComma-separated, roughly genre → vocal → mood → tempo → instruments. These are the terms the model responds to most reliably:\n\n| Axis | Terms |\n| --- | --- |\n| **Genre** | pop, rock, electronic, jazz, classical, hip-hop, r&b, country, folk, metal, indie |\n| **Vocal** | female vocal, male vocal, duet, choir, instrumental |\n| **Mood** | energetic, melancholic, uplifting, calm, aggressive, romantic, dreamy, dark |\n| **Tempo** | slow, medium, fast |\n| **Instruments** | piano, guitar, acoustic guitar, drums, synth, strings, brass, … |\n\nExample: `indie rock, male vocal, melancholic, slow, acoustic guitar`\n\n## Writing the lyrics\n\nSection markers shape the arrangement. The official set:\n\n`[Intro]` `[Verse]` `[Prechorus]` `[Chorus]` `[Bridge]` `[Outro]` `[Instrumental]`\n\nEnglish, Chinese, Japanese, Korean and Spanish all work.\n\n## Settings\n\n- `cfg_scale` 1.5 follows the tags closely; drop toward 1.0 for more freedom.\n- `temperature` 1.0 and `top_k` 50 are the defaults the model was tuned with.\n- `duration_seconds` up to 300. Generation time scales with it — start at 30.\n- The **Audio Post-Processor** normalises, widens the stereo image and trims rumble; set `stereo_width` to 1.0 and `normalize` off to hear the raw codec output.\n"
+      ],
+      "title": "Tags, lyrics and settings",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 3,
+      "type": "HeartMuLaLoader",
+      "pos": [
+        -40,
+        -60
+      ],
+      "size": [
+        420,
+        154
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartMuLa-oss-3B-happy-new-year",
+        false,
+        "inductor",
+        "default"
+      ],
+      "title": "Generator (15 GB)"
+    },
+    {
+      "id": 4,
+      "type": "HeartMuLaCodecLoader",
+      "pos": [
+        -40,
+        140
+      ],
+      "size": [
+        420,
+        82
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaCodecLoader"
+      },
+      "widgets_values": [
+        "HeartMuLa",
+        "HeartCodec-oss-20260123"
+      ],
+      "title": "Codec (6.2 GB)"
+    },
+    {
+      "id": 5,
+      "type": "HeartMuLaMusicGenerator",
+      "pos": [
+        440,
+        -60
+      ],
+      "size": [
+        460,
+        700
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "HEARTMULA_MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaMusicGenerator"
+      },
+      "widgets_values": [
+        "[Verse]\nStreetlights on the water, engine idling low\nEverything I meant to say is somewhere I can't go\n\n[Chorus]\nSo drive, just drive\nLet the city keep the rest\nDrive, just drive\nI was never at my best\n\n[Verse]\nRadio between two stations, half a song, half a sound\nEvery mile is one more mile of not turning around\n\n[Chorus]\nSo drive, just drive\nLet the city keep the rest\nDrive, just drive\nI was never at my best\n\n[Outro]\nJust drive",
+        "indie rock, male vocal, melancholic, slow, acoustic guitar",
+        30.0,
+        0,
+        1.0,
+        50,
+        1.5
+      ]
+    },
+    {
+      "id": 6,
+      "type": "HeartMuLaAudioDecoder",
+      "pos": [
+        960,
+        -60
+      ],
+      "size": [
+        380,
+        60
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "tokens",
+          "type": "HEARTMULA_TOKENS",
+          "link": 2
+        },
+        {
+          "name": "codec",
+          "type": "HEARTMULA_CODEC",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaAudioDecoder"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "HeartMuLaPostProcessor",
+      "pos": [
+        960,
+        60
+      ],
+      "size": [
+        380,
+        154
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "HeartMuLaPostProcessor"
+      },
+      "widgets_values": [
+        true,
+        1.1,
+        80,
+        18000,
+        0.0
+      ],
+      "title": "Master the output"
+    },
+    {
+      "id": 8,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        960,
+        260
+      ],
+      "size": [
+        380,
+        160
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced"
+      },
+      "widgets_values": [
+        "audio/heartmula",
+        "mp3",
+        "V0"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      5,
+      0,
+      "HEARTMULA_MODEL"
+    ],
+    [
+      2,
+      5,
+      0,
+      6,
+      0,
+      "HEARTMULA_TOKENS"
+    ],
+    [
+      3,
+      4,
+      0,
+      6,
+      1,
+      "HEARTMULA_CODEC"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      0,
+      "AUDIO"
+    ],
+    [
+      5,
+      7,
+      0,
+      8,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

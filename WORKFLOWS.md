@@ -156,6 +156,21 @@ objects, camouflaged subjects, text and logos with shadows, illustrations,
 stickers and tee designs. Same nodes, different checkpoint, so the two can live
 side by side and you pick in the loader.
 
+### Audio
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Full songs with lyrics and style tags, up to 5 minutes | `heartmula-oss-3b` | Text to Music (HeartMuLa 3B) | Ours | 21 GB | — |
+| Transcribe sung lyrics out of a track | `heartmula-transcribe` | Lyrics Transcription (HeartMuLa) | Ours | 3 GB | — |
+
+[HeartMuLa](https://huggingface.co/HeartMuLa) is a 3B music foundation model, a
+step up from `ace-step-1.5-core` in vocal quality and song structure at about
+1.5× the disk. Section markers (`[Verse]`, `[Chorus]`, …) shape the arrangement
+and English, Chinese, Japanese, Korean and Spanish lyrics all work.
+
+The transcription template has no smoke lane: it needs a track you supply in
+`ComfyUI/input/`, and the repo ships no sample audio.
+
 ### Editing existing images
 
 | What you get | Profile | Workflow | Type | Disk | Run |

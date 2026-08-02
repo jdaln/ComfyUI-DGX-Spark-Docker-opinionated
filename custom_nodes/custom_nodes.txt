@@ -41,4 +41,7 @@ https://github.com/yolain/ComfyUI-Easy-Use.git
 # LTX 2.3 identity transfer, edit-anything conditioning and the ShotPlan multishot builder
 https://github.com/alisson-anjos/ComfyUI-BFSNodes.git
 
+# HeartMuLa music generation and sung-lyrics transcription
+https://github.com/BobRandomNumber/ComfyUI-HeartMuLa.git
+
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher
