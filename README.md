@@ -185,6 +185,7 @@ The default container startup exposes a curated set of third-party example workf
 | Text to Image (Ideogram v4 NVFP4) | NVFP4 Ideogram 4 with the dual-model guider |
 | Text to Image (Krea 2 RAW) | `krea-2-raw` ships a checkpoint no bundled workflow references (52 steps, cfg 1) |
 | Text to Image (Krea 2 Turbo Style LoRA) | the nine `krea2_*` style LoRAs are otherwise never exercised |
+| Remove Background (Lucida) | the bundled BiRefNet blueprint only offers the base checkpoint |
 
 When a module is present in `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`, the container now bootstraps its referenced workflow assets during startup using the repo manifest, embedded workflow metadata, and the Hugging Face repo hints shipped with those example JSON files.
 
@@ -294,6 +295,7 @@ Current bundled profiles:
 - `ltx-2.0-*` and `ltx-2.3-*` — opt-in LTX workflow asset profiles for the explicitly bundled LTX templates
 - `leapfusion-hunyuanvideo-i2v` — downloads the HunyuanVideo + Leapfusion assets and sample input expected by the KJNodes Leapfusion image-to-video example, then exposes that example workflow in the template browser
 - `krea-2-turbo`, `krea-2-turbo-styleloras`, `krea-2-turbo-nvfp4`, `krea-2-raw` — opt-in Krea 2 text-to-image profiles (Turbo fp8 is the standard path; `-styleloras` adds the nine official style LoRAs, `-nvfp4` is the half-size Blackwell-optimized quant, `-raw` is the 52-step undistilled base). Krea 2 requires a ComfyUI checkout from 2026-06-22 or newer — newer than the currently pinned submodule commit — and all Krea 2 downloads are gated (see below)
+- `lucida-background-removal` — the Lucida BiRefNet-HR fine-tune (0.9 GB, ungated) plus a bundled `Remove Background (Lucida)` template. Aimed at the mattes plain BiRefNet struggles with: semi-transparent objects, camouflage, text and logos with shadows, illustrations and print designs. Adapted from [egeorcun/lucida](https://github.com/egeorcun/lucida); the nodes are ComfyUI core, so nothing extra is installed
 - `ideogram-4`, `ideogram-4-nvfp4` — opt-in Ideogram 4 text-to-image profiles for the bundled `Text to Image (Ideogram v4)` blueprint. `ideogram-4` downloads exactly the fp8 files the blueprint references (two diffusion models — conditional and unconditional — plus the Qwen3-VL-8B text encoder and Flux 2 VAE, ~30GB); `ideogram-4-nvfp4` fetches the half-size nvfp4 quants instead, which requires switching the two model-loader selections in the blueprint by hand. Like Krea 2, Ideogram 4 needs a ComfyUI checkout newer than the pinned submodule commit, and most downloads are gated (see below)
 
 Note: the LTX profile layer currently bootstraps the model assets referenced by the bundled templates. The two `LTX-2_*_Full_wLora` workflows still also expect the external `RES4LYF` custom node, which is not auto-added by the asset profile system.
@@ -394,7 +396,10 @@ docker cp scripts/smoke/audit_refs.py comfyui:/tmp/audit_refs.py
 docker exec comfyui python3 /tmp/audit_refs.py
 ```
 
-All 35 profiles currently pass both checks.
+All 35 profiles listed in the WORKFLOWS.md category tables currently pass both checks.
+Profiles under WORKFLOWS.md's *Provisioned — not yet hardware-verified* heading have
+passed `validate_manifest.py` but have not had their lane or audit run on a Spark yet;
+move a row up once both pass and the output looks right.
 
 ### Clearing caches
 

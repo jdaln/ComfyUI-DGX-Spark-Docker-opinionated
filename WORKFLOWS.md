@@ -2,9 +2,12 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-All 35 entries below are verified end to end: the models download, the workflow
-opens with no missing models, and it produces output. Run times are measured on
-a DGX Spark at each workflow's default settings.
+All 35 entries in the category tables below are verified end to end: the models
+download, the workflow opens with no missing models, and it produces output. Run
+times are measured on a DGX Spark at each workflow's default settings.
+
+Newer additions that have not been through that on hardware yet are listed
+separately under [Provisioned — not yet hardware-verified](#provisioned--not-yet-hardware-verified).
 
 ## How to use this
 
@@ -127,6 +130,31 @@ The four LTX 2.3 IC-LoRA profiles share one template — pick the LoRA in the
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Blueprint | 2 GB | 15 s |
+
+---
+
+## Provisioned — not yet hardware-verified
+
+These follow the same rules as everything above — pick the profile, start the
+stack, open the workflow — but they have not yet had their smoke lane and
+provisioning audit run on a DGX Spark, so the Run column is blank and the disk
+figures come from the Hugging Face file sizes rather than a real download.
+
+Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
+both pass for it and you have looked at the output. The README's *Verifying
+Profiles* section has the commands.
+
+### Utility
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Background removal tuned for glass, glow, camouflage, text and print designs | `lucida-background-removal` | Remove Background (Lucida) | Ours | 0.9 GB | — |
+
+Lucida is a BiRefNet-HR fine-tune. It handles the mattes the bundled
+`Remove Background (BiRefNet)` blueprint struggles with — semi-transparent
+objects, camouflaged subjects, text and logos with shadows, illustrations,
+stickers and tee designs. Same nodes, different checkpoint, so the two can live
+side by side and you pick in the loader.
 
 ---
 

@@ -1,0 +1,366 @@
+{
+  "id": "6f2b0f1c-9d55-4a4a-9a2f-2a1f0d9c7e10",
+  "revision": 0,
+  "last_node_id": 8,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        -780,
+        -60
+      ],
+      "size": [
+        620,
+        760
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Remove Background (Lucida)\n\nAdaptation of https://github.com/egeorcun/lucida created by egeorcun (`docs/comfyui/lucida_remove_background.json`), flattened so it runs without a subgraph.\n\nLucida is a BiRefNet-HR fine-tune aimed at the mattes plain BiRefNet struggles with: semi-transparent objects (glass, glow), camouflaged subjects, text and logos with shadows, illustrations, and print-style designs. Model MIT, same as BiRefNet.\n\n### Profile\n\n```dotenv\nCOMFY_ASSET_PROFILES=lucida-background-removal\n```\n\n### Model link\n\n**background_removal**\n\n- [lucida.safetensors](https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors)\n\n```\n📂 ComfyUI/\n├── 📂 models/\n│   └── 📂 background_removal/\n│       └── lucida.safetensors\n```\n\nThe copy in `Comfy-Org/BiRefNet` can lag behind releases. For the newest weights download [model.safetensors](https://huggingface.co/egeorcun/lucida/resolve/main/model.safetensors) from [egeorcun/lucida](https://huggingface.co/egeorcun/lucida) and save it over `lucida.safetensors`.\n\n### Outputs\n\n`Save Image` writes a cut-out PNG with a real alpha channel. The mask preview on the right is the foreground matte on its own, useful as a control input elsewhere."
+      ],
+      "title": "Lucida — credit and model link",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [
+        -120,
+        -60
+      ],
+      "size": [
+        300,
+        350
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1,
+            4
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadBackgroundRemovalModel",
+      "pos": [
+        -120,
+        340
+      ],
+      "size": [
+        320,
+        60
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "bg_model",
+          "type": "BACKGROUND_REMOVAL",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadBackgroundRemovalModel",
+        "models": [
+          {
+            "name": "lucida.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors",
+            "directory": "background_removal"
+          }
+        ]
+      },
+      "widgets_values": [
+        "lucida.safetensors"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "RemoveBackground",
+      "pos": [
+        250,
+        340
+      ],
+      "size": [
+        300,
+        60
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bg_removal_model",
+          "type": "BACKGROUND_REMOVAL",
+          "link": 2
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            3,
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RemoveBackground"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "InvertMask",
+      "pos": [
+        250,
+        460
+      ],
+      "size": [
+        300,
+        30
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "InvertMask"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 6,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        250,
+        540
+      ],
+      "size": [
+        300,
+        60
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "name": "alpha",
+          "type": "MASK",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JoinImageWithAlpha"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "SaveImage",
+      "pos": [
+        620,
+        -60
+      ],
+      "size": [
+        480,
+        520
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "lucida_cutout"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "MaskPreview",
+      "pos": [
+        620,
+        500
+      ],
+      "size": [
+        480,
+        400
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 7
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MaskPreview"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "BACKGROUND_REMOVAL"
+    ],
+    [
+      3,
+      4,
+      0,
+      5,
+      0,
+      "MASK"
+    ],
+    [
+      4,
+      2,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      5,
+      0,
+      6,
+      1,
+      "MASK"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      4,
+      0,
+      8,
+      0,
+      "MASK"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Lucida matte",
+      "bounding": [
+        -140,
+        260,
+        720,
+        380
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

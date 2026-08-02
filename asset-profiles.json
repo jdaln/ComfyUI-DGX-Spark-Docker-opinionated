@@ -166,6 +166,9 @@
     "ideogram-4-nvfp4": [
       "ideogram-4-support-assets",
       "ideogram-4-nvfp4-models"
+    ],
+    "lucida-background-removal": [
+      "lucida-background-removal-assets"
     ]
   },
   "selection_metadata": {
@@ -770,6 +773,13 @@
         "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
         "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
         "label": "Ideogram 4 unconditional diffusion model (nvfp4)"
+      }
+    ],
+    "lucida-background-removal-assets": [
+      {
+        "dest": "/workspace/ComfyUI/models/background_removal/lucida.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors",
+        "label": "Lucida background removal model"
       }
     ]
   }
