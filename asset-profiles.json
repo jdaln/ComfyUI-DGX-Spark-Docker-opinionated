@@ -515,6 +515,12 @@
         "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
         "label": "LTX-2 dev checkpoint"
+      },
+      {
+        "type": "symlink",
+        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev-fp8.safetensors",
+        "target": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
+        "label": "LTX-2 dev fp8 alias (bundled templates ask for the fp8 name)"
       }
     ],
     "ltx-2-upscaler": [
@@ -567,6 +573,12 @@
         "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
         "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
         "label": "LTX-2.3 dev checkpoint"
+      },
+      {
+        "type": "symlink",
+        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-distilled-fp8.safetensors",
+        "target": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
+        "label": "LTX-2.3 distilled fp8 alias (bundled templates ask for the fp8 name)"
       }
     ],
     "ltx-2.3-upscaler": [

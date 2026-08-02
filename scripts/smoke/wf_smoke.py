@@ -12,8 +12,6 @@ SUBS = {
     "Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors": "Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
     "ltx2-squish.safetensors": "ltx-2-19b-ic-lora-detailer.safetensors",
     "gemma_3_12B_it.safetensors": "gemma_3_12B_it_fp4_mixed.safetensors",
-    "ltx-2-19b-dev-fp8.safetensors": "ltx-2-19b-dev.safetensors",
-    "ltx-2.3-22b-distilled-fp8.safetensors": "ltx-2.3-22b-dev.safetensors",
     "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors": "ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
 }
 # optional per-lane substitutions (argv[3], JSON object) let two lanes share a
