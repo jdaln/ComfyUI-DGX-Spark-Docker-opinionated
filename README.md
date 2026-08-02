@@ -392,6 +392,9 @@ workflow graph, or a lane whose workflow loads a model its profile does not prov
 python3 scripts/smoke/validate_manifest.py
 ```
 
+It needs nothing but the checkout and the `ComfyUI` submodule, so it also runs in CI on
+every push and pull request (`.github/workflows/validate-manifest.yml`).
+
 Node types that come from a custom node rather than ComfyUI core are declared in
 `scripts/smoke/external_node_types.json`, which maps each type to the pack that provides
 it — so a bundled template can never quietly acquire a dependency the container will not

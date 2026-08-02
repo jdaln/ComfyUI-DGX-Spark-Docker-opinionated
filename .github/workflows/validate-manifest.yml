@@ -1,0 +1,31 @@
+name: Validate manifest
+
+# The real verification needs a DGX Spark and a few hundred gigabytes of models.
+# This is the part that does not: it catches a profile naming a group that does not
+# exist, a symlink pointing at a file nothing downloads, a bundled template using a
+# node from a pack custom_nodes.txt never installs, a broken link in a workflow
+# graph, or a lane whose profile does not provision what its workflow loads.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The check harvests every node id the pinned ComfyUI registers, so the
+          # submodule has to be present. LFS is not: the only LFS files here are
+          # prebuilt wheels nothing in this job reads.
+          submodules: recursive
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate manifest, templates and lanes
+        run: python3 scripts/smoke/validate_manifest.py
