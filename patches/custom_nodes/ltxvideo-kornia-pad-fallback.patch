@@ -1,0 +1,18 @@
+--- a/ComfyUI-LTXVideo/pyramid_blending.py
++++ b/ComfyUI-LTXVideo/pyramid_blending.py
+@@ -10,8 +10,14 @@
+     build_pyramid,
+     find_next_powerof_two,
+     is_powerof_two,
+-    pad,
+ )
++
++try:
++    # kornia main re-exports a padding helper from this module; released
++    # kornia (<=0.8.3) does not, and the call signature matches torch's.
++    from kornia.geometry.transform.pyramid import pad
++except ImportError:  # pragma: no cover - depends on the installed kornia
++    from torch.nn.functional import pad
+ from torch import Tensor
+ 
+ from .nodes_registry import comfy_node

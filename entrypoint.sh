@@ -4,6 +4,7 @@ VENV_PATH="/workspace/venv"
 CONSTRAINTS_FILE="/workspace/constraints.txt"
 ASSET_BOOTSTRAP_HELPER="${COMFY_ASSET_BOOTSTRAP_HELPER:-/usr/local/bin/bootstrap_comfy_assets.sh}"
 COMFY_PATCH_DIR="${COMFY_PATCH_DIR:-/workspace/patches/comfyui}"
+CUSTOM_NODE_PATCH_DIR="${CUSTOM_NODE_PATCH_DIR:-/workspace/patches/custom_nodes}"
 
 # Create venv if not exists (first run only)
 if [ ! -f "$VENV_PATH/bin/activate" ]; then
@@ -71,6 +72,32 @@ apply_comfyui_patches() {
             : # already applied
         else
             echo "WARNING: ComfyUI patch does not apply to this checkout, skipping: $patch_name" >&2
+        fi
+    done
+}
+
+# Same idea for third-party node packs. They are cloned fresh from
+# custom_nodes.txt, so a compatibility fix would otherwise be lost on every
+# new machine. Patches are relative to the custom_nodes directory.
+apply_custom_node_patches() {
+    nodes_dir="/workspace/ComfyUI/custom_nodes"
+
+    ls "$CUSTOM_NODE_PATCH_DIR"/*.patch >/dev/null 2>&1 || return 0
+
+    if ! command -v patch >/dev/null 2>&1; then
+        echo "WARNING: 'patch' is unavailable; skipping custom node startup patches" >&2
+        return 0
+    fi
+
+    for patch_file in "$CUSTOM_NODE_PATCH_DIR"/*.patch; do
+        patch_name="$(basename "$patch_file")"
+        if (cd "$nodes_dir" && patch -p1 -N --dry-run < "$patch_file" >/dev/null 2>&1); then
+            echo "Applying custom node patch: $patch_name..."
+            (cd "$nodes_dir" && patch -p1 -N --no-backup-if-mismatch < "$patch_file")
+        elif (cd "$nodes_dir" && patch -p1 -R --dry-run < "$patch_file" >/dev/null 2>&1); then
+            : # already applied
+        else
+            echo "WARNING: custom node patch does not apply, skipping: $patch_name" >&2
         fi
     done
 }
@@ -225,6 +252,7 @@ echo "Installing PyOpenGL-accelerate..."
 python -m pip install PyOpenGL-accelerate || true
 
 apply_comfyui_patches
+apply_custom_node_patches
 bootstrap_asset_profiles
 configure_custom_node_example_workflows
 
