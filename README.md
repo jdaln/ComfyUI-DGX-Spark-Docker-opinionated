@@ -352,6 +352,7 @@ Every asset profile has a smoke lane that loads a real bundled workflow, queues 
 | `wf_smoke.py` | Converts a UI-format workflow (bundled template, blueprint or custom-node example) into an API prompt, expanding subgraphs, then queues it and waits |
 | `run_lanes.py` | Runs lanes sequentially and writes an incremental report |
 | `lanes.json` | Profile → workflow mapping; an optional third element is a per-lane model substitution map |
+| `audit_refs.py` | Checks that every model a lane's workflow loads actually resolves on disk |
 | `build_matrix.py` | Cross-checks profile files against the model references in every workflow |
 
 Run it against the running container:
@@ -367,6 +368,15 @@ docker exec comfyui python3 -u /tmp/run_lanes.py krea-2-turbo ideogram-4
 ```
 
 Results land in `/tmp/lane_report.json` inside the container. Note that a lane passing only proves the graph executed — when a template is new or its sampler settings changed, look at the output image/video too.
+
+A passing lane is not the same guarantee as a working template: the harness can satisfy a missing model from an inner-node default or a stub input, so run the audit as well. It checks that a user who provisions a profile and opens its workflow sees no missing models:
+
+```bash
+docker cp scripts/smoke/audit_refs.py comfyui:/tmp/audit_refs.py
+docker exec comfyui python3 /tmp/audit_refs.py
+```
+
+All 35 profiles currently pass both checks.
 
 ### Clearing caches
 
