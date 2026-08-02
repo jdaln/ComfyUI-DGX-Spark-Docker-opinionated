@@ -173,6 +173,10 @@ audio/video latent path can be *told* what a voice sounds like ("low, hoarse,
 soft Edinburgh accent") but renders one utterance at a time, at video-model
 cost.
 
+Both VibeVoice templates run at `diffusion_steps` 40 rather than the wrapper's
+default 20 — the extra passes are cheap next to the LLM stage, and there is no
+VRAM reason to economise here.
+
 The third template joins them: LTX-2.3 renders speaker 1 from a description and
 hands that clip to VibeVoice as the sample to clone, with speakers 2–4 on
 ordinary Load Audio nodes. Every character can be sourced either way and
@@ -221,11 +225,11 @@ safetensors ComfyUI can load. The `-int8` profiles use Comfy-Org's official
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 61 GB | — |
+| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | — |
 | Anime ⇄ live action on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | — |
 | Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | — |
 | Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | — |
-| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 60 GB | — |
+| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 62 GB | — |
 | Plan a multi-shot clip from one caption plus a keyframe per shot | `bfs-ltx-2.3-multishot` | Multishot ShotPlan (LTX-2.3) | Ours | 60 GB | — |
 
 These are the LTX-2.3 workflows from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes)
@@ -234,6 +238,11 @@ by Alisson Anjos, rebuilt on the same verified LTX-2.3 chain the
 22 GB checkpoint you may already have rather than pulling a second 23 GB
 transformer-only copy — the six profiles above share one base and differ only by
 a 0.3–1.3 GB task LoRA, so the second one you provision costs about a gigabyte.
+
+Where a task has more than one published capture, the profile provisions both and
+the template loads the higher-fidelity one: head swap defaults to the
+adaptive-rank extraction rather than the half-size rank-64 build, and Edit
+Anything ships the AdamW and Prodigy runs side by side. Switch on the LoRA node.
 
 **Multishot is waiting on upstream weights.** The `LTX Multishot Prompt + Refs`
 node landed on 2026-08-01 but its `multishot_strata_r128_v1` LoRA has not been

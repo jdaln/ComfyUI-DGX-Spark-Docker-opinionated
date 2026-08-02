@@ -915,7 +915,12 @@
       {
         "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
         "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
-        "label": "BFS LTX-2.3 Edit Anything global LoRA"
+        "label": "BFS LTX-2.3 Edit Anything global LoRA (9000 steps, AdamW)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
+        "label": "BFS LTX-2.3 Edit Anything global LoRA (6000 steps, Prodigy)"
       }
     ],
     "bfs-ltx-2.3-style-swap-loras": [
@@ -946,9 +951,14 @@
     ],
     "bfs-ltx-2.3-head-swap-lora": [
       {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_adaptive_fro_098.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_adaptive_fro_098.safetensors",
+        "label": "BFS LTX-2.3 head swap v3 LoRA (adaptive rank, fro 0.98)"
+      },
+      {
         "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_64.safetensors",
         "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_64.safetensors",
-        "label": "BFS LTX-2.3 head swap v3 LoRA"
+        "label": "BFS LTX-2.3 head swap v3 LoRA (rank 64)"
       }
     ],
     "mage-flow-support-assets": [

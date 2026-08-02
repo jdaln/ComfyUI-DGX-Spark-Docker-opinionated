@@ -3135,14 +3135,14 @@
         "Node name for S&R": "LoraLoaderModelOnly",
         "models": [
           {
-            "name": "bfs/head_swap_v3_rank_64.safetensors",
-            "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_64.safetensors",
+            "name": "bfs/head_swap_v3_rank_adaptive_fro_098.safetensors",
+            "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_adaptive_fro_098.safetensors",
             "directory": "loras"
           }
         ]
       },
       "widgets_values": [
-        "bfs/head_swap_v3_rank_64.safetensors",
+        "bfs/head_swap_v3_rank_adaptive_fro_098.safetensors",
         1.0
       ],
       "title": "BFS task LoRA"
@@ -3279,7 +3279,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Head swap\n\nThe source clip drives the performance; the identity comes from the LoRA's own training plus the prompt. Start at guide strength 0.6 — too high and the original head survives, too low and the shot drifts. Original graph: `Alissonerdx/BFS-Best-Face-Swap-Video/workflows/workflow_ltx2_head_swap_drag_and_drop_v3.0.json`.\n\n### Guide strength\n\n`LTXV Img To Video Inplace` pins the start of the latent to the encoded guide frames: `strength` 1.0 keeps the source exactly, lower values give the LoRA room to change it. The first-stage node is the one to tune; the second stage runs at 1.0 so the upscale pass does not drift away from what the first stage decided.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n"
+        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Head swap\n\nThe source clip drives the performance; the identity comes from the LoRA's own training plus the prompt. Start at guide strength 0.6 — too high and the original head survives, too low and the shot drifts. Original graph: `Alissonerdx/BFS-Best-Face-Swap-Video/workflows/workflow_ltx2_head_swap_drag_and_drop_v3.0.json`.\n\n### Guide strength\n\n`LTXV Img To Video Inplace` pins the start of the latent to the encoded guide frames: `strength` 1.0 keeps the source exactly, lower values give the LoRA room to change it. The first-stage node is the one to tune; the second stage runs at 1.0 so the upscale pass does not drift away from what the first stage decided.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n\n### Which head-swap LoRA\n\nLoaded here: `bfs/head_swap_v3_rank_adaptive_fro_098.safetensors` — an adaptive-rank extraction that keeps 98% of the training's Frobenius norm, so it is the higher-fidelity of the two and the right default when VRAM is not the constraint.\n\nThe profile also provisions `bfs/head_swap_v3_rank_64.safetensors`, a fixed rank-64 extraction at half the size. Swap it in on the LoRA node if you want to compare, or if the adaptive one over-commits to the trained identity."
       ],
       "title": "Credit, models and settings",
       "color": "#222",

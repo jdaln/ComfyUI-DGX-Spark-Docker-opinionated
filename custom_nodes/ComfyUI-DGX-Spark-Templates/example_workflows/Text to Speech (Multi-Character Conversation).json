@@ -50,7 +50,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## Writing the script\n\nLabel every line `[1]:` … `[4]:`. The number of speakers is detected from the text, so you do not declare it anywhere. Up to four.\n\n`[pause]` inserts a beat, `[pause:800]` inserts 800 ms. Both are wrapper features, not model tokens.\n\n## Giving each character a voice\n\nThe four **Load Audio** nodes are muted. Unmute one and pick a clip to clone that speaker's voice; leave a speaker muted and the model invents a voice for them. Ten to thirty seconds of clean speech is plenty — more does not help.\n\nNo sample to hand and you want a *specific* voice? Use **Text to Speech (Prompted Voices to Conversation)** instead: it describes the voice in words and hands the result to this same node.\n\n## Settings that matter\n\n- `model`: Large is markedly better at holding four voices apart; 1.5B is fine for one or two and a third of the size.\n- `cfg_scale` 1.3 is the official default. Above ~1.6 it starts over-articulating.\n- `use_sampling` off is deterministic and the recommended production setting; turn it on with `temperature` / `top_p` when you want takes to differ.\n- `quantize_llm` 4bit halves memory at a small quality cost — unnecessary on a Spark.\n- `diffusion_steps` 20 is the sweet spot; past ~40 there is little left to gain.\n- `attention_type` auto picks sage or sdpa. Pin it to `sdpa` if you hit anything odd.\n- `voice_speed_factor` re-times the *reference* clip, which drags the generated delivery with it. 0.95 for a slower read.\n"
+        "## Writing the script\n\nLabel every line `[1]:` … `[4]:`. The number of speakers is detected from the text, so you do not declare it anywhere. Up to four.\n\n`[pause]` inserts a beat, `[pause:800]` inserts 800 ms. Both are wrapper features, not model tokens.\n\n## Giving each character a voice\n\nThe four **Load Audio** nodes are muted. Unmute one and pick a clip to clone that speaker's voice; leave a speaker muted and the model invents a voice for them. Ten to thirty seconds of clean speech is plenty — more does not help.\n\nNo sample to hand and you want a *specific* voice? Use **Text to Speech (Prompted Voices to Conversation)** instead: it describes the voice in words and hands the result to this same node.\n\n## Settings that matter\n\n- `model`: Large is markedly better at holding four voices apart; 1.5B is fine for one or two and a third of the size.\n- `cfg_scale` 1.3 is the official default. Above ~1.6 it starts over-articulating.\n- `use_sampling` off is deterministic and the recommended production setting; turn it on with `temperature` / `top_p` when you want takes to differ.\n- `quantize_llm` 4bit halves memory at a small quality cost — unnecessary on a Spark.\n- `diffusion_steps` 20 is the sweet spot; past ~40 there is little left to gain.\n- `attention_type` auto picks sage or sdpa. Pin it to `sdpa` if you hit anything odd.\n- `voice_speed_factor` re-times the *reference* clip, which drags the generated delivery with it. 0.95 for a slower read.\n\n`diffusion_steps` is set to 40 rather than the wrapper's default 20: the extra passes are cheap next to the LLM stage and the diction is cleaner. Drop it back toward 20 if you are iterating on a script."
       ],
       "title": "How to use this",
       "color": "#222",
@@ -238,7 +238,7 @@
         "auto",
         "full precision",
         true,
-        20,
+        40,
         42,
         1.3,
         false,
