@@ -156,6 +156,24 @@ objects, camouflaged subjects, text and logos with shadows, illustrations,
 stickers and tee designs. Same nodes, different checkpoint, so the two can live
 side by side and you pick in the loader.
 
+### Editing existing images
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | — |
+| Same, 4-step distilled — about 7× faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | — |
+| Same pair on the official int8 quants — half the model size | `mage-flow-edit-int8`, `mage-flow-edit-turbo-int8` | as above | Ours | 13 GB | — |
+
+Microsoft's Mage-Flow-Edit. ComfyUI already supports it in core, so these
+templates install no custom node at all — the three community node packs only
+wrap loaders around what `TextEncodeMageFlowEdit` already does, or drag in
+`diffusers` and Microsoft's pinned source.
+
+There is **no NVFP4 build** for this one: the `ajh-code/Mage-Flow-NVFP4-*` repos
+are standalone Diffusers pipelines shipping prebuilt CUDA kernels, not
+safetensors ComfyUI can load. The `-int8` profiles use Comfy-Org's official
+`int8_convrot` quants instead. Nothing here is gated.
+
 ### Video editing with LTX-2.3 task LoRAs
 
 | What you get | Profile | Workflow | Type | Disk | Run |

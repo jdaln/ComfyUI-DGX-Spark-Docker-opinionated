@@ -46,6 +46,12 @@
     ["bfs-ltx-2.3-inpaint",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Inpainting (LTX-2.3 Masked).json"],
     ["bfs-ltx-2.3-masked-ref-inpaint",              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Inpainting (LTX-2.3 Masked).json",
       {"bfs/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors": "bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors"}],
-    ["bfs-ltx-2.3-head-swap",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Head Swap (LTX-2.3).json"]
+    ["bfs-ltx-2.3-head-swap",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Head Swap (LTX-2.3).json"],
+    ["mage-flow-edit",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow).json"],
+    ["mage-flow-edit-turbo",                        "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow Turbo).json"],
+    ["mage-flow-edit-int8",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow).json",
+      {"mage_flow_edit_bf16.safetensors": "mage_flow_edit_int8_convrot.safetensors"}],
+    ["mage-flow-edit-turbo-int8",                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow Turbo).json",
+      {"mage_flow_edit_turbo_bf16.safetensors": "mage_flow_edit_turbo_int8_convrot.safetensors"}]
   ]
 }
