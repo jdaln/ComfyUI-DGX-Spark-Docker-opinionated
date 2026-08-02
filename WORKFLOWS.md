@@ -156,6 +156,34 @@ objects, camouflaged subjects, text and logos with shadows, illustrations,
 stickers and tee designs. Same nodes, different checkpoint, so the two can live
 side by side and you pick in the loader.
 
+### Speech
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Conversations between up to 4 characters, voices cloned from samples | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | — |
+| Same, on the small model | `vibevoice-1.5b` | Text to Speech (Multi-Character Conversation) | Ours | 5 GB | — |
+| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | — |
+| Both at once: describe one voice, clone the rest, run the conversation | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | — |
+
+Neither model does the whole job on its own, so all three templates ship.
+[VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI) does real
+multi-speaker dialogue — `[1]:`/`[2]:` script, up to four voices, `[pause:800]`
+tags — but every voice has to come from an audio sample. LTX-2.3's joint
+audio/video latent path can be *told* what a voice sounds like ("low, hoarse,
+soft Edinburgh accent") but renders one utterance at a time, at video-model
+cost.
+
+The third template joins them: LTX-2.3 renders speaker 1 from a description and
+hands that clip to VibeVoice as the sample to clone, with speakers 2–4 on
+ordinary Load Audio nodes. Every character can be sourced either way and
+switching between them is unplugging one link. For a whole cast of described
+voices, render them one at a time with the LTX template and reuse the files —
+each prompted voice costs a full video render.
+
+`ltx-2.3-tts-prompted-voice` adds no new weights: it is the same LTX-2.3 base
+as `ltx-2.3-t2v-i2v-two-stage-distilled`, and the audio VAE is read out of that
+checkpoint.
+
 ### Audio
 
 | What you get | Profile | Workflow | Type | Disk | Run |

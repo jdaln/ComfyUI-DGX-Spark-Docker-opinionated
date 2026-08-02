@@ -53,6 +53,7 @@
       {"mage_flow_edit_bf16.safetensors": "mage_flow_edit_int8_convrot.safetensors"}],
     ["mage-flow-edit-turbo-int8",                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow Turbo).json",
       {"mage_flow_edit_turbo_bf16.safetensors": "mage_flow_edit_turbo_int8_convrot.safetensors"}],
-    ["heartmula-oss-3b",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (HeartMuLa 3B).json"]
+    ["heartmula-oss-3b",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (HeartMuLa 3B).json"],
+    ["ltx-2.3-tts-prompted-voice",                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (LTX-2.3 Prompted Voice).json"]
   ]
 }

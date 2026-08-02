@@ -44,4 +44,7 @@ https://github.com/alisson-anjos/ComfyUI-BFSNodes.git
 # HeartMuLa music generation and sung-lyrics transcription
 https://github.com/BobRandomNumber/ComfyUI-HeartMuLa.git
 
+# VibeVoice multi-speaker text to speech
+https://github.com/Enemyx-net/VibeVoice-ComfyUI.git
+
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher

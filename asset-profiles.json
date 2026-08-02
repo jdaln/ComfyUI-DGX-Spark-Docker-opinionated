@@ -234,6 +234,28 @@
     ],
     "heartmula-transcribe": [
       "heartmula-transcriptor-assets"
+    ],
+    "vibevoice-1.5b": [
+      "vibevoice-tokenizer",
+      "vibevoice-1.5b-model"
+    ],
+    "vibevoice-large": [
+      "vibevoice-tokenizer",
+      "vibevoice-large-model"
+    ],
+    "ltx-2.3-tts-prompted-voice": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler"
+    ],
+    "tts-prompted-conversation": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "vibevoice-tokenizer",
+      "vibevoice-large-model"
     ]
   },
   "selection_metadata": {
@@ -256,6 +278,21 @@
       "custom_node_example_workflows": [
         "ComfyUI-HeartMuLa"
       ]
+    },
+    "vibevoice-1.5b": {
+      "custom_node_example_workflows": [
+        "VibeVoice-ComfyUI"
+      ]
+    },
+    "vibevoice-large": {
+      "custom_node_example_workflows": [
+        "VibeVoice-ComfyUI"
+      ]
+    },
+    "tts-prompted-conversation": {
+      "custom_node_example_workflows": [
+        "VibeVoice-ComfyUI"
+      ]
     }
   },
   "custom_node_example_workflow_profiles": {
@@ -268,6 +305,11 @@
     "ComfyUI-HeartMuLa": [
       "heartmula-oss-3b",
       "heartmula-transcribe"
+    ],
+    "VibeVoice-ComfyUI": [
+      "vibevoice-1.5b",
+      "vibevoice-large",
+      "tts-prompted-conversation"
     ]
   },
   "groups": {
@@ -981,6 +1023,44 @@
         "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartTranscriptor-oss",
         "repo_id": "HeartMuLa/HeartTranscriptor-oss",
         "label": "HeartTranscriptor oss lyrics transcriber"
+      }
+    ],
+    "vibevoice-tokenizer": [
+      {
+        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer.json",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer.json",
+        "label": "VibeVoice tokenizer (tokenizer.json)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer_config.json",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer_config.json",
+        "label": "VibeVoice tokenizer (tokenizer_config.json)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/vocab.json",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/vocab.json",
+        "label": "VibeVoice tokenizer (vocab.json)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/merges.txt",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/merges.txt",
+        "label": "VibeVoice tokenizer (merges.txt)"
+      }
+    ],
+    "vibevoice-1.5b-model": [
+      {
+        "type": "hf_snapshot",
+        "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-1.5B",
+        "repo_id": "microsoft/VibeVoice-1.5B",
+        "label": "VibeVoice 1.5B"
+      }
+    ],
+    "vibevoice-large-model": [
+      {
+        "type": "hf_snapshot",
+        "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-Large",
+        "repo_id": "aoi-ot/VibeVoice-Large",
+        "label": "VibeVoice Large"
       }
     ]
   }

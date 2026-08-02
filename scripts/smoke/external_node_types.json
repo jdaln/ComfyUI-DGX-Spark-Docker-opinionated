@@ -11,6 +11,9 @@
     "HeartMuLaAudioDecoder": "ComfyUI-HeartMuLa",
     "HeartMuLaPostProcessor": "ComfyUI-HeartMuLa",
     "HeartMuLaTranscriptionLoader": "ComfyUI-HeartMuLa",
-    "HeartMuLaLyricsTranscriber": "ComfyUI-HeartMuLa"
+    "HeartMuLaLyricsTranscriber": "ComfyUI-HeartMuLa",
+    "VibeVoiceMultipleSpeakersNode": "VibeVoice-ComfyUI",
+    "VibeVoiceSingleSpeakerNode": "VibeVoice-ComfyUI",
+    "VibeVoiceFreeMemoryNode": "VibeVoice-ComfyUI"
   }
 }
