@@ -169,6 +169,48 @@
     ],
     "lucida-background-removal": [
       "lucida-background-removal-assets"
+    ],
+    "bfs-ltx-2.3-edit-anything": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "bfs-ltx-2.3-edit-anything-lora"
+    ],
+    "bfs-ltx-2.3-style-swap": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "bfs-ltx-2.3-style-swap-loras"
+    ],
+    "bfs-ltx-2.3-inpaint": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "bfs-ltx-2.3-inpaint-lora"
+    ],
+    "bfs-ltx-2.3-masked-ref-inpaint": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "bfs-ltx-2.3-inpaint-lora",
+      "bfs-ltx-2.3-masked-ref-inpaint-lora"
+    ],
+    "bfs-ltx-2.3-head-swap": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler",
+      "bfs-ltx-2.3-head-swap-lora"
+    ],
+    "bfs-ltx-2.3-multishot": [
+      "ltx-gemma3-comfy-text-encoder",
+      "ltx-2.3-dev-checkpoint",
+      "ltx-2.3-distilled-lora",
+      "ltx-2.3-upscaler"
     ]
   },
   "selection_metadata": {
@@ -176,11 +218,19 @@
       "custom_node_example_workflows": [
         "ComfyUI-KJNodes"
       ]
+    },
+    "bfs-ltx-2.3-multishot": {
+      "custom_node_example_workflows": [
+        "ComfyUI-BFSNodes"
+      ]
     }
   },
   "custom_node_example_workflow_profiles": {
     "ComfyUI-KJNodes": [
       "leapfusion-hunyuanvideo-i2v"
+    ],
+    "ComfyUI-BFSNodes": [
+      "bfs-ltx-2.3-multishot"
     ]
   },
   "groups": {
@@ -780,6 +830,46 @@
         "dest": "/workspace/ComfyUI/models/background_removal/lucida.safetensors",
         "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors",
         "label": "Lucida background removal model"
+      }
+    ],
+    "bfs-ltx-2.3-edit-anything-lora": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
+        "label": "BFS LTX-2.3 Edit Anything global LoRA"
+      }
+    ],
+    "bfs-ltx-2.3-style-swap-loras": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_anime2real_rank64_v1_4500.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_anime2real_rank64_v1_4500.safetensors",
+        "label": "BFS LTX-2.3 anime to live action LoRA"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_real2anime_rank64_v1_5000.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_real2anime_rank64_v1_5000.safetensors",
+        "label": "BFS LTX-2.3 live action to anime LoRA"
+      }
+    ],
+    "bfs-ltx-2.3-inpaint-lora": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
+        "label": "BFS LTX-2.3 masked inpainting LoRA"
+      }
+    ],
+    "bfs-ltx-2.3-masked-ref-inpaint-lora": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
+        "label": "BFS LTX-2.3 reference-driven masked inpainting LoRA"
+      }
+    ],
+    "bfs-ltx-2.3-head-swap-lora": [
+      {
+        "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_64.safetensors",
+        "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_64.safetensors",
+        "label": "BFS LTX-2.3 head swap v3 LoRA"
       }
     ]
   }

@@ -40,6 +40,12 @@
     ["krea-2-turbo-nvfp4",                          "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Krea 2 Turbo NVFP4).json"],
     ["ideogram-4",                                  "/workspace/ComfyUI/blueprints/Text to Image (Ideogram v4).json"],
     ["ideogram-4-nvfp4",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Image (Ideogram v4 NVFP4).json"],
-    ["lucida-background-removal",                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Remove Background (Lucida).json"]
+    ["lucida-background-removal",                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Remove Background (Lucida).json"],
+    ["bfs-ltx-2.3-edit-anything",                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Edit Anything (LTX-2.3).json"],
+    ["bfs-ltx-2.3-style-swap",                      "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Style Swap (LTX-2.3 Anime2Real).json"],
+    ["bfs-ltx-2.3-inpaint",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Inpainting (LTX-2.3 Masked).json"],
+    ["bfs-ltx-2.3-masked-ref-inpaint",              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Inpainting (LTX-2.3 Masked).json",
+      {"bfs/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors": "bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors"}],
+    ["bfs-ltx-2.3-head-swap",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Head Swap (LTX-2.3).json"]
   ]
 }

@@ -156,6 +156,30 @@ objects, camouflaged subjects, text and logos with shadows, illustrations,
 stickers and tee designs. Same nodes, different checkpoint, so the two can live
 side by side and you pick in the loader.
 
+### Video editing with LTX-2.3 task LoRAs
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 61 GB | — |
+| Anime ⇄ live action on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | — |
+| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | — |
+| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | — |
+| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 60 GB | — |
+| Plan a multi-shot clip from one caption plus a keyframe per shot | `bfs-ltx-2.3-multishot` | Multishot ShotPlan (LTX-2.3) | Ours | 60 GB | — |
+
+These are the LTX-2.3 workflows from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes)
+by Alisson Anjos, rebuilt on the same verified LTX-2.3 chain the
+`ltx-2.3-t2v-i2v-two-stage-distilled` blueprint uses. That means they run on the
+22 GB checkpoint you may already have rather than pulling a second 23 GB
+transformer-only copy — the six profiles above share one base and differ only by
+a 0.3–1.3 GB task LoRA, so the second one you provision costs about a gigabyte.
+
+**Multishot is waiting on upstream weights.** The `LTX Multishot Prompt + Refs`
+node landed on 2026-08-01 but its `multishot_strata_r128_v1` LoRA has not been
+published, so that template reports one missing LoRA and has no smoke lane. The
+profile still provisions the rest of the stack. Tracked in
+`scripts/smoke/pending_models.json`.
+
 ---
 
 ## Choosing quickly

@@ -186,6 +186,11 @@ The default container startup exposes a curated set of third-party example workf
 | Text to Image (Krea 2 RAW) | `krea-2-raw` ships a checkpoint no bundled workflow references (52 steps, cfg 1) |
 | Text to Image (Krea 2 Turbo Style LoRA) | the nine `krea2_*` style LoRAs are otherwise never exercised |
 | Remove Background (Lucida) | the bundled BiRefNet blueprint only offers the base checkpoint |
+| Video Edit Anything (LTX-2.3) | the BFS edit LoRAs have no bundled workflow of their own |
+| Video Style Swap (LTX-2.3 Anime2Real) | same, for the anime ⇄ live-action pair |
+| Video Inpainting (LTX-2.3 Masked) | same, for both masked inpainting LoRAs |
+| Video Head Swap (LTX-2.3) | same, for the LTX-2.3 head-swap LoRA |
+| Multishot ShotPlan (LTX-2.3) | wires the new BFSNodes multishot builder the way its own docs prescribe |
 
 When a module is present in `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`, the container now bootstraps its referenced workflow assets during startup using the repo manifest, embedded workflow metadata, and the Hugging Face repo hints shipped with those example JSON files.
 
@@ -295,6 +300,7 @@ Current bundled profiles:
 - `ltx-2.0-*` and `ltx-2.3-*` — opt-in LTX workflow asset profiles for the explicitly bundled LTX templates
 - `leapfusion-hunyuanvideo-i2v` — downloads the HunyuanVideo + Leapfusion assets and sample input expected by the KJNodes Leapfusion image-to-video example, then exposes that example workflow in the template browser
 - `krea-2-turbo`, `krea-2-turbo-styleloras`, `krea-2-turbo-nvfp4`, `krea-2-raw` — opt-in Krea 2 text-to-image profiles (Turbo fp8 is the standard path; `-styleloras` adds the nine official style LoRAs, `-nvfp4` is the half-size Blackwell-optimized quant, `-raw` is the 52-step undistilled base). Krea 2 requires a ComfyUI checkout from 2026-06-22 or newer — newer than the currently pinned submodule commit — and all Krea 2 downloads are gated (see below)
+- `bfs-ltx-2.3-*` — six LTX-2.3 task LoRAs from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes): `-edit-anything` (instruction-driven clip edits), `-style-swap` (anime ⇄ live action), `-inpaint` and `-masked-ref-inpaint`, `-head-swap`, and `-multishot` (ShotPlan multi-shot planning). All six reuse the same LTX-2.3 base groups as `ltx-2.3-t2v-i2v-two-stage-distilled`, so they cost one 0.3–1.3 GB LoRA each on top of a base you may already have. The `-multishot` LoRA is not published upstream yet — see `scripts/smoke/pending_models.json`
 - `lucida-background-removal` — the Lucida BiRefNet-HR fine-tune (0.9 GB, ungated) plus a bundled `Remove Background (Lucida)` template. Aimed at the mattes plain BiRefNet struggles with: semi-transparent objects, camouflage, text and logos with shadows, illustrations and print designs. Adapted from [egeorcun/lucida](https://github.com/egeorcun/lucida); the nodes are ComfyUI core, so nothing extra is installed
 - `ideogram-4`, `ideogram-4-nvfp4` — opt-in Ideogram 4 text-to-image profiles for the bundled `Text to Image (Ideogram v4)` blueprint. `ideogram-4` downloads exactly the fp8 files the blueprint references (two diffusion models — conditional and unconditional — plus the Qwen3-VL-8B text encoder and Flux 2 VAE, ~30GB); `ideogram-4-nvfp4` fetches the half-size nvfp4 quants instead, which requires switching the two model-loader selections in the blueprint by hand. Like Krea 2, Ideogram 4 needs a ComfyUI checkout newer than the pinned submodule commit, and most downloads are gated (see below)
 
@@ -373,7 +379,9 @@ python3 scripts/smoke/validate_manifest.py
 Node types that come from a custom node rather than ComfyUI core are declared in
 `scripts/smoke/external_node_types.json`, which maps each type to the pack that provides
 it — so a bundled template can never quietly acquire a dependency the container will not
-install.
+install. Models a template references on purpose that nothing can provision yet — a node
+that shipped ahead of its weights — are declared in `scripts/smoke/pending_models.json`
+and reported as warnings rather than failures.
 
 Then run the real thing against the running container:
 

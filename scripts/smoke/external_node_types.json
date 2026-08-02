@@ -2,6 +2,8 @@
   "_comment": "Node types used by bundled templates that ComfyUI core does not register. validate_manifest.py checks each mapped directory is actually installed by custom_nodes/custom_nodes.txt, so a template can never quietly depend on a pack we do not ship.",
   "types": {
     "Ideogram4PromptBuilderKJ": "ComfyUI-KJNodes",
-    "Seed (rgthree)": "rgthree-comfy"
+    "Seed (rgthree)": "rgthree-comfy",
+    "LTXMultishotPrompt": "ComfyUI-BFSNodes",
+    "LTXIdentityTransfer": "ComfyUI-BFSNodes"
   }
 }

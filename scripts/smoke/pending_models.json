@@ -1,0 +1,6 @@
+{
+  "_comment": "Models a bundled template references on purpose that nothing can provision yet, usually because a node shipped ahead of its weights. Declared here so validate_manifest.py reports them as a warning instead of a failure, and so it stays obvious what is waiting on whom. Delete an entry the moment the file becomes downloadable and add its group to asset-profiles.json.",
+  "pending": {
+    "bfs/multishot_strata_r128_v1.safetensors": "ComfyUI-BFSNodes added LTX Multishot Prompt + Refs on 2026-08-01 for the Pensioner/ShotPlan strata LoRA, but the weights are not on Hugging Face yet. Watch https://huggingface.co/Alissonerdx."
+  }
+}

@@ -309,7 +309,7 @@ def check_node_types(label, workflow, known_types, external, node_dirs, problems
                 fail(problems, f"{where}: node {node.get('id')} type '{node_type}' needs '{pack}', which custom_nodes.txt never installs")
 
 
-def check_workflow_models(label, workflow, provided, problems):
+def check_workflow_models(label, workflow, provided, pending, problems, warnings):
     embedded = self_provisioned(workflow)
     for ref, node_type in sorted(model_refs(workflow).items()):
         if ref in embedded or os.path.basename(ref) in embedded:
@@ -317,6 +317,9 @@ def check_workflow_models(label, workflow, provided, problems):
         if ref in provided or os.path.basename(ref) in provided:
             continue
         if any(ref.startswith(prefix) for prefix in provided if prefix.endswith("/")):
+            continue
+        if ref in pending:
+            warn(warnings, f"{label}: {node_type} loads '{ref}', declared pending - {pending[ref]}")
             continue
         fail(problems, f"{label}: {node_type} loads '{ref}', which no selected profile provisions and no properties.models entry covers")
 
@@ -366,6 +369,12 @@ def main():
         with open(external_path, encoding="utf-8") as handle:
             external = json.load(handle).get("types", {})
 
+    pending_path = os.path.join(root, "scripts", "smoke", "pending_models.json")
+    pending = {}
+    if os.path.exists(pending_path):
+        with open(pending_path, encoding="utf-8") as handle:
+            pending = json.load(handle).get("pending", {})
+
     check_manifest(manifest, node_dirs, problems, warnings)
 
     # Every model the whole manifest can provision, for templates opened without a profile.
@@ -385,7 +394,7 @@ def main():
         check_graph_integrity(label, workflow, problems)
         check_node_types(label, workflow, known_types, external, node_dirs, problems)
         check_models_metadata(label, workflow, problems)
-        check_workflow_models(label, workflow, all_provided, problems)
+        check_workflow_models(label, workflow, all_provided, pending, problems, warnings)
 
     lanes_path = os.path.join(root, "scripts", "smoke", "lanes.json")
     with open(lanes_path, encoding="utf-8") as handle:
@@ -417,6 +426,9 @@ def main():
             if ref in embedded or os.path.basename(ref) in embedded:
                 continue
             if any(ref.startswith(prefix) for prefix in provided if prefix.endswith("/")):
+                continue
+            if ref in pending:
+                warn(warnings, f"lane '{profile}': {node_type} loads '{ref}', declared pending - {pending[ref]}")
                 continue
             fail(problems, f"lane '{profile}': {node_type} loads '{ref}', which the profile does not provision")
 

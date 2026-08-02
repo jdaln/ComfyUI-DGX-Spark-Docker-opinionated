@@ -38,4 +38,7 @@ https://github.com/dr-vij/ComfyUI-DrViJ.git
 https://github.com/rgthree/rgthree-comfy.git
 https://github.com/yolain/ComfyUI-Easy-Use.git
 
+# LTX 2.3 identity transfer, edit-anything conditioning and the ShotPlan multishot builder
+https://github.com/alisson-anjos/ComfyUI-BFSNodes.git
+
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher
