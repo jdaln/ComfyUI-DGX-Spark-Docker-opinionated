@@ -173,6 +173,16 @@ The default container startup exposes a curated set of third-party example workf
 - `ComfyUI-KJNodes`
 - `ComfyUI-WanAnimatePreprocess`
 - `ComfyUI-qwenmultiangle`
+- `ComfyUI-DGX-Spark-Templates` — this repo's own bundled workflows
+
+`ComfyUI-DGX-Spark-Templates` is a stub node pack that exists purely to surface workflows this repo provisions but upstream does not ship a template for:
+
+| Template | Why it is here |
+| --- | --- |
+| Text to Image (Krea 2 Turbo NVFP4) | NVFP4 variant of the bundled turbo template |
+| Text to Image (Ideogram v4 NVFP4) | NVFP4 Ideogram 4 with the dual-model guider |
+| Text to Image (Krea 2 RAW) | `krea-2-raw` ships a checkpoint no bundled workflow references (52 steps, cfg 1) |
+| Text to Image (Krea 2 Turbo Style LoRA) | the nine `krea2_*` style LoRAs are otherwise never exercised |
 
 When a module is present in `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`, the container now bootstraps its referenced workflow assets during startup using the repo manifest, embedded workflow metadata, and the Hugging Face repo hints shipped with those example JSON files.
 
@@ -327,10 +337,36 @@ When `COMFY_ASSET_PROFILES=wananimate-preprocess`, startup will create the detec
 
 - `../ComfyData/models/detection/vitpose-l-wholebody.onnx`
 - `../ComfyData/models/detection/onnx/yolov10m.onnx`
+- `../ComfyData/models/sam2/sam2.1_hiera_base_plus.safetensors`
 
 This keeps the bundled WanAnimate example workflows closer to turnkey on a fresh setup.
 
 Unset `COMFY_ASSET_PROFILES` if you prefer to manage these model files manually.
+
+### Verifying Profiles (smoke lanes)
+
+Every asset profile has a smoke lane that loads a real bundled workflow, queues it and waits for the output — so "the models downloaded" is checked as "the workflow actually runs", not just "the files exist". The harness lives in `scripts/smoke/`:
+
+| File | Purpose |
+| --- | --- |
+| `wf_smoke.py` | Converts a UI-format workflow (bundled template, blueprint or custom-node example) into an API prompt, expanding subgraphs, then queues it and waits |
+| `run_lanes.py` | Runs lanes sequentially and writes an incremental report |
+| `lanes.json` | Profile → workflow mapping; an optional third element is a per-lane model substitution map |
+| `build_matrix.py` | Cross-checks profile files against the model references in every workflow |
+
+Run it against the running container:
+
+```bash
+docker cp scripts/smoke/wf_smoke.py  comfyui:/tmp/wf_smoke.py
+docker cp scripts/smoke/run_lanes.py comfyui:/tmp/run_lanes.py
+docker cp scripts/smoke/lanes.json   comfyui:/tmp/lanes.json
+
+# all lanes, or pass profile names to run a subset
+docker exec comfyui python3 -u /tmp/run_lanes.py
+docker exec comfyui python3 -u /tmp/run_lanes.py krea-2-turbo ideogram-4
+```
+
+Results land in `/tmp/lane_report.json` inside the container. Note that a lane passing only proves the graph executed — when a template is new or its sampler settings changed, look at the output image/video too.
 
 ### Clearing caches
 
