@@ -1,3 +1,4 @@
 [submodule "ComfyUI"]
 	path = ComfyUI
-	url = https://github.com/Comfy-Org/ComfyUI.git
+	url = https://github.com/jdaln/ComfyUI.git
+	branch = dgx-state
