@@ -43,7 +43,7 @@ services:
       PIP_CONSTRAINT: /workspace/constraints.txt
       YOLO_CONFIG_DIR: /workspace/cache/ultralytics
       COMFY_ASSET_PROFILES: ${COMFY_ASSET_PROFILES:-}
-      COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED: ${COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED:-true}
+      COMFY_CUSTOM_NODE_MODULES_ALLOWLIST: ${COMFY_CUSTOM_NODE_MODULES_ALLOWLIST:-true}
       COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST: ${COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST:-ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle,ComfyUI-DGX-Spark-Templates}
       COMFY_PORT: ${COMFY_PORT:-8188}
       COMFY_CMDLINE_EXTRA: ${COMFY_CMDLINE_EXTRA:---bf16-unet --bf16-vae --bf16-text-enc --use-sage-attention}

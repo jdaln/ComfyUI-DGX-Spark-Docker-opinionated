@@ -689,7 +689,7 @@ explicit_allowlist = [
     for item in os.environ.get("COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST", "").split(",")
     if item.strip()
 ]
-enabled_value = os.environ.get("COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED")
+enabled_value = os.environ.get("COMFY_CUSTOM_NODE_MODULES_ALLOWLIST")
 
 if enabled_value is not None and enabled_value.strip().lower() not in FALSE_VALUES and not explicit_allowlist:
     raise SystemExit(0)

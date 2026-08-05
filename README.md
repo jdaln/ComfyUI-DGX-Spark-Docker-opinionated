@@ -70,7 +70,7 @@ COMFY_NODE_BLACKLIST=ComfyUI-SAM3
 - `COMFY_SHM_SIZE` — private `/dev/shm` size for the container (default: `16g`)
 - `DISABLE_ALL_CUSTOM_NODES` — disable all custom nodes by default (`true`/`false`)
 - `COMFY_ASSET_PROFILES` — comma-separated asset profiles to bootstrap inside the container; some profiles also expose the matching custom-node example workflows automatically
-- `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED` — expose third-party `custom_nodes/*/example_workflows` templates in the UI (`true`/`false`)
+- `COMFY_CUSTOM_NODE_MODULES_ALLOWLIST` — expose third-party `custom_nodes/*/example_workflows` templates in the UI (`true`/`false`)
 - `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` — comma-separated list of custom node folders whose example workflows remain visible and whose referenced assets should be bootstrapped at container startup
 - `HF_TOKEN` — optional Hugging Face token; required for any gated asset profile
 - `COMFY_NODE_WHITELIST` — comma-separated list of custom node folders to allow
@@ -230,7 +230,7 @@ COMFY_ASSET_PROFILES=leapfusion-hunyuanvideo-i2v
 To hide all third-party example workflow sets again, set:
 
 ```dotenv
-COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED=false
+COMFY_CUSTOM_NODE_MODULES_ALLOWLIST=false
 ```
 
 To replace the curated default set with your own selection, set:
@@ -242,7 +242,7 @@ COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST=ComfyUI-WanVideoWrapper,ComfyUI-KJ
 To expose every third-party example workflow set regardless of profile selection, set:
 
 ```dotenv
-COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED=true
+COMFY_CUSTOM_NODE_MODULES_ALLOWLIST=true
 ```
 
 and leave `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` empty.
@@ -266,7 +266,7 @@ COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST=ComfyUI-WanVideoWrapper,ComfyUI-KJ
 | `COMFY_SHM_SIZE` | Private shared-memory allocation for the container | `16g` |
 | `DISABLE_ALL_CUSTOM_NODES` | Disable all custom nodes (fallback mode) | `true` |
 | `COMFY_ASSET_PROFILES` | Comma-separated asset profiles to bootstrap; some profiles also expose the matching custom-node example workflows | — |
-| `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED` | Enable the curated third-party example workflow set, or disable all third-party example workflows when set to `false` | `true` |
+| `COMFY_CUSTOM_NODE_MODULES_ALLOWLIST` | Enable the curated third-party example workflow set, or disable all third-party example workflows when set to `false` | `true` |
 | `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` | Comma-separated custom node folders whose example workflows stay visible and trigger startup asset bootstrap | `ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle` |
 | `HF_TOKEN` | Hugging Face token used for gated model downloads | — |
 | `COMFY_ASSET_MANIFEST_PATH` | Override path to the asset profile manifest inside the container | `/workspace/asset-profiles.json` |
