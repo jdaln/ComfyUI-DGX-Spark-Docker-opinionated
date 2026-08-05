@@ -1,0 +1,381 @@
+{
+  "id": "2f6b8c40-91d7-4e35-8a1c-0b73d5e6a924",
+  "revision": 0,
+  "last_node_id": 9,
+  "last_link_id": 6,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        -820,
+        -60
+      ],
+      "size": [
+        720,
+        560
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Multi-character conversation\n\nNodes: [Enemyx-net/VibeVoice-ComfyUI](https://github.com/Enemyx-net/VibeVoice-ComfyUI) created by Fabio Sarracino. Model: Microsoft VibeVoice — [1.5B](https://huggingface.co/microsoft/VibeVoice-1.5B) or the [Large](https://huggingface.co/aoi-ot/VibeVoice-Large) re-host.\n\n## Models\n\n```dotenv\nCOMFY_ASSET_PROFILES=vibevoice-large\n```\n\nor `vibevoice-1.5b` for the small one. Both ungated.\n\n```\n📂 ComfyUI/models/vibevoice/\n├── 📂 tokenizer/            ← Qwen2.5-1.5B tokenizer, four small files\n├── 📂 VibeVoice-1.5B/       ← 5.0 GB\n└── 📂 VibeVoice-Large/      ← 17.4 GB\n```\n\nThe model dropdown is built from whatever folders exist, so it is empty until the profile has finished downloading — refresh the browser afterwards.\n"
+      ],
+      "title": "Credit and models",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "MarkdownNote",
+      "pos": [
+        -820,
+        540
+      ],
+      "size": [
+        720,
+        900
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Writing the script\n\nLabel every line `[1]:` … `[4]:`. The number of speakers is detected from the text, so you do not declare it anywhere. Up to four.\n\n`[pause]` inserts a beat, `[pause:800]` inserts 800 ms. Both are wrapper features, not model tokens.\n\n## Giving each character a voice\n\nThe four **Load Audio** nodes are muted. Unmute one and pick a clip to clone that speaker's voice; leave a speaker muted and the model invents a voice for them. Ten to thirty seconds of clean speech is plenty — more does not help.\n\nNo sample to hand and you want a *specific* voice? Use **Text to Speech (Prompted Voices to Conversation)** instead: it describes the voice in words and hands the result to this same node.\n\n## Settings that matter\n\n- `model`: Large is markedly better at holding four voices apart; 1.5B is fine for one or two and a third of the size.\n- `cfg_scale` 1.3 is the official default. Above ~1.6 it starts over-articulating.\n- `use_sampling` off is deterministic and the recommended production setting; turn it on with `temperature` / `top_p` when you want takes to differ.\n- `quantize_llm` 4bit halves memory at a small quality cost — unnecessary on a Spark.\n- `diffusion_steps` 20 is the sweet spot; past ~40 there is little left to gain.\n- `attention_type` auto picks sage or sdpa. Pin it to `sdpa` if you hit anything odd.\n- `voice_speed_factor` re-times the *reference* clip, which drags the generated delivery with it. 0.95 for a slower read.\n\n`diffusion_steps` is set to 40 rather than the wrapper's default 20: the extra passes are cheap next to the LLM stage and the diction is cleaner. Drop it back toward 20 if you are iterating on a script."
+      ],
+      "title": "How to use this",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 3,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        -60
+      ],
+      "size": [
+        380,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Speaker 1 voice (unmute to clone)"
+    },
+    {
+      "id": 4,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        110
+      ],
+      "size": [
+        380,
+        130
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Speaker 2 voice (unmute to clone)"
+    },
+    {
+      "id": 5,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        280
+      ],
+      "size": [
+        380,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Speaker 3 voice (unmute to clone)"
+    },
+    {
+      "id": 6,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        450
+      ],
+      "size": [
+        380,
+        130
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Speaker 4 voice (unmute to clone)"
+    },
+    {
+      "id": 7,
+      "type": "VibeVoiceMultipleSpeakersNode",
+      "pos": [
+        440,
+        -60
+      ],
+      "size": [
+        480,
+        700
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "speaker1_voice",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "name": "speaker2_voice",
+          "type": "AUDIO",
+          "link": 2
+        },
+        {
+          "name": "speaker3_voice",
+          "type": "AUDIO",
+          "link": 3
+        },
+        {
+          "name": "speaker4_voice",
+          "type": "AUDIO",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VibeVoiceMultipleSpeakersNode"
+      },
+      "widgets_values": [
+        "[1]: So you actually read the whole contract.\n[2]: Every page. [pause] Including the part you were hoping I would skip.\n[1]: And?\n[2]: And clause nine says the equipment stays with the building.\n[1]: [pause:800] That is not what we agreed in the room.\n[3]: It is what got written down, though. I typed it.\n[2]: Thank you, Marcus.\n[1]: Nobody asked you, Marcus.",
+        "VibeVoice-Large",
+        "auto",
+        "full precision",
+        true,
+        40,
+        42,
+        1.3,
+        false,
+        0.95,
+        0.95,
+        1.0
+      ],
+      "title": "VibeVoice Multiple Speakers"
+    },
+    {
+      "id": 8,
+      "type": "VibeVoiceFreeMemoryNode",
+      "pos": [
+        960,
+        -60
+      ],
+      "size": [
+        380,
+        60
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VibeVoiceFreeMemoryNode"
+      },
+      "widgets_values": [],
+      "title": "Give the VRAM back"
+    },
+    {
+      "id": 9,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        960,
+        60
+      ],
+      "size": [
+        380,
+        160
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 6
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced"
+      },
+      "widgets_values": [
+        "audio/conversation",
+        "mp3",
+        "V0"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      7,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      4,
+      0,
+      7,
+      1,
+      "AUDIO"
+    ],
+    [
+      3,
+      5,
+      0,
+      7,
+      2,
+      "AUDIO"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      3,
+      "AUDIO"
+    ],
+    [
+      5,
+      7,
+      0,
+      8,
+      0,
+      "AUDIO"
+    ],
+    [
+      6,
+      8,
+      0,
+      9,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

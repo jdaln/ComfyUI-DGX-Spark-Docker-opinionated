@@ -2,9 +2,12 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-All 35 entries below are verified end to end: the models download, the workflow
-opens with no missing models, and it produces output. Run times are measured on
-a DGX Spark at each workflow's default settings.
+All 48 entries in the category tables below are verified end to end: the models
+download, the workflow opens with no missing models, and it produces output. Run
+times are measured on a DGX Spark at each workflow's default settings.
+
+Newer additions that have not been through that on hardware yet are listed
+separately under [Provisioned — not yet hardware-verified](#provisioned--not-yet-hardware-verified).
 
 ## How to use this
 
@@ -62,6 +65,21 @@ those profiles will not download. See the README for the current gated list.
 | Inpainting and outpainting with a mask | `qwen-image-inpaint-lightning-4step` | Image Inpainting (Qwen-image) | Blueprint | 34 GB | 30 s |
 | Split an image into editable layers | `qwen-image-layered-core` | `image_qwen_image_layered` | Template | 47 GB | 65 s |
 | Compose from a control image (canny / depth / pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 80 s |
+| Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 275 s |
+| Same, 4-step distilled — about 7× faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 25 s |
+
+Microsoft's Mage-Flow-Edit. ComfyUI already supports it in core, so these
+templates install no custom node at all — the three community node packs only
+wrap loaders around what `TextEncodeMageFlowEdit` already does, or drag in
+`diffusers` and Microsoft's pinned source. The two profiles share the 8.3 GB
+text encoder and the VAE, so the second costs 7.7 GB.
+
+There is **no NVFP4 build** for this one: the `ajh-code/Mage-Flow-NVFP4-*` repos
+are standalone Diffusers pipelines shipping prebuilt CUDA kernels, not
+safetensors ComfyUI can load. Comfy-Org's `int8_convrot` quants are half the
+size but a straight quality loss with this much memory, so they are not
+provisioned — the loader note says how to add one if you ever want it. Nothing
+here is gated.
 
 ## Video
 
@@ -110,11 +128,78 @@ The four LTX 2.3 IC-LoRA profiles share one template — pick the LoRA in the
 | --- | --- | --- | --- | ---: | ---: |
 | Image to video via the Leapfusion LoRA | `leapfusion-hunyuanvideo-i2v` | `leapfusion_hunyuuanvideo_i2v_native_testing` | Node example | 29 GB | 6 min |
 
+### Video editing with LTX-2.3 task LoRAs
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | 255 s |
+| Anime ⇄ live action on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | 216 s |
+| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 246 s |
+| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 211 s |
+| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 62 GB | 256 s |
+
+These are the LTX-2.3 workflows from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes)
+by Alisson Anjos, rebuilt on the same verified LTX-2.3 chain the
+`ltx-2.3-t2v-i2v-two-stage-distilled` blueprint uses. That means they run on the
+22 GB checkpoint you may already have rather than pulling a second 23 GB
+transformer-only copy — the five profiles above share one base and differ only by
+a 0.3–1.3 GB task LoRA, so the second one you provision costs about a gigabyte.
+
+Where a task has more than one published capture, the profile provisions both and
+the template loads the higher-fidelity one: head swap defaults to the
+adaptive-rank extraction rather than the half-size rank-64 build, and Edit
+Anything ships the AdamW and Prodigy runs side by side. Switch on the LoRA node.
+
+A sixth profile, `bfs-ltx-2.3-multishot`, is still waiting on upstream weights —
+see [Provisioned — not yet hardware-verified](#provisioned--not-yet-hardware-verified).
+
+## Speech
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Conversations between up to 4 characters, voices cloned from samples | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
+| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 172 s |
+| Both at once: describe one voice, clone the rest, run the conversation | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
+
+Neither model does the whole job on its own, so all three templates ship.
+[VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI) does real
+multi-speaker dialogue — `[1]:`/`[2]:` script, up to four voices, `[pause:800]`
+tags — but every voice has to come from an audio sample. LTX-2.3's joint
+audio/video latent path can be *told* what a voice sounds like ("low, hoarse,
+soft Edinburgh accent") but renders one utterance at a time, at video-model
+cost.
+
+Both VibeVoice templates run at `diffusion_steps` 40 rather than the wrapper's
+default 20 — the extra passes are cheap next to the LLM stage, and there is no
+VRAM reason to economise here.
+
+The third template joins them: LTX-2.3 renders speaker 1 from a description and
+hands that clip to VibeVoice as the sample to clone, with speakers 2–4 on
+ordinary Load Audio nodes. Every character can be sourced either way and
+switching between them is unplugging one link. For a whole cast of described
+voices, render them one at a time with the LTX template and reuse the files —
+each prompted voice costs a full video render.
+
+`ltx-2.3-tts-prompted-voice` adds no new weights: it is the same LTX-2.3 base
+as `ltx-2.3-t2v-i2v-two-stage-distilled`, and the audio VAE is read out of that
+checkpoint.
+
 ## Audio
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Text to music and song, with lyrics and style tags | `ace-step-1.5-core` | Text to Audio (ACE-Step 1.5) | Blueprint | 14 GB | 50 s |
+| Full songs with lyrics and style tags, up to 5 minutes | `heartmula-oss-3b` | Text to Music (HeartMuLa 3B) | Ours | 21 GB | 145 s |
+| Transcribe sung lyrics out of a track | `heartmula-transcribe` | Lyrics Transcription (HeartMuLa) | Ours | 3 GB | 10 s |
+
+[HeartMuLa](https://huggingface.co/HeartMuLa) is a 3B music foundation model, a
+step up from `ace-step-1.5-core` in vocal quality and song structure at about
+1.5× the disk. Section markers (`[Verse]`, `[Chorus]`, …) shape the arrangement
+and English, Chinese, Japanese, Korean and Spanish lyrics all work.
+
+The transcription template needs a track you supply in `ComfyUI/input/` — the
+repo ships no sample audio, so its Run time above was measured with an
+externally supplied clip rather than a bundled default.
 
 ## 3D
 
@@ -127,6 +212,48 @@ The four LTX 2.3 IC-LoRA profiles share one template — pick the LoRA in the
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Blueprint | 2 GB | 15 s |
+| Background removal tuned for glass, glow, camouflage, text and print designs | `lucida-background-removal` | Remove Background (Lucida) | Ours | 0.9 GB | 5 s |
+
+Lucida is a BiRefNet-HR fine-tune. It handles the mattes the bundled
+`Remove Background (BiRefNet)` blueprint struggles with — semi-transparent
+objects, camouflaged subjects, text and logos with shadows, illustrations,
+stickers and tee designs. Same nodes, different checkpoint, so the two can live
+side by side and you pick in the loader.
+
+---
+
+## Provisioned — not yet hardware-verified
+
+These follow the same rules as everything above — pick the profile, start the
+stack, open the workflow — but they have not yet had their smoke lane and
+provisioning audit run on a DGX Spark, so the Run column is blank and the disk
+figures come from the Hugging Face file sizes rather than a real download.
+
+Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
+both pass for it and you have looked at the output. The README's *Verifying
+Profiles* section has the commands.
+
+### Speech
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Same, on the small model | `vibevoice-1.5b` | Text to Speech (Multi-Character Conversation) | Ours | 5 GB | — |
+
+Same template and pipeline as `vibevoice-large` (see the verified Speech
+section above), just pointed at the 1.5B checkpoint — not yet run separately
+on hardware.
+
+### Video editing with LTX-2.3 task LoRAs
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Plan a multi-shot clip from one caption plus a keyframe per shot | `bfs-ltx-2.3-multishot` | Multishot ShotPlan (LTX-2.3) | Ours | 60 GB | — |
+
+**Multishot is waiting on upstream weights.** The `LTX Multishot Prompt + Refs`
+node landed on 2026-08-01 but its `multishot_strata_r128_v1` LoRA has not been
+published, so that template reports one missing LoRA and has no smoke lane. The
+profile still provisions the rest of the stack. Tracked in
+`scripts/smoke/pending_models.json`.
 
 ---
 

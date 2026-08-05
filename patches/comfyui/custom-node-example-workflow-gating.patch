@@ -33,7 +33,7 @@ index 281febc..281acfc 100644
 +    if allowlist:
 +        return module_name in allowlist
 +
-+    return env_flag("COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED", False)
++    return env_flag("COMFY_CUSTOM_NODE_MODULES_ALLOWLIST", False)
 +
 +
  class CustomNodeManager:
@@ -76,7 +76,7 @@ index b61e25e..540a676 100644
      template_file.write_text("")
  
 +    monkeypatch = pytest.MonkeyPatch()
-+    monkeypatch.setenv("COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED", "true")
++    monkeypatch.setenv("COMFY_CUSTOM_NODE_MODULES_ALLOWLIST", "true")
 +
 +    try:
 +        with patch(
@@ -124,7 +124,7 @@ index b61e25e..540a676 100644
 +    example_workflows_dir.mkdir(parents=True)
 +    (example_workflows_dir / "workflow1.json").write_text("")
 +
-+    monkeypatch.setenv("COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ENABLED", "false")
++    monkeypatch.setenv("COMFY_CUSTOM_NODE_MODULES_ALLOWLIST", "false")
 +
 +    with patch(
 +        "folder_paths.folder_names_and_paths",

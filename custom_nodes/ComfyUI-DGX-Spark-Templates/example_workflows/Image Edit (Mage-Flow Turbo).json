@@ -1,0 +1,531 @@
+{
+  "id": "c1e77d94-2b18-49aa-8f0c-5d2e6b3a9107",
+  "revision": 0,
+  "last_node_id": 10,
+  "last_link_id": 11,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        -820,
+        -60
+      ],
+      "size": [
+        700,
+        1080
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "Adaptation of https://github.com/axiomgraph/ComfyUIWorkflow/blob/main/Mage%20Flow%20Edit.json created by axiomgraph, with the sampler settings from https://github.com/starsFriday/ComfyUI-MageFlow and https://github.com/zhaotututu/ComfyUI-MageFlow.\n\n### No custom node needed\n\nComfyUI ships Mage-Flow support in core — `comfy/ldm/mage_flow`, the `mage` CLIP type and `TextEncodeMageFlowEdit` — so this runs on stock loaders. The community packs add convenience wrappers (an all-in-one loader) or a Diffusers-directory path that pulls in `diffusers` plus Microsoft's pinned source; neither buys anything core does not already do, so neither is installed.\n\n### Mage-Flow Edit Turbo\n\nThe distilled model: 4 steps at CFG 1.0, euler / simple. Roughly seven times faster than the 30-step model for a small quality cost.\n\n⚠ Keep `weight_dtype` at `default` (full precision, matching the bf16 file on disk). Activation-quantized FP8 (`fp8_e4m3fn_fast`) collapses Turbo's four-step result to noise on current ComfyUI/PyTorch CUDA builds — reported by starsFriday, and the reason the bf16 build is provisioned rather than an fp8 one.\n\nIf you replace a checkpoint under the same filename, restart ComfyUI: the model cache keys on the path, not the contents.\n\n### Model links\n\n```dotenv\nCOMFY_ASSET_PROFILES=mage-flow-edit-turbo\n```\n\nEverything comes from [Comfy-Org/Mage-Flow](https://huggingface.co/Comfy-Org/Mage-Flow), ungated, and the loaders carry `properties.models` — so the stack provisions itself through the example-workflow scan whether or not the profile is selected, the same way every other bundled template here behaves. Comment the module out of `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` if you want these 17 GB off a machine that will never edit an image.\n\n```\n📂 ComfyUI/models/\n├── 📂 diffusion_models/mage_flow_edit_turbo_bf16.safetensors\n├── 📂 text_encoders/qwen3vl_4b_bf16.safetensors\n└── 📂 vae/mage_flow_vae_bf16.safetensors\n```\n\nAlready running a `krea-2-*` profile? Point the CLIP loader at the 4.9 GB `qwen3vl_4b_fp8_scaled.safetensors` you already have instead of the 8.3 GB bf16 file — same Qwen3-VL-4B encoder, and the `mage` type applies the prompt template either way.\n\n### Why there is no NVFP4 build here\n\nThe `ajh-code/Mage-Flow-NVFP4-*` repos are standalone Diffusers pipelines shipping prebuilt `libmage_nvfp4_linear.so` CUDA kernels, not safetensors ComfyUI can load. The smallest ComfyUI-loadable builds are Comfy-Org's official `int8_convrot` quants at 3.9 GB. They are not provisioned: on a machine with this much memory they are a pure quality loss, and having both builds on disk is how you end up downloading Mage-Flow twice. If you want one, point the loader at `mage_flow_edit_int8_convrot.safetensors` and add it to `asset-profiles.json`.\n"
+      ],
+      "title": "Credit, models and settings",
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 2,
+      "type": "UNETLoader",
+      "pos": [
+        -60,
+        -60
+      ],
+      "size": [
+        400,
+        82
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "mage_flow_edit_turbo_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/diffusion_models/mage_flow_edit_turbo_bf16.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "mage_flow_edit_turbo_bf16.safetensors",
+        "default"
+      ],
+      "title": "Mage-Flow Edit transformer"
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        -60,
+        80
+      ],
+      "size": [
+        400,
+        106
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "models": [
+          {
+            "name": "qwen3vl_4b_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/text_encoders/qwen3vl_4b_bf16.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen3vl_4b_bf16.safetensors",
+        "mage",
+        "default"
+      ],
+      "title": "Qwen3-VL-4B (mage prompt template)"
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [
+        -60,
+        240
+      ],
+      "size": [
+        400,
+        60
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            2,
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "mage_flow_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/vae/mage_flow_vae_bf16.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "mage_flow_vae_bf16.safetensors"
+      ],
+      "title": "Mage VAE"
+    },
+    {
+      "id": 5,
+      "type": "LoadImage",
+      "pos": [
+        -60,
+        360
+      ],
+      "size": [
+        400,
+        400
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ],
+      "title": "Reference image 1"
+    },
+    {
+      "id": 6,
+      "type": "LoadImage",
+      "pos": [
+        -60,
+        800
+      ],
+      "size": [
+        400,
+        400
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ],
+      "title": "Reference image 2 (optional — mute if unused)"
+    },
+    {
+      "id": 7,
+      "type": "TextEncodeMageFlowEdit",
+      "pos": [
+        400,
+        -60
+      ],
+      "size": [
+        460,
+        400
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 1
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 2
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 3
+        },
+        {
+          "name": "images.image_2",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeMageFlowEdit"
+      },
+      "widgets_values": [
+        "Make it night, keep everything else identical.",
+        "",
+        0,
+        0,
+        1
+      ],
+      "title": "Edit instruction"
+    },
+    {
+      "id": 8,
+      "type": "KSampler",
+      "pos": [
+        920,
+        -60
+      ],
+      "size": [
+        400,
+        262
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 5
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 7
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        0,
+        "randomize",
+        4,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAEDecode",
+      "pos": [
+        920,
+        260
+      ],
+      "size": [
+        400,
+        60
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 9
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "SaveImage",
+      "pos": [
+        1380,
+        -60
+      ],
+      "size": [
+        640,
+        720
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 11
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Image_Edit_(Mage-Flow_Turbo)"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      2,
+      4,
+      0,
+      7,
+      1,
+      "VAE"
+    ],
+    [
+      3,
+      5,
+      0,
+      7,
+      2,
+      "IMAGE"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      3,
+      "IMAGE"
+    ],
+    [
+      5,
+      2,
+      0,
+      8,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      7,
+      0,
+      8,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      7,
+      7,
+      1,
+      8,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      8,
+      7,
+      2,
+      8,
+      3,
+      "LATENT"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "LATENT"
+    ],
+    [
+      10,
+      4,
+      0,
+      9,
+      1,
+      "VAE"
+    ],
+    [
+      11,
+      9,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}
