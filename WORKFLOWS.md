@@ -233,6 +233,29 @@ Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
 both pass for it and you have looked at the output. The README's *Verifying
 Profiles* section has the commands.
 
+### MiniMax H3 — video with its own soundtrack
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text to video, with dialogue, effects and music generated with it | `minimax-h3-t2v` | Text to Video (MiniMax H3) | Ours | 42 GB | — |
+| Animate a still image, same joint audio | `minimax-h3-i2v` | Image to Video (MiniMax H3) | Ours | 42 GB | — |
+| Carry an identity, style, motion or voice over from references | `minimax-h3-ref2v` | Reference to Video (MiniMax H3) | Ours | 42 GB | — |
+
+The first workflows here that produce sound. H3 models audio and video in one
+forward pass rather than dubbing a track on afterwards, so speech lands in sync
+with the mouth and effects land on the action. Output is 24 fps and about five
+seconds at the shipped defaults; the Resolution Selector caps the short edge at
+768 px.
+
+Reference to video takes up to nine images, three videos (each able to carry its
+own soundtrack) and three loose audio clips, and you address them from the prompt
+by tag — `<Picture 1>`, `<Video 1>`, `<Audio 1>` — in the order you connected
+them. It runs different weights (`ref2va`) from the other two (`fl2va`), so it
+costs a second 21 GB model; all three together are 63 GB, since they share the
+text encoder and both VAEs.
+
+Nothing here is gated. Needs ComfyUI v0.30.0 or newer for the `MiniMaxH3*` nodes.
+
 ### Speech
 
 | What you get | Profile | Workflow | Type | Disk | Run |
