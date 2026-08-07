@@ -50,6 +50,9 @@
     ["mage-flow-edit",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow).json"],
     ["mage-flow-edit-turbo",                        "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image Edit (Mage-Flow Turbo).json"],
     ["heartmula-oss-3b",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (HeartMuLa 3B).json"],
-    ["ltx-2.3-tts-prompted-voice",                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (LTX-2.3 Prompted Voice).json"]
+    ["ltx-2.3-tts-prompted-voice",                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (LTX-2.3 Prompted Voice).json"],
+    ["minimax-h3-t2v",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Video (MiniMax H3).json"],
+    ["minimax-h3-i2v",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image to Video (MiniMax H3).json"],
+    ["minimax-h3-ref2v",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Reference to Video (MiniMax H3).json"]
   ]
 }

@@ -248,6 +248,18 @@
       "ltx-2.3-upscaler",
       "vibevoice-tokenizer",
       "vibevoice-large-model"
+    ],
+    "minimax-h3-t2v": [
+      "minimax-h3-support-assets",
+      "minimax-h3-fl2va-model"
+    ],
+    "minimax-h3-i2v": [
+      "minimax-h3-support-assets",
+      "minimax-h3-fl2va-model"
+    ],
+    "minimax-h3-ref2v": [
+      "minimax-h3-support-assets",
+      "minimax-h3-ref2va-model"
     ]
   },
   "selection_metadata": {
@@ -1049,6 +1061,37 @@
         "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-Large",
         "repo_id": "aoi-ot/VibeVoice-Large",
         "label": "VibeVoice Large"
+      }
+    ],
+    "minimax-h3-support-assets": [
+      {
+        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "label": "MiniMax H3 Qwen3-VL-32B text encoder (NVFP4 AWQ)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vae/minimax_h3_video_vae_fp16.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors",
+        "label": "MiniMax H3 video VAE (fp16)"
+      },
+      {
+        "dest": "/workspace/ComfyUI/models/vae/minimax_h3_audio_vae_fp32.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+        "label": "MiniMax H3 audio VAE (fp32)"
+      }
+    ],
+    "minimax-h3-fl2va-model": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "label": "MiniMax H3 first/last-frame to video+audio (pruned int8 convrot)"
+      }
+    ],
+    "minimax-h3-ref2va-model": [
+      {
+        "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+        "label": "MiniMax H3 reference to video+audio (pruned int8 convrot)"
       }
     ]
   }
