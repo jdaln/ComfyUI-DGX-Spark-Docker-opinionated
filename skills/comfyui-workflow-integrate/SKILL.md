@@ -1,12 +1,13 @@
 ---
 name: comfyui-workflow-integrate
-description: 'Integrate or onboard a new workflow (bundled template, blueprint, or custom-node example) into this DGX Spark ComfyUI Docker repo. Use when: adding a new ComfyUI template, wiring a new asset profile, adding smoke-lane coverage for a workflow, or promoting a workflow from "not yet hardware-verified" to verified in WORKFLOWS.md. Covers asset-profiles.json schema, properties.models embedding, lanes.json, and the validate/run/audit toolchain.'
+description: 'Integrate or onboard a new workflow (bundled template, blueprint, or custom-node example) into this DGX Spark ComfyUI Docker repo. Use when: adding a new ComfyUI template, wiring a new asset profile, adding smoke-lane coverage for a workflow, or promoting a workflow from "not yet hardware-verified" to verified in docs/workflows.md. Covers asset-profiles.json schema, properties.models embedding, lanes.json, and the validate/run/audit toolchain.'
 ---
 
 # Integrate a New Workflow (this repo)
 
 Background on the provisioning model and the smoke toolchain lives in
-[How to test and debug a new workflow.md](../../docs/test_and_debug_new_workflow.md).
+[docs/models.md](../../docs/models.md) and
+[docs/verifying.md](../../docs/verifying.md).
 This skill is the step-by-step onboarding checklist.
 
 ## 1. Decide how it gets provisioned
@@ -40,7 +41,7 @@ right profile in even with the allowlist alone.
 
 Place the workflow JSON under
 `custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/<Display Name>.json`
-(this is the "Ours" surface in `WORKFLOWS.md`; use it for anything upstream
+(this is the "Ours" surface in `docs/workflows.md`; use it for anything upstream
 doesn't already ship a template for).
 
 Every loader node should carry `properties.models`:
@@ -111,7 +112,7 @@ catches models the harness silently stubbed or substituted.
 Open the produced image/video/audio/text file. A `COMPLETED` smoke result only
 proves the graph executed, not that the result is any good.
 
-## 7. Promote it in WORKFLOWS.md
+## 7. Promote it in docs/workflows.md
 
 Move the row from *Provisioned — not yet hardware-verified* into its category
 table (or add a new row/table if this is the first of its kind), filling in

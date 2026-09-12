@@ -10,7 +10,7 @@ set -euo pipefail
 # CLOCK_MIN_MHZ="${SPARK_CLOCK_MIN_MHZ:-300}"
 # CLOCK_MAX_MHZ="${SPARK_CLOCK_MAX_MHZ:-2100}"
 
-## Fix 1: Disable Swap (Critical)
+## Fix 1: Disable Swap until reboot
 sudo swapoff -a
 
 ## Fix 2: GPU stability (+ optional clock cap)

@@ -1,58 +1,37 @@
-# Model Cutter
+# Model cutter
 
-Splits one monolithic `.safetensors` model into multiple files by tensor prefix and writes them next to the source model.
+Splits one monolithic `.safetensors` model into the separate files ComfyUI's
+loaders expect, written next to the source model.
 
-## Run In Docker
+## Run
 
-Enter running container:
-
-```bash
-docker exec -it comfyui bash
-```
-
-Then run cutter from inside container:
+From inside the container, where `safetensors` and `torch` are already
+installed:
 
 ```bash
-python3 "/workspace/models-cutter/split_safetensors_model.py" "/path/to/model.safetensors"
+docker exec -it comfyui python3 /workspace/models-cutter/split_safetensors_model.py \
+  /workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-distilled.safetensors
 ```
 
-## What It Splits
-
-If keys exist in the source model:
-
-- `model.*` -> `split_files/diffusion_models/*_model.safetensors`
-- `vae.*` -> `split_files/vae/*_video_vae.safetensors` (saved without `vae.` prefix for `Load VAE`)
-- `audio_vae.*` and `vocoder.*` -> `split_files/audio_vae/*_audio_vae.safetensors`
-- `text_embedding_projection.*` -> `split_files/text_encoders/*_text_projection.safetensors`
-
-## Usage
-
-Run from any folder:
+On the host, using the project venv:
 
 ```bash
-python3 "/home/dr-vij/WorkProjects/ComfyDocker/models-cutter/split_safetensors_model.py" "/path/to/model.safetensors"
+./venv/bin/python models-cutter/split_safetensors_model.py \
+  ../ComfyData/models/checkpoints/ltx-2.3-22b-distilled.safetensors
 ```
 
-If you are already in the model folder:
+Options:
 
-```bash
-python3 "/home/dr-vij/WorkProjects/ComfyDocker/models-cutter/split_safetensors_model.py" "./ltx-2.3-22b-distilled.safetensors"
-```
+- `--out-dir <path>` writes elsewhere than beside the source file
+- `--force` overwrites existing split files
 
-Optional flags:
+## What it splits
 
-- `--out-dir /custom/output/folder` - custom output directory
-- `--force` - overwrite existing split files
+Only prefixes present in the source produce a file.
 
-## Requirement
-
-Python environment must have:
-
-- `safetensors`
-- `torch`
-
-Example with Comfy venv Python:
-
-```bash
-/home/dr-vij/WorkProjects/ComfyDocker/venv/bin/python "/home/dr-vij/WorkProjects/ComfyDocker/models-cutter/split_safetensors_model.py" "./ltx-2.3-22b-distilled.safetensors"
-```
+| Source prefix | Written to |
+| --- | --- |
+| `model.*` | `split_files/diffusion_models/*_model.safetensors` |
+| `vae.*` | `split_files/vae/*_video_vae.safetensors`, with the `vae.` prefix stripped so `Load VAE` accepts it |
+| `audio_vae.*`, `vocoder.*` | `split_files/audio_vae/*_audio_vae.safetensors` |
+| `text_embedding_projection.*` | `split_files/text_encoders/*_text_projection.safetensors` |

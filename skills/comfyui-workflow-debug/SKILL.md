@@ -6,7 +6,8 @@ description: 'Debug a failing, broken, or missing-model ComfyUI workflow in this
 # Debug a ComfyUI Workflow (this repo)
 
 Deep background, full command reference, and the real-incident catalog live in
-[How to test and debug a new workflow.md](../../docs/test_and_debug_new_workflow.md).
+[docs/troubleshooting.md](../../docs/troubleshooting.md) and
+[docs/verifying.md](../../docs/verifying.md).
 This skill is the condensed triage procedure.
 
 ## Triage order
