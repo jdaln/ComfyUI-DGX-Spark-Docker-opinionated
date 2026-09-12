@@ -8,6 +8,11 @@ with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 5 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
+Most of those 48 have an automated smoke lane. Three do not, because their
+workflow needs an audio file the repo does not ship, so they were checked by
+hand instead: `vibevoice-large`, `heartmula-transcribe` and
+`tts-prompted-conversation`. They are marked below.
+
 ## How to use this
 
 1. Copy a row's profile name into `.env`:
@@ -83,7 +88,9 @@ template installs a custom node. There is no NVFP4 build that ComfyUI can load.
 | Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 5 s |
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
-Pair it with a Wan animate checkpoint.
+Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
+branch alone, which is why it runs in seconds; the animate checkpoint, LoRAs,
+text encoder and VAE the rest of that workflow loads come from you.
 
 ### LTX 2.0, fast video, distilled or full quality
 
@@ -141,9 +148,9 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Conversations between up to 4 characters, voices cloned from samples | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
+| Conversations between up to 4 characters, voices cloned from samples [^h] | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
 | A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 172 s |
-| Both at once: describe one voice, clone the rest, run the conversation | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
+| Both at once: describe one voice, clone the rest, run the conversation [^h] | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
 does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
@@ -163,7 +170,7 @@ checkpoint.
 | --- | --- | --- | --- | ---: | ---: |
 | Text to music and song, with lyrics and style tags | `ace-step-1.5-core` | Text to Audio (ACE-Step 1.5) | Blueprint | 14 GB | 50 s |
 | Full songs with lyrics and style tags, up to 5 minutes | `heartmula-oss-3b` | Text to Music (HeartMuLa 3B) | Ours | 21 GB | 145 s |
-| Transcribe sung lyrics out of a track | `heartmula-transcribe` | Lyrics Transcription (HeartMuLa) | Ours | 3 GB | 10 s |
+| Transcribe sung lyrics out of a track [^h] | `heartmula-transcribe` | Lyrics Transcription (HeartMuLa) | Ours | 3 GB | 10 s |
 
 [HeartMuLa](https://huggingface.co/HeartMuLa) is a 3B music model, better than
 `ace-step-1.5-core` at vocals and song structure for about 1.5x the disk.
@@ -191,6 +198,10 @@ Lucida is a BiRefNet-HR fine-tune for the mattes the bundled
 objects, camouflaged subjects, text and logos with shadows, illustrations,
 stickers, tee designs. Same nodes, different checkpoint, so both can sit side by
 side and you pick in the loader.
+
+[^h]: Checked by hand, not by an automated lane. These workflows need an audio
+    file the repo does not ship, so there is nothing for `run_lanes.py` to run
+    unattended.
 
 ---
 

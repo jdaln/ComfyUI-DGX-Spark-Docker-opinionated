@@ -691,6 +691,69 @@ explicit_allowlist = [
 ]
 enabled_value = os.environ.get("COMFY_CUSTOM_NODE_MODULES_ALLOWLIST")
 
+CUSTOM_NODES_DIR = "/workspace/ComfyUI/custom_nodes"
+
+
+def installed_modules():
+    try:
+        return {
+            name
+            for name in os.listdir(CUSTOM_NODES_DIR)
+            if name != "__pycache__"
+            and os.path.isdir(os.path.join(CUSTOM_NODES_DIR, name))
+        }
+    except OSError:
+        return set()
+
+
+def known_profiles():
+    try:
+        with open(manifest_path, encoding="utf-8") as handle:
+            return set(json.load(handle).get("profiles", {}))
+    except (OSError, ValueError):
+        return set()
+
+
+# Warnings go to stderr on purpose: stdout is captured by the caller as the
+# allowlist itself.
+installed = installed_modules()
+
+# This one is an on/off gate, not a list. A module list here is truthy, so the
+# names are discarded while the setting looks like it was applied.
+if enabled_value is not None and (
+    "," in enabled_value or enabled_value.strip() in installed
+):
+    print(
+        "WARNING: COMFY_CUSTOM_NODE_MODULES_ALLOWLIST is an on/off switch, but its value "
+        "looks like a module list ({!r}). It reads as 'on' and the names are ignored. Put "
+        "module names in COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST instead.".format(
+            enabled_value.strip()
+        ),
+        file=sys.stderr,
+    )
+
+# Entries are matched against directory names under custom_nodes/. Anything
+# else, an asset profile name above all, is ignored and downloads nothing.
+# Skip the check when nothing is cloned yet, or every name would look wrong.
+if installed:
+    profiles_known = known_profiles()
+    for item in explicit_allowlist:
+        if item in installed:
+            continue
+        if item in profiles_known:
+            print(
+                "WARNING: COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST lists '{}', which is an "
+                "asset profile, not a custom node directory. It has no effect here; put it in "
+                "COMFY_ASSET_PROFILES instead.".format(item),
+                file=sys.stderr,
+            )
+        else:
+            print(
+                "WARNING: COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST lists '{}', which is not a "
+                "directory in {}; it will have no effect.".format(item, CUSTOM_NODES_DIR),
+                file=sys.stderr,
+            )
+
 if enabled_value is not None and enabled_value.strip().lower() not in FALSE_VALUES and not explicit_allowlist:
     raise SystemExit(0)
 

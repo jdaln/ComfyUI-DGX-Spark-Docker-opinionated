@@ -106,6 +106,33 @@ bootstrap_asset_profiles() {
     asset_bootstrap_helper bootstrap
 }
 
+# COMFY_NODE_WHITELIST and COMFY_NODE_BLACKLIST match exactly on the directory
+# name under custom_nodes/, which is often not the project name (the SAM3 pack
+# clones as ComfyUI-SAM3-DGX-Spark, not ComfyUI-SAM3). A name that matches
+# nothing is dropped without a word, so the setting looks applied when it is
+# not. Say so instead.
+warn_unknown_node_names() {
+    var_name="$1"
+    shift
+    [ "$#" -gt 0 ] || return 0
+
+    declare -A installed_nodes=()
+    for node_path in /workspace/ComfyUI/custom_nodes/*; do
+        [ -d "$node_path" ] || continue
+        installed_nodes["$(basename "$node_path")"]=1
+    done
+
+    # Nothing cloned yet (DISABLE_ALL_CUSTOM_NODES, or a first run that failed);
+    # every name would look wrong, so stay quiet.
+    [ "${#installed_nodes[@]}" -gt 0 ] || return 0
+
+    for node in "$@"; do
+        if [ -z "${installed_nodes[$node]:-}" ]; then
+            echo "WARNING: ${var_name} lists '${node}', which is not a directory in /workspace/ComfyUI/custom_nodes; it will have no effect" >&2
+        fi
+    done
+}
+
 for dir in \
     /workspace/ComfyUI/input \
     /workspace/ComfyUI/input/3d \
@@ -280,6 +307,7 @@ if [ -n "${COMFY_NODE_WHITELIST:-}" ]; then
         node_trimmed="$(echo "$node" | xargs)"
         [ -n "$node_trimmed" ] && WHITELIST_NODES+=("$node_trimmed")
     done
+    warn_unknown_node_names COMFY_NODE_WHITELIST "${WHITELIST_NODES[@]}"
     [ "${#WHITELIST_NODES[@]}" -gt 0 ] && COMFY_ARGS+=(--whitelist-custom-nodes "${WHITELIST_NODES[@]}")
 elif [ -n "${COMFY_NODE_BLACKLIST:-}" ]; then
     COMFY_ARGS+=(--disable-all-custom-nodes)
@@ -287,11 +315,16 @@ elif [ -n "${COMFY_NODE_BLACKLIST:-}" ]; then
     # Build a hash-set once; membership checks are O(1) per node.
     IFS=',' read -ra BLACKLIST_NODES <<< "${COMFY_NODE_BLACKLIST}"
     declare -A BLACKLIST_SET=()
+    BLACKLIST_REQUESTED=()
     for raw in "${BLACKLIST_NODES[@]}"; do
         node_trimmed="${raw#"${raw%%[![:space:]]*}"}"
         node_trimmed="${node_trimmed%"${node_trimmed##*[![:space:]]}"}"
-        [ -n "$node_trimmed" ] && BLACKLIST_SET["$node_trimmed"]=1
+        if [ -n "$node_trimmed" ]; then
+            BLACKLIST_SET["$node_trimmed"]=1
+            BLACKLIST_REQUESTED+=("$node_trimmed")
+        fi
     done
+    warn_unknown_node_names COMFY_NODE_BLACKLIST "${BLACKLIST_REQUESTED[@]}"
 
     WHITELIST_NODES=()
     for node_path in /workspace/ComfyUI/custom_nodes/*; do

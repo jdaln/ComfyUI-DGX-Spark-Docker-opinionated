@@ -47,10 +47,15 @@ multi-gigabyte pull.
 names** such as `ComfyUI-DGX-Spark-Templates` or `VibeVoice-ComfyUI`. It never
 takes profile names.
 
-A profile name in that variable matches no directory, is ignored without a
-warning, and downloads nothing. If you put your profile list in the wrong
-variable, every workflow that depends on it fails with what look like workflow
-bugs. See [troubleshooting.md](troubleshooting.md).
+A profile name in that variable matches no directory and downloads nothing. Put
+your profile list in the wrong variable and every workflow that depends on it
+fails with what look like workflow bugs. Startup warns about entries that match
+no directory, naming the ones that are asset profiles, so read the log:
+
+```
+WARNING: COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST lists 'heartmula-oss-3b',
+which is an asset profile, not a custom node directory.
+```
 
 ## Templates that download without a profile
 

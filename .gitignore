@@ -23,3 +23,5 @@ custom_nodes/*
 tmp/
 TODO.txt
 __pycache__/
+
+.claude/.cc-writes/

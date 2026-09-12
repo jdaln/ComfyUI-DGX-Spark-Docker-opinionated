@@ -43,8 +43,8 @@ Empty or missing means provisioning never ran for that family. Check `.env`:
 - `COMFY_ASSET_PROFILES` must name the profile that provisions it. See
   [workflows.md](workflows.md).
 - `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` must contain only custom node
-  **directory** names. Profile names there are ignored without a warning and
-  download nothing.
+  **directory** names. Profile names there download nothing. Startup warns about
+  entries matching no directory, so grep the log for `WARNING:` first.
 
 Then recreate the container. A restart keeps the old environment:
 
@@ -155,9 +155,9 @@ docker compose down && docker compose up -d
 
 The name must match the directory under `custom_nodes/`, not the pack's
 project name. This one clones from `dr-vij/ComfyUI-SAM3-DGX-Spark`, so the
-directory is `ComfyUI-SAM3-DGX-Spark`. A name that matches no directory is
-ignored without a warning and disables nothing, so check against
-`ls custom_nodes/` if a blacklist entry appears to have no effect.
+directory is `ComfyUI-SAM3-DGX-Spark`. A name that matches no directory
+disables nothing; startup warns when that happens, and `ls custom_nodes/` is the
+authoritative list.
 
 ## Weights not published yet
 

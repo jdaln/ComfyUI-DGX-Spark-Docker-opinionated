@@ -80,7 +80,7 @@ order:
 
 Names are matched exactly against directory names under `custom_nodes/`, not
 against repository or package names. `ls custom_nodes/` is the authoritative
-list. A name that matches no directory is silently ignored.
+list. A name that matches no directory has no effect; startup warns about it.
 
 ```dotenv
 DISABLE_ALL_CUSTOM_NODES=false

@@ -31,6 +31,20 @@ selected, which is the answer to "why is it downloading that".
 CI runs it on every push and pull request
 ([`.github/workflows/validate-manifest.yml`](../.github/workflows/validate-manifest.yml)).
 
+Expect a difference between CI and your machine. CI has only the tracked
+template pack in `custom_nodes/`, so it reports only what this repo owns. Once
+the container has run, that directory also holds the 26 third-party packs cloned
+at startup, and the check audits their example workflows too. Those account for
+almost all of the output and are not yours to fix. Filter them out:
+
+```bash
+python3 scripts/smoke/validate_manifest.py \
+  | grep -Pv 'custom_nodes/(?!ComfyUI-DGX-Spark-Templates)'
+```
+
+The exit status still counts everything, so treat the filtered output as the
+signal rather than the return code.
+
 Node types that come from a custom node rather than ComfyUI core are declared in
 `scripts/smoke/external_node_types.json`, mapped to the pack that provides them,
 so a bundled template cannot quietly acquire a dependency the container will not

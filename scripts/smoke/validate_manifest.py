@@ -8,7 +8,8 @@ download. This script answers the cheaper question first, from the checkout alon
   * does every profile resolve to groups that exist, with well-formed entries;
   * does every bundled template load, link up, and use node types this repo ships;
   * is every model a bundled template or a lane workflow loads actually provisioned
-    by the manifest (or self-provisioning through embedded `properties.models`).
+    by the manifest (or self-provisioning through embedded `properties.models`);
+  * does docs/workflows.md list every profile exactly once, with matching counts.
 
 Run it from the repo root, no container needed:
 
@@ -170,6 +171,60 @@ def check_manifest(manifest, node_dirs, problems, warnings):
                 fail(problems, f"custom_node_example_workflow_profiles['{module}'] names unknown profile '{profile}'")
 
     return dest_source
+
+
+CATALOGUE = os.path.join("docs", "workflows.md")
+PENDING_HEADING = "## Provisioned, not yet hardware-verified"
+
+
+def check_catalogue(root, manifest, problems):
+    """Every profile appears in docs/workflows.md exactly once, and the counts
+    that file states match reality. Both drifted before this check existed: the
+    README claimed 35 verified profiles while the catalogue claimed 48."""
+    path = os.path.join(root, CATALOGUE)
+    if not os.path.exists(path):
+        fail(problems, f"{CATALOGUE} is missing")
+        return 0, 0
+
+    with open(path, encoding="utf-8") as handle:
+        text = handle.read()
+
+    head, separator, tail = text.partition(PENDING_HEADING)
+    if not separator:
+        fail(problems, f"{CATALOGUE}: no '{PENDING_HEADING}' heading, so verified rows "
+                       "cannot be told from pending ones")
+        return 0, 0
+
+    # Second cell of a table row, backticked, lowercase: the Profile column.
+    row = re.compile(r"^\|[^|]*\|\s*`([a-z0-9][a-z0-9.\-]*)`\s*\|", re.M)
+    verified = row.findall(head)
+    pending = row.findall(tail)
+    listed = verified + pending
+
+    for name in sorted({n for n in listed if listed.count(n) > 1}):
+        fail(problems, f"{CATALOGUE}: profile '{name}' appears in more than one row")
+
+    known = set(manifest.get("profiles", {}))
+    for name in sorted(set(listed) - known):
+        fail(problems, f"{CATALOGUE}: a row names '{name}', which asset-profiles.json does not define")
+    for name in sorted(known - set(listed)):
+        fail(problems, f"asset-profiles.json defines '{name}', which {CATALOGUE} never lists")
+
+    # The opening paragraph states both counts. A missing pattern is a failure,
+    # not a skip: a check that quietly stops checking is worse than no check.
+    total = re.search(r"defines (\d+) profiles", head)
+    tabled = re.search(r"The (\d+) in the category tables", head)
+    if not total or not tabled:
+        fail(problems, f"{CATALOGUE}: cannot find the stated profile counts in the opening paragraph")
+    else:
+        if int(total.group(1)) != len(known):
+            fail(problems, f"{CATALOGUE} says {total.group(1)} profiles; "
+                           f"asset-profiles.json defines {len(known)}")
+        if int(tabled.group(1)) != len(verified):
+            fail(problems, f"{CATALOGUE} claims {tabled.group(1)} verified rows; "
+                           f"the category tables hold {len(verified)}")
+
+    return len(verified), len(pending)
 
 
 def profile_files(manifest, profile):
@@ -478,8 +533,11 @@ def main():
                 continue
             fail(problems, f"lane '{profile}': {node_type} loads '{ref}', which the profile does not provision")
 
+    catalogue_verified, catalogue_pending = check_catalogue(root, manifest, problems)
+
     print(f"{len(manifest.get('profiles', {}))} profiles, {len(manifest.get('groups', {}))} groups")
     print(f"{len(templates)} bundled templates checked")
+    print(f"{CATALOGUE}: {catalogue_verified} verified rows, {catalogue_pending} pending")
     if provisions_without_profile:
         # Anything listed here lands on a container that has the templates installed and
         # COMFY_ASSET_PROFILES empty. Worth reading before wondering where the disk went.
