@@ -76,6 +76,11 @@ docker exec comfyui python3 -u /tmp/run_lanes.py krea-2-turbo ideogram-4
 docker exec comfyui cat /tmp/lane_report.json
 ```
 
+`run_lanes.py` frees ComfyUI's cached models before each lane and once at the
+end, because nothing else does and a batch of large profiles otherwise stacks
+them until the machine falls over. See
+[troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
+
 A passing lane is weaker evidence than it looks. The harness can satisfy a
 missing model from an inner-node default, a stub input, or a lane-declared
 substitution, so a user opening the same workflow could still see a missing

@@ -13,6 +13,8 @@
 | Tensor size mismatch inside an `...Inplace` node | Two latents being merged have different lengths | [Latent length mismatch](#latent-length-mismatch) |
 | `[Errno 21] Is a directory: '.../input'` | The workflow needs a file you have not supplied | [Workflow needs your own input](#workflow-needs-your-own-input) |
 | Black images, or a hang at `Requested to load WanVAE` | The SAM3 pack | [Black output or a VAE hang](#black-output-or-a-vae-hang) |
+| Free memory never returns after a render | ComfyUI still holds the model | [Memory stays used after a run](#memory-stays-used-after-a-run) |
+| The whole machine locks up or reboots during a big run | Two large models resident at once | [Memory stays used after a run](#memory-stays-used-after-a-run) |
 | A model that exists nowhere | The weights may not be published | [Weights not published yet](#weights-not-published-yet) |
 
 ## Nothing is listening yet
@@ -158,6 +160,39 @@ project name. This one clones from `dr-vij/ComfyUI-SAM3-DGX-Spark`, so the
 directory is `ComfyUI-SAM3-DGX-Spark`. A name that matches no directory
 disables nothing; startup warns when that happens, and `ls custom_nodes/` is the
 authoritative list.
+
+## Memory stays used after a run
+
+ComfyUI keeps the last model resident so a rerun skips the load. On a discrete
+GPU that is free; on a Spark the GPU shares host memory, so a finished 40 GB
+video render keeps 40 GB away from everything else until something unloads it.
+It does not time out on its own.
+
+Check what is actually held, and reclaim it:
+
+```bash
+nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv
+
+docker exec -i comfyui python3 -c "
+import urllib.request, json
+req = urllib.request.Request('http://127.0.0.1:8188/free',
+      data=json.dumps({'unload_models': True, 'free_memory': True}).encode(),
+      headers={'Content-Type': 'application/json'})
+urllib.request.urlopen(req, timeout=60).read()"
+```
+
+Two things do this automatically:
+
+- `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See
+  [configuration.md](configuration.md).
+- `run_lanes.py` frees before every lane and once at the end.
+
+The failure this prevents is worse than wasted memory. Running two large
+profiles back to back without unloading asks for both models at once, and a
+Spark answers that by locking up rather than raising an OOM. A three-lane
+MiniMax batch took this machine down that way; the driver logged
+`NVRM ... NV_ERR_NO_MEMORY` and the box hard-rebooted. Individually each lane
+peaks near 40 GB and finishes with 20 GB to spare.
 
 ## Weights not published yet
 

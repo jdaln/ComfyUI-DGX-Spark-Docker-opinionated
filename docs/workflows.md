@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 53 profiles. The 48 in the category tables below
+`asset-profiles.json` defines 53 profiles. The 51 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
-workflow's default settings. The remaining 5 are listed under
+workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 48 have an automated smoke lane. Three do not, because their
+Most of those 51 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -91,6 +91,42 @@ template installs a custom node. There is no NVFP4 build that ComfyUI can load.
 Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
 branch alone, which is why it runs in seconds; the animate checkpoint, LoRAs,
 text encoder and VAE the rest of that workflow loads come from you.
+
+### MiniMax H3, video with its own soundtrack
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text to video, with dialogue, effects and music generated with it | `minimax-h3-t2v` | Text to Video (MiniMax H3) | Ours | 42 GB | 291 s |
+| Animate a still image, same joint audio | `minimax-h3-i2v` | Image to Video (MiniMax H3) | Ours | 42 GB | 276 s |
+| Carry an identity, style, motion or voice over from references | `minimax-h3-ref2v` | Reference to Video (MiniMax H3) | Ours | 42 GB | 316 s |
+
+The first workflows here that produce sound. H3 models audio and video in one
+forward pass instead of dubbing a track on afterwards, so speech lands in sync
+with the mouth and effects land on the action. Output is 24 fps and about five
+seconds at the shipped defaults; the Resolution Selector caps the short edge at
+768 px.
+
+Reference to video takes up to nine images, three videos (each able to carry its
+own soundtrack) and three loose audio clips, addressed from the prompt by tag
+(`<Picture 1>`, `<Video 1>`, `<Audio 1>`) in the order you connected them. It
+runs the `ref2va` weights rather than the `fl2va` the other two share, so it
+costs a second 21 GB model; all three together are 63 GB.
+
+Core ships its own `video_minimax_h3_t2v` / `_i2v` / `_r2v` templates, loading
+the same four files these profiles provision. The bundled copies stay anyway:
+core's i2v and r2v default to sample images that are not published anywhere
+fetchable (`transparent_rgb_gaming_mouse.png`, `red_superboy_on_city_roof.png`),
+so they cannot run unattended, and the exports shared one workflow id. Ours
+point at `example.png` and carry distinct ids, which is what makes them smoke
+testable. Do not delete them as duplicates.
+
+Each run peaks around 40 GB resident on top of whatever else is on the box, not
+the 53 GiB core's template metadata advertises. All three produce 864x480 or
+640x640 at 24 fps, 5.2 s, with a stereo AAC track at roughly -14 dB mean, so the
+joint audio path really is generating sound rather than padding silence.
+
+Nothing here is gated. Needs ComfyUI v0.30.0 or newer for the `MiniMaxH3*`
+nodes.
 
 ### LTX 2.0, fast video, distilled or full quality
 
@@ -214,29 +250,6 @@ from Hugging Face file sizes rather than a real download.
 
 Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
 both pass and the output looks right. Commands in [verifying.md](verifying.md).
-
-### MiniMax H3, video with its own soundtrack
-
-| What you get | Profile | Workflow | Type | Disk | Run |
-| --- | --- | --- | --- | ---: | ---: |
-| Text to video, with dialogue, effects and music generated with it | `minimax-h3-t2v` | Text to Video (MiniMax H3) | Ours | 42 GB | — |
-| Animate a still image, same joint audio | `minimax-h3-i2v` | Image to Video (MiniMax H3) | Ours | 42 GB | — |
-| Carry an identity, style, motion or voice over from references | `minimax-h3-ref2v` | Reference to Video (MiniMax H3) | Ours | 42 GB | — |
-
-The first workflows here that produce sound. H3 models audio and video in one
-forward pass instead of dubbing a track on afterwards, so speech lands in sync
-with the mouth and effects land on the action. Output is 24 fps and about five
-seconds at the shipped defaults; the Resolution Selector caps the short edge at
-768 px.
-
-Reference to video takes up to nine images, three videos (each able to carry its
-own soundtrack) and three loose audio clips, addressed from the prompt by tag
-(`<Picture 1>`, `<Video 1>`, `<Audio 1>`) in the order you connected them. It
-runs the `ref2va` weights rather than the `fl2va` the other two share, so it
-costs a second 21 GB model; all three together are 63 GB.
-
-Nothing here is gated. Needs ComfyUI v0.30.0 or newer for the `MiniMaxH3*`
-nodes.
 
 ### Speech
 

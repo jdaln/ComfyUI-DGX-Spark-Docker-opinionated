@@ -339,4 +339,12 @@ elif [ "${DISABLE_ALL_CUSTOM_NODES:-true}" = "true" ]; then
     COMFY_ARGS+=(--disable-all-custom-nodes)
 fi
 
+# Reclaim the cached model after an idle spell. ComfyUI holds the last model
+# resident, which on a Spark is host memory everything else needs. Backgrounded
+# here so it dies with the container.
+IDLE_UNLOAD_HELPER="${COMFY_IDLE_UNLOAD_HELPER:-/usr/local/bin/comfy_idle_unload.py}"
+if [ -x "$IDLE_UNLOAD_HELPER" ]; then
+    python "$IDLE_UNLOAD_HELPER" &
+fi
+
 python /workspace/ComfyUI/main.py "${COMFY_ARGS[@]}"

@@ -47,6 +47,7 @@ services:
       COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST: ${COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST:-ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle,ComfyUI-DGX-Spark-Templates}
       COMFY_PORT: ${COMFY_PORT:-8188}
       COMFY_CMDLINE_EXTRA: ${COMFY_CMDLINE_EXTRA:---bf16-unet --bf16-vae --bf16-text-enc --use-sage-attention}
+      COMFY_IDLE_UNLOAD_MINUTES: ${COMFY_IDLE_UNLOAD_MINUTES:-60}
     healthcheck:
       test:
         [

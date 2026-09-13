@@ -281,8 +281,10 @@ WORKDIR /workspace
 COPY asset-profiles.json /workspace/asset-profiles.json
 COPY patches /workspace/patches
 COPY scripts/bootstrap_comfy_assets.sh /usr/local/bin/bootstrap_comfy_assets.sh
+COPY scripts/comfy_idle_unload.py /usr/local/bin/comfy_idle_unload.py
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh /usr/local/bin/bootstrap_comfy_assets.sh
+RUN chmod +x /entrypoint.sh /usr/local/bin/bootstrap_comfy_assets.sh \
+    /usr/local/bin/comfy_idle_unload.py
 # Keep this copy near the end to avoid rebuilding heavy layers when cutter changes.
 COPY ["models-cutter", "/workspace/models-cutter"]
 
