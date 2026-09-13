@@ -10,6 +10,55 @@ Background on the provisioning model and the smoke toolchain lives in
 [docs/verifying.md](../../docs/verifying.md).
 This skill is the step-by-step onboarding checklist.
 
+## 0. Check what core already does — before writing anything
+
+Two sessions running, the first draft of a new template duplicated something
+ComfyUI core already shipped. Do these three checks first; they take a minute
+and can cancel the whole task.
+
+**Does core already ship a template?**
+
+```bash
+docker exec -i comfyui python3 -c "
+import json, glob
+p = glob.glob('/workspace/venv/lib/python3*/site-packages/comfyui_workflow_templates_json/templates/index.json')[0]
+idx = json.load(open(p))
+for c in idx:
+    for t in c.get('templates', []):
+        if 'YOUR_MODEL' in t['name'].lower(): print(t['name'], '->', t.get('title'))"
+ls ComfyUI/blueprints | grep -i YOUR_MODEL
+```
+
+If it does, provision for *that* and reference it by bare name in a lane. Only
+bundle your own when core has nothing, or when you need a variant core does not
+cover (an NVFP4 build, a different checkpoint). Check what core's template
+already contains too: LTX 2.5's core templates already chain the latent
+upscaler, so a separate "upscale" template would have duplicated it.
+
+**Can the pinned core even load the model?** A new model family often needs a
+new text encoder or ldm module. LTX 2.5 conditions on Gemma 4, which 0.30.0
+did not have at all, so no profile or template could have worked.
+
+```bash
+ls ComfyUI/comfy/ldm/ | grep -i YOUR_MODEL
+grep -rn 'YOUR_ENCODER' ComfyUI/comfy/text_encoders/*.py ComfyUI/comfy/sd.py
+```
+
+**Is the repo gated?** `gated: auto` on the Hugging Face API means *approval is
+instant*, not that it is skipped — the licence still has to be accepted once by
+the token's account. Probe before starting a multi-gigabyte download:
+
+```bash
+docker exec -i comfyui python3 -c "
+import os, urllib.request, urllib.error
+req = urllib.request.Request('https://huggingface.co/ORG/REPO/resolve/main/SMALL_FILE', method='HEAD')
+req.add_header('Authorization', f\"Bearer {os.environ.get('HF_TOKEN','')}\")
+try: print(urllib.request.urlopen(req, timeout=30).status, 'OK')
+except urllib.error.HTTPError as e: print(e.code, e.reason)"
+```
+
+403 with a valid token means that specific repo needs its licence accepted.
+
 ## 1. Decide how it gets provisioned
 
 Prefer **profile-driven** provisioning for anything you want deterministically
@@ -61,6 +110,27 @@ without a profile selected — intentional here, but confirm that's what you
 want (a stray HF link anywhere in the file is enough to trigger downloads;
 `validate_manifest.py` warns about undeclared self-provisioning).
 
+## 2b. Adapting someone else's workflow
+
+Keep the attribution inside the file, not only in the docs — a `MarkdownNote`
+node shows in the GUI and travels with the JSON. State the source workflow,
+author, licence, and what you changed and why. If the original is copyleft
+(GPL-3.0), say so: the derived file inherits it.
+
+Three things that bite when converting a third-party workflow onto a newer
+model:
+
+- **Strip stale repo links from its notes.** A bare Hugging Face repo link
+  anywhere in the file lets the asset scanner match loader filenames against
+  that repo. Converting a workflow off LTX 2.3 while leaving the original's
+  "download the models here" note intact re-provisions the entire 2.3 stack.
+- **Declare its node types** in `scripts/smoke/external_node_types.json`, or
+  `validate_manifest.py` rejects the template.
+- **Architecture changes are not filename swaps.** LTX 2.3 loaded a separate
+  text projection through `DualCLIPLoader`; 2.5 folds it into the encoder and
+  needs a single `CLIPLoader`. Check the loader's input list, not just the
+  filename.
+
 ## 3. Add smoke coverage
 
 Add a row to `scripts/smoke/lanes.json`:
@@ -78,6 +148,16 @@ Skip the lane (and note why in `scripts/smoke/pending_models.json` if
 upstream weights are missing) when the workflow is genuinely
 input-dependent (needs a user-supplied file with no bundled sample) or
 blocked on unpublished weights.
+
+Also skip it when the graph uses a node whose `widgets_values` cannot be
+mapped positionally. `wf_smoke.py` converts UI to API by position, which
+breaks on nodes carrying many optional or link-converted widgets — the
+`LTXDirector` timeline node has 23 widget values across 11 required and 12
+optional inputs and shifts every value after the link-converted ones. Prove
+it is the node and not your edit by running the upstream original through
+`wf_smoke.py`: if it fails identically, record the row as GUI-only rather
+than chasing it. The ComfyUI frontend builds prompts from its own widget
+model and is unaffected.
 
 ## 4. Validate offline first
 

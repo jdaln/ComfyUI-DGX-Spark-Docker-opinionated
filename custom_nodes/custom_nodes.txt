@@ -48,3 +48,6 @@ https://github.com/BobRandomNumber/ComfyUI-HeartMuLa.git
 https://github.com/Enemyx-net/VibeVoice-ComfyUI.git
 
 https://github.com/ai-joe-git/ComfyUI-Simple-Prompt-Batcher
+
+# LTX Director timeline editor, shot sequencing and FFLF, by WhatDreamsCost (GPL-3.0)
+https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI

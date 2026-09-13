@@ -1,1098 +1,1167 @@
 {
-  "profiles": {
-    "wananimate-preprocess": [
-      "wananimate-detection"
-    ],
-    "wan2.2-t2v-bundled": [
-      "wananimate-detection",
-      "wan2.2-t2v-core-assets"
-    ],
-    "wan2.2-i2v-bundled": [
-      "wananimate-detection",
-      "wan2.2-i2v-core-assets"
-    ],
-    "z-image-turbo-core": [
-      "z-image-turbo-core-assets"
-    ],
-    "z-image-turbo-union-control": [
-      "z-image-turbo-core-assets",
-      "z-image-turbo-union-controlnet"
-    ],
-    "qwen-image-t2i-lightning-8step": [
-      "qwen-image-core-assets",
-      "qwen-image-lightning-8step"
-    ],
-    "qwen-image-inpaint-lightning-4step": [
-      "qwen-image-core-assets",
-      "qwen-image-inpaint-controlnet",
-      "qwen-image-lightning-4step"
-    ],
-    "qwen-image-2512-t2i-lightning-4step": [
-      "qwen-image-2512-core-assets",
-      "qwen-image-2512-lightning-4step"
-    ],
-    "qwen-image-edit-2511-core": [
-      "qwen-image-edit-2511-core-assets"
-    ],
-    "qwen-image-layered-core": [
-      "qwen-image-layered-core-assets"
-    ],
-    "lotus-depth-support": [
-      "lotus-depth-support-assets"
-    ],
-    "ace-step-1.5-core": [
-      "ace-step-1.5-core-assets"
-    ],
-    "hunyuan3d-2.1-core": [
-      "hunyuan3d-2.1-core-assets"
-    ],
-    "leapfusion-hunyuanvideo-i2v": [
-      "leapfusion-hunyuanvideo-i2v-assets"
-    ],
-    "wan2.1-vace-bundled": [
-      "wan2.1-vace-core-assets",
-      "sam3-segmentation"
-    ],
-    "ltx-2.0-t2v-distilled": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-distilled-checkpoint",
-      "ltx-2-upscaler"
-    ],
-    "ltx-2.0-i2v-distilled": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-distilled-checkpoint",
-      "ltx-2-upscaler"
-    ],
-    "ltx-2.0-t2v-full": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-dev-checkpoint",
-      "ltx-2-distilled-lora",
-      "ltx-2-upscaler"
-    ],
-    "ltx-2.0-i2v-full": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-dev-checkpoint",
-      "ltx-2-distilled-lora",
-      "ltx-2-squish-lora",
-      "ltx-2-upscaler"
-    ],
-    "ltx-2.0-v2v-detailer": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2-dev-checkpoint",
-      "ltx-2-detailer-lora"
-    ],
-    "ltx-2.0-iclora-all-distilled": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-distilled-checkpoint",
-      "ltx-2-upscaler",
-      "ltx-2-iclora-all"
-    ],
-    "ltx-2.0-iclora-all-distilled-ref0.5": [
-      "ltx-gemma3-snapshot-text-encoder",
-      "ltx-2-distilled-checkpoint",
-      "ltx-2-upscaler",
-      "ltx-2-iclora-all",
-      "ltx-2-iclora-union-ref0.5"
-    ],
-    "ltx-2.0-iclora-all-bundled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2-dev-checkpoint",
-      "ltx-2-distilled-lora",
-      "ltx-2-upscaler",
-      "ltx-2-iclora-all"
-    ],
-    "ltx-2.3-t2v-i2v-two-stage-distilled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler"
-    ],
-    "ltx-2.3-t2v-i2v-single-stage-distilled-full": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora"
-    ],
-    "ltx-2.3-iclora-union-control-distilled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-iclora-support",
-      "ltx-2.3-iclora-union"
-    ],
-    "ltx-2.3-iclora-motion-track-distilled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-iclora-support",
-      "ltx-2.3-iclora-motion-track"
-    ],
-    "ltx-2.3-iclora-hdr-distilled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-iclora-support",
-      "ltx-2.3-iclora-hdr"
-    ],
-    "ltx-2.3-iclora-lipdub-two-stage-distilled": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "ltx-2.3-iclora-support",
-      "ltx-2.3-iclora-lipdub"
-    ],
-    "krea-2-turbo": [
-      "krea-2-support-assets",
-      "krea-2-turbo-fp8"
-    ],
-    "krea-2-turbo-styleloras": [
-      "krea-2-support-assets",
-      "krea-2-turbo-fp8",
-      "krea-2-style-loras"
-    ],
-    "krea-2-turbo-nvfp4": [
-      "krea-2-support-assets",
-      "krea-2-turbo-nvfp4-model"
-    ],
-    "krea-2-raw": [
-      "krea-2-support-assets",
-      "krea-2-raw-fp8"
-    ],
-    "ideogram-4": [
-      "ideogram-4-support-assets",
-      "ideogram-4-fp8"
-    ],
-    "ideogram-4-nvfp4": [
-      "ideogram-4-support-assets",
-      "ideogram-4-nvfp4-models"
-    ],
-    "lucida-background-removal": [
-      "lucida-background-removal-assets"
-    ],
-    "bfs-ltx-2.3-edit-anything": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "bfs-ltx-2.3-edit-anything-lora"
-    ],
-    "bfs-ltx-2.3-style-swap": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "bfs-ltx-2.3-style-swap-loras"
-    ],
-    "bfs-ltx-2.3-inpaint": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "bfs-ltx-2.3-inpaint-lora"
-    ],
-    "bfs-ltx-2.3-masked-ref-inpaint": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "bfs-ltx-2.3-inpaint-lora",
-      "bfs-ltx-2.3-masked-ref-inpaint-lora"
-    ],
-    "bfs-ltx-2.3-head-swap": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "bfs-ltx-2.3-head-swap-lora"
-    ],
-    "bfs-ltx-2.3-multishot": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler"
-    ],
-    "mage-flow-edit": [
-      "mage-flow-support-assets",
-      "mage-flow-edit-model"
-    ],
-    "mage-flow-edit-turbo": [
-      "mage-flow-support-assets",
-      "mage-flow-edit-turbo-model"
-    ],
-    "heartmula-oss-3b": [
-      "heartmula-shared-config",
-      "heartmula-oss-3b-assets"
-    ],
-    "heartmula-transcribe": [
-      "heartmula-transcriptor-assets"
-    ],
-    "vibevoice-1.5b": [
-      "vibevoice-tokenizer",
-      "vibevoice-1.5b-model"
-    ],
-    "vibevoice-large": [
-      "vibevoice-tokenizer",
-      "vibevoice-large-model"
-    ],
-    "ltx-2.3-tts-prompted-voice": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler"
-    ],
-    "tts-prompted-conversation": [
-      "ltx-gemma3-comfy-text-encoder",
-      "ltx-2.3-dev-checkpoint",
-      "ltx-2.3-distilled-lora",
-      "ltx-2.3-upscaler",
-      "vibevoice-tokenizer",
-      "vibevoice-large-model"
-    ],
-    "minimax-h3-t2v": [
-      "minimax-h3-support-assets",
-      "minimax-h3-fl2va-model"
-    ],
-    "minimax-h3-i2v": [
-      "minimax-h3-support-assets",
-      "minimax-h3-fl2va-model"
-    ],
-    "minimax-h3-ref2v": [
-      "minimax-h3-support-assets",
-      "minimax-h3-ref2va-model"
-    ]
+ "profiles": {
+  "wananimate-preprocess": [
+   "wananimate-detection"
+  ],
+  "wan2.2-t2v-bundled": [
+   "wananimate-detection",
+   "wan2.2-t2v-core-assets"
+  ],
+  "wan2.2-i2v-bundled": [
+   "wananimate-detection",
+   "wan2.2-i2v-core-assets"
+  ],
+  "z-image-turbo-core": [
+   "z-image-turbo-core-assets"
+  ],
+  "z-image-turbo-union-control": [
+   "z-image-turbo-core-assets",
+   "z-image-turbo-union-controlnet"
+  ],
+  "qwen-image-t2i-lightning-8step": [
+   "qwen-image-core-assets",
+   "qwen-image-lightning-8step"
+  ],
+  "qwen-image-inpaint-lightning-4step": [
+   "qwen-image-core-assets",
+   "qwen-image-inpaint-controlnet",
+   "qwen-image-lightning-4step"
+  ],
+  "qwen-image-2512-t2i-lightning-4step": [
+   "qwen-image-2512-core-assets",
+   "qwen-image-2512-lightning-4step"
+  ],
+  "qwen-image-edit-2511-core": [
+   "qwen-image-edit-2511-core-assets"
+  ],
+  "qwen-image-layered-core": [
+   "qwen-image-layered-core-assets"
+  ],
+  "lotus-depth-support": [
+   "lotus-depth-support-assets"
+  ],
+  "ace-step-1.5-core": [
+   "ace-step-1.5-core-assets"
+  ],
+  "hunyuan3d-2.1-core": [
+   "hunyuan3d-2.1-core-assets"
+  ],
+  "leapfusion-hunyuanvideo-i2v": [
+   "leapfusion-hunyuanvideo-i2v-assets"
+  ],
+  "wan2.1-vace-bundled": [
+   "wan2.1-vace-core-assets",
+   "sam3-segmentation"
+  ],
+  "ltx-2.0-t2v-distilled": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-distilled-checkpoint",
+   "ltx-2-upscaler"
+  ],
+  "ltx-2.0-i2v-distilled": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-distilled-checkpoint",
+   "ltx-2-upscaler"
+  ],
+  "ltx-2.0-t2v-full": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-distilled-lora",
+   "ltx-2-upscaler"
+  ],
+  "ltx-2.0-i2v-full": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-distilled-lora",
+   "ltx-2-squish-lora",
+   "ltx-2-upscaler"
+  ],
+  "ltx-2.0-v2v-detailer": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-detailer-lora"
+  ],
+  "ltx-2.0-iclora-all-distilled": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-distilled-checkpoint",
+   "ltx-2-upscaler",
+   "ltx-2-iclora-all"
+  ],
+  "ltx-2.0-iclora-all-distilled-ref0.5": [
+   "ltx-gemma3-snapshot-text-encoder",
+   "ltx-2-distilled-checkpoint",
+   "ltx-2-upscaler",
+   "ltx-2-iclora-all",
+   "ltx-2-iclora-union-ref0.5"
+  ],
+  "ltx-2.0-iclora-all-bundled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-distilled-lora",
+   "ltx-2-upscaler",
+   "ltx-2-iclora-all"
+  ],
+  "ltx-2.3-t2v-i2v-two-stage-distilled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler"
+  ],
+  "ltx-2.3-t2v-i2v-single-stage-distilled-full": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora"
+  ],
+  "ltx-2.3-iclora-union-control-distilled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-iclora-support",
+   "ltx-2.3-iclora-union"
+  ],
+  "ltx-2.3-iclora-motion-track-distilled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-iclora-support",
+   "ltx-2.3-iclora-motion-track"
+  ],
+  "ltx-2.3-iclora-hdr-distilled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-iclora-support",
+   "ltx-2.3-iclora-hdr"
+  ],
+  "ltx-2.3-iclora-lipdub-two-stage-distilled": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "ltx-2.3-iclora-support",
+   "ltx-2.3-iclora-lipdub"
+  ],
+  "krea-2-turbo": [
+   "krea-2-support-assets",
+   "krea-2-turbo-fp8"
+  ],
+  "krea-2-turbo-styleloras": [
+   "krea-2-support-assets",
+   "krea-2-turbo-fp8",
+   "krea-2-style-loras"
+  ],
+  "krea-2-turbo-nvfp4": [
+   "krea-2-support-assets",
+   "krea-2-turbo-nvfp4-model"
+  ],
+  "krea-2-raw": [
+   "krea-2-support-assets",
+   "krea-2-raw-fp8"
+  ],
+  "ideogram-4": [
+   "ideogram-4-support-assets",
+   "ideogram-4-fp8"
+  ],
+  "ideogram-4-nvfp4": [
+   "ideogram-4-support-assets",
+   "ideogram-4-nvfp4-models"
+  ],
+  "lucida-background-removal": [
+   "lucida-background-removal-assets"
+  ],
+  "bfs-ltx-2.3-edit-anything": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "bfs-ltx-2.3-edit-anything-lora"
+  ],
+  "bfs-ltx-2.3-style-swap": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "bfs-ltx-2.3-style-swap-loras"
+  ],
+  "bfs-ltx-2.3-inpaint": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "bfs-ltx-2.3-inpaint-lora"
+  ],
+  "bfs-ltx-2.3-masked-ref-inpaint": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "bfs-ltx-2.3-inpaint-lora",
+   "bfs-ltx-2.3-masked-ref-inpaint-lora"
+  ],
+  "bfs-ltx-2.3-head-swap": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "bfs-ltx-2.3-head-swap-lora"
+  ],
+  "bfs-ltx-2.3-multishot": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler"
+  ],
+  "mage-flow-edit": [
+   "mage-flow-support-assets",
+   "mage-flow-edit-model"
+  ],
+  "mage-flow-edit-turbo": [
+   "mage-flow-support-assets",
+   "mage-flow-edit-turbo-model"
+  ],
+  "heartmula-oss-3b": [
+   "heartmula-shared-config",
+   "heartmula-oss-3b-assets"
+  ],
+  "heartmula-transcribe": [
+   "heartmula-transcriptor-assets"
+  ],
+  "vibevoice-1.5b": [
+   "vibevoice-tokenizer",
+   "vibevoice-1.5b-model"
+  ],
+  "vibevoice-large": [
+   "vibevoice-tokenizer",
+   "vibevoice-large-model"
+  ],
+  "ltx-2.3-tts-prompted-voice": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler"
+  ],
+  "tts-prompted-conversation": [
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2.3-dev-checkpoint",
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-upscaler",
+   "vibevoice-tokenizer",
+   "vibevoice-large-model"
+  ],
+  "minimax-h3-t2v": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model"
+  ],
+  "minimax-h3-i2v": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model"
+  ],
+  "minimax-h3-ref2v": [
+   "minimax-h3-support-assets",
+   "minimax-h3-ref2va-model"
+  ],
+  "ltx-2.5-distilled": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8"
+  ],
+  "ltx-2.5-distilled-nvfp4": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-nvfp4"
+  ],
+  "ltx-2.5-latent-upscale": [
+   "ltx-2.5-video-vae",
+   "ltx-2.5-spatial-upscaler"
+  ]
+ },
+ "selection_metadata": {
+  "leapfusion-hunyuanvideo-i2v": {
+   "custom_node_example_workflows": [
+    "ComfyUI-KJNodes"
+   ]
   },
-  "selection_metadata": {
-    "leapfusion-hunyuanvideo-i2v": {
-      "custom_node_example_workflows": [
-        "ComfyUI-KJNodes"
-      ]
-    },
-    "bfs-ltx-2.3-multishot": {
-      "custom_node_example_workflows": [
-        "ComfyUI-BFSNodes"
-      ]
-    },
-    "heartmula-oss-3b": {
-      "custom_node_example_workflows": [
-        "ComfyUI-HeartMuLa"
-      ]
-    },
-    "heartmula-transcribe": {
-      "custom_node_example_workflows": [
-        "ComfyUI-HeartMuLa"
-      ]
-    },
-    "vibevoice-1.5b": {
-      "custom_node_example_workflows": [
-        "VibeVoice-ComfyUI"
-      ]
-    },
-    "vibevoice-large": {
-      "custom_node_example_workflows": [
-        "VibeVoice-ComfyUI"
-      ]
-    },
-    "tts-prompted-conversation": {
-      "custom_node_example_workflows": [
-        "VibeVoice-ComfyUI"
-      ]
-    }
+  "bfs-ltx-2.3-multishot": {
+   "custom_node_example_workflows": [
+    "ComfyUI-BFSNodes"
+   ]
   },
-  "custom_node_example_workflow_profiles": {
-    "ComfyUI-KJNodes": [
-      "leapfusion-hunyuanvideo-i2v"
-    ],
-    "ComfyUI-BFSNodes": [
-      "bfs-ltx-2.3-multishot"
-    ],
-    "ComfyUI-HeartMuLa": [
-      "heartmula-oss-3b",
-      "heartmula-transcribe"
-    ],
-    "VibeVoice-ComfyUI": [
-      "vibevoice-1.5b",
-      "vibevoice-large",
-      "tts-prompted-conversation"
-    ]
+  "heartmula-oss-3b": {
+   "custom_node_example_workflows": [
+    "ComfyUI-HeartMuLa"
+   ]
   },
-  "groups": {
-    "wananimate-detection": [
-      {
-        "dest": "/workspace/ComfyUI/models/detection/vitpose-l-wholebody.onnx",
-        "url": "https://huggingface.co/JunkyByte/easy_ViTPose/resolve/main/onnx/wholebody/vitpose-l-wholebody.onnx",
-        "label": "WanAnimate ViTPose large model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/detection/onnx/yolov10m.onnx",
-        "url": "https://huggingface.co/Wan-AI/Wan2.2-Animate-14B/resolve/main/process_checkpoint/det/yolov10m.onnx",
-        "label": "WanAnimate YOLOv10m detection model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/sam2/sam2.1_hiera_base_plus.safetensors",
-        "url": "https://huggingface.co/Kijai/sam2-safetensors/resolve/main/sam2.1_hiera_base_plus.safetensors",
-        "label": "SAM2.1 Hiera base+ (WanAnimate segmentation)"
-      }
-    ],
-    "wan2.2-t2v-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
-        "label": "Wan 2.2 text-to-video low-noise diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
-        "label": "Wan 2.2 text-to-video high-noise diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors",
-        "label": "Wan 2.2 text-to-video low-noise Lightx2V LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
-        "label": "Wan 2.2 text-to-video high-noise Lightx2V LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "label": "Wan text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
-        "label": "Wan VAE"
-      }
-    ],
-    "wan2.2-i2v-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
-        "label": "Wan 2.2 image-to-video low-noise diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
-        "label": "Wan 2.2 image-to-video high-noise diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
-        "label": "Wan 2.2 image-to-video low-noise Lightx2V LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
-        "label": "Wan 2.2 image-to-video high-noise Lightx2V LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "label": "Wan text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
-        "label": "Wan VAE"
-      }
-    ],
-    "z-image-turbo-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
-        "label": "Z-Image-Turbo diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors",
-        "label": "Z-Image-Turbo text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/ae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors",
-        "label": "Z-Image-Turbo VAE"
-      }
-    ],
-    "z-image-turbo-union-controlnet": [
-      {
-        "dest": "/workspace/ComfyUI/models/model_patches/Z-Image-Turbo-Fun-Controlnet-Union.safetensors",
-        "url": "https://huggingface.co/alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union/resolve/main/Z-Image-Turbo-Fun-Controlnet-Union.safetensors",
-        "label": "Z-Image-Turbo union control model"
-      }
-    ],
-    "qwen-image-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
-        "label": "Qwen-Image diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "label": "Qwen-Image text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
-        "label": "Qwen-Image VAE"
-      }
-    ],
-    "qwen-image-lightning-8step": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-Lightning-8steps-V1.0.safetensors",
-        "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-8steps-V1.0.safetensors",
-        "label": "Qwen-Image 8-step lightning LoRA"
-      }
-    ],
-    "qwen-image-lightning-4step": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-Lightning-4steps-V1.0.safetensors",
-        "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-4steps-V1.0.safetensors",
-        "label": "Qwen-Image 4-step lightning LoRA"
-      }
-    ],
-    "qwen-image-inpaint-controlnet": [
-      {
-        "dest": "/workspace/ComfyUI/models/controlnet/Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image-InstantX-ControlNets/resolve/main/split_files/controlnet/Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
-        "label": "Qwen-Image inpainting controlnet"
-      }
-    ],
-    "qwen-image-2512-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
-        "label": "Qwen-Image 2512 diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "label": "Qwen-Image text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
-        "label": "Qwen-Image VAE"
-      }
-    ],
-    "qwen-image-2512-lightning-4step": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
-        "url": "https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/resolve/main/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
-        "label": "Qwen-Image 2512 4-step lightning LoRA"
-      }
-    ],
-    "qwen-image-edit-2511-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
-        "label": "Qwen-Image Edit 2511 diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "label": "Qwen-Image Edit 2511 text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
-        "label": "Qwen-Image VAE"
-      }
-    ],
-    "qwen-image-layered-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_layered_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Layered_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_layered_bf16.safetensors",
-        "label": "Qwen-Image Layered diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-        "label": "Qwen-Image Layered text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/qwen_image_layered_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Layered_ComfyUI/resolve/main/split_files/vae/qwen_image_layered_vae.safetensors",
-        "label": "Qwen-Image Layered VAE"
-      }
-    ],
-    "lotus-depth-support-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/lotus-depth-d-v1-1.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/lotus/resolve/main/lotus-depth-d-v1-1.safetensors",
-        "label": "Lotus depth model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/vae-ft-mse-840000-ema-pruned.safetensors",
-        "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
-        "label": "SD1.5 VAE for Lotus depth workflows"
-      }
-    ],
-    "ace-step-1.5-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/acestep_v1.5_turbo.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/diffusion_models/acestep_v1.5_turbo.safetensors",
-        "label": "ACE-Step 1.5 diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_0.6b_ace15.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_0.6b_ace15.safetensors",
-        "label": "ACE-Step 1.5 small text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen_4b_ace15.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_4b_ace15.safetensors",
-        "label": "ACE-Step 1.5 large text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/ace_1.5_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/vae/ace_1.5_vae.safetensors",
-        "label": "ACE-Step 1.5 VAE"
-      }
-    ],
-    "hunyuan3d-2.1-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/checkpoints/hunyuan_3d_v2.1.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/hunyuan3D_2.1_repackaged/resolve/main/hunyuan_3d_v2.1.safetensors",
-        "label": "Hunyuan3D 2.1 checkpoint"
-      }
-    ],
-    "leapfusion-hunyuanvideo-i2v-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/hyvideo/hunyuan_video_720_fp8_e4m3fn.safetensors",
-        "url": "https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hunyuan_video_I2V_720_fixed_fp8_e4m3fn.safetensors",
-        "label": "HunyuanVideo image-to-video diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/hyvid/hunyuan_video_vae_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/vae/hunyuan_video_vae_bf16.safetensors",
-        "label": "HunyuanVideo VAE"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/clip_l.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/clip_l.safetensors",
-        "label": "CLIP-L text encoder for HunyuanVideo workflows"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/llava_llama3_fp16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/llava_llama3_fp16.safetensors",
-        "label": "LLaVA Llama 3 text encoder for HunyuanVideo workflows"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/hyvid/musubi-tuner/img2vid544p.safetensors",
-        "url": "https://huggingface.co/Kijai/Leapfusion-image2vid-comfy/resolve/main/leapfusion_img2vid544p_comfy.safetensors",
-        "label": "Leapfusion image-to-video LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/input/Mona-Lisa-oil-wood-panel-Leonardo-da.webp",
-        "url": "https://www.gstatic.com/webp/gallery/1.webp",
-        "label": "Leapfusion sample input image"
-      }
-    ],
-    "sam3-segmentation": [
-      {
-        "dest": "/workspace/ComfyUI/models/checkpoints/sam3.1_multiplex_fp16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/sam3.1/resolve/main/checkpoints/sam3.1_multiplex_fp16.safetensors",
-        "label": "SAM 3.1 multiplex fp16 (segmentation)"
-      }
-    ],
-    "wan2.1-vace-core-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.1_vace_14B_fp16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_vace_14B_fp16.safetensors",
-        "label": "Wan 2.1 VACE diffusion model"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/Wan21_CausVid_14B_T2V_lora_rank32.safetensors",
-        "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan21_CausVid_14B_T2V_lora_rank32.safetensors",
-        "label": "Wan 2.1 CausVid LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
-        "label": "Wan text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
-        "label": "Wan VAE"
-      }
-    ],
-    "ltx-gemma3-snapshot-text-encoder": [
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/text_encoders/gemma-3-12b-it-qat-q4_0-unquantized",
-        "repo_id": "google/gemma-3-12b-it-qat-q4_0-unquantized",
-        "label": "LTX Gemma 3 text encoder"
-      }
-    ],
-    "ltx-gemma3-comfy-text-encoder": [
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
-        "label": "LTX Gemma 3 text encoder"
-      },
-      {
-        "type": "symlink",
-        "dest": "/workspace/ComfyUI/models/text_encoders/comfy_gemma_3_12B_it.safetensors",
-        "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
-        "label": "LTX Gemma 3 text encoder alias"
-      },
-      {
-        "type": "symlink",
-        "dest": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it.safetensors",
-        "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
-        "label": "LTX Gemma 3 text encoder plain-name alias (bundled LTX 2.0 LoRA template)"
-      }
-    ],
-    "ltx-2-distilled-checkpoint": [
-      {
-        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-distilled.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled.safetensors",
-        "label": "LTX-2 distilled checkpoint"
-      }
-    ],
-    "ltx-2-dev-checkpoint": [
-      {
-        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
-        "label": "LTX-2 dev checkpoint"
-      },
-      {
-        "type": "symlink",
-        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev-fp8.safetensors",
-        "target": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
-        "label": "LTX-2 dev fp8 alias (bundled templates ask for the fp8 name)"
-      }
-    ],
-    "ltx-2-upscaler": [
-      {
-        "dest": "/workspace/ComfyUI/models/latent_upscale_models/ltx-2-spatial-upscaler-x2-1.0.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors",
-        "label": "LTX-2 spatial upscaler"
-      }
-    ],
-    "ltx-2-distilled-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-distilled-lora-384.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
-        "label": "LTX-2 distilled LoRA"
-      }
-    ],
-    "ltx-2-squish-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx2-squish.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/ltx2-squish.safetensors",
-        "label": "LTX-2 squish style LoRA (bundled i2v LoRA template)"
-      }
-    ],
-    "ltx-2-detailer-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-detailer.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors",
-        "label": "LTX-2 detailer IC LoRA"
-      }
-    ],
-    "ltx-2-iclora-all": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-canny-control.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Canny-Control/resolve/main/ltx-2-19b-ic-lora-canny-control.safetensors",
-        "label": "LTX-2 canny IC LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-depth-control.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Depth-Control/resolve/main/ltx-2-19b-ic-lora-depth-control.safetensors",
-        "label": "LTX-2 depth IC LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-pose-control.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Pose-Control/resolve/main/ltx-2-19b-ic-lora-pose-control.safetensors",
-        "label": "LTX-2 pose IC LoRA"
-      }
-    ],
-    "ltx-2-iclora-union-ref0.5": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-union-ref0.5.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Union-Control/resolve/main/ltx-2-19b-ic-lora-union-control-ref0.5.safetensors",
-        "label": "LTX-2 union control IC LoRA"
-      }
-    ],
-    "ltx-2.3-dev-checkpoint": [
-      {
-        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
-        "label": "LTX-2.3 dev checkpoint"
-      },
-      {
-        "type": "symlink",
-        "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-distilled-fp8.safetensors",
-        "target": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
-        "label": "LTX-2.3 distilled fp8 alias (bundled templates ask for the fp8 name)"
-      }
-    ],
-    "ltx-2.3-upscaler": [
-      {
-        "dest": "/workspace/ComfyUI/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
-        "label": "LTX-2.3 spatial upscaler"
-      }
-    ],
-    "ltx-2.3-distilled-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
-        "label": "LTX-2.3 distilled LoRA"
-      }
-    ],
-    "ltx-2.3-iclora-support": [
-      {
-        "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
-        "label": "MoGe 2 ViT-L normal (LTX 2.3 IC-LoRA control preprocessing)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
-        "label": "Gemma 3 12B abliterated LoRA (LTX 2.3 prompt enhance)"
-      }
-    ],
-    "ltx-2.3-iclora-union": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control/resolve/main/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
-        "label": "LTX-2.3 union control IC LoRA"
-      },
-      {
-        "type": "symlink",
-        "dest": "/workspace/ComfyUI/models/loras/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
-        "target": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
-        "label": "LTX-2.3 union control IC LoRA flat-name alias (bundled template)"
-      }
-    ],
-    "ltx-2.3-iclora-motion-track": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Motion-Track-Control/resolve/main/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
-        "label": "LTX-2.3 motion track IC LoRA"
-      }
-    ],
-    "ltx-2.3-iclora-hdr": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR/resolve/main/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
-        "label": "LTX-2.3 HDR IC LoRA"
-      }
-    ],
-    "ltx-2.3-iclora-lipdub": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
-        "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-LipDub/resolve/main/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
-        "label": "LTX-2.3 lipdub IC LoRA"
-      }
-    ],
-    "krea-2-support-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
-        "label": "Krea 2 Qwen3-VL-4B text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
-        "label": "Qwen-Image VAE"
-      }
-    ],
-    "krea-2-turbo-fp8": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
-        "label": "Krea 2 Turbo diffusion model (fp8)"
-      }
-    ],
-    "krea-2-turbo-nvfp4-model": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_nvfp4.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_nvfp4.safetensors",
-        "label": "Krea 2 Turbo diffusion model (nvfp4)"
-      }
-    ],
-    "krea-2-raw-fp8": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_raw_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_raw_fp8_scaled.safetensors",
-        "label": "Krea 2 RAW diffusion model (fp8)"
-      }
-    ],
-    "krea-2-style-loras": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_darkbrush.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_darkbrush.safetensors",
-        "label": "Krea 2 style LoRA (darkbrush)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_dotmatrix.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_dotmatrix.safetensors",
-        "label": "Krea 2 style LoRA (dotmatrix)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_kidsdrawing.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_kidsdrawing.safetensors",
-        "label": "Krea 2 style LoRA (kidsdrawing)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_neondrip.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_neondrip.safetensors",
-        "label": "Krea 2 style LoRA (neondrip)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_rainywindow.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_rainywindow.safetensors",
-        "label": "Krea 2 style LoRA (rainywindow)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_retroanime.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_retroanime.safetensors",
-        "label": "Krea 2 style LoRA (retroanime)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_softwatercolor.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_softwatercolor.safetensors",
-        "label": "Krea 2 style LoRA (softwatercolor)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_sunsetblur.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_sunsetblur.safetensors",
-        "label": "Krea 2 style LoRA (sunsetblur)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/krea2_vintagetarot.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_vintagetarot.safetensors",
-        "label": "Krea 2 style LoRA (vintagetarot)"
-      }
-    ],
-    "ideogram-4-support-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
-        "label": "Ideogram 4 Qwen3-VL-8B text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors",
-        "label": "Flux 2 VAE"
-      }
-    ],
-    "ideogram-4-fp8": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
-        "label": "Ideogram 4 diffusion model (fp8)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
-        "label": "Ideogram 4 unconditional diffusion model (fp8)"
-      }
-    ],
-    "ideogram-4-nvfp4-models": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
-        "label": "Ideogram 4 diffusion model (nvfp4)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
-        "label": "Ideogram 4 unconditional diffusion model (nvfp4)"
-      }
-    ],
-    "lucida-background-removal-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/background_removal/lucida.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors",
-        "label": "Lucida background removal model"
-      }
-    ],
-    "bfs-ltx-2.3-edit-anything-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
-        "label": "BFS LTX-2.3 Edit Anything global LoRA (9000 steps, AdamW)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
-        "label": "BFS LTX-2.3 Edit Anything global LoRA (6000 steps, Prodigy)"
-      }
-    ],
-    "bfs-ltx-2.3-style-swap-loras": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_anime2real_rank64_v1_4500.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_anime2real_rank64_v1_4500.safetensors",
-        "label": "BFS LTX-2.3 anime to live action LoRA"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_real2anime_rank64_v1_5000.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_real2anime_rank64_v1_5000.safetensors",
-        "label": "BFS LTX-2.3 live action to anime LoRA"
-      }
-    ],
-    "bfs-ltx-2.3-inpaint-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
-        "label": "BFS LTX-2.3 masked inpainting LoRA"
-      }
-    ],
-    "bfs-ltx-2.3-masked-ref-inpaint-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
-        "label": "BFS LTX-2.3 reference-driven masked inpainting LoRA"
-      }
-    ],
-    "bfs-ltx-2.3-head-swap-lora": [
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_adaptive_fro_098.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_adaptive_fro_098.safetensors",
-        "label": "BFS LTX-2.3 head swap v3 LoRA (adaptive rank, fro 0.98)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_64.safetensors",
-        "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_64.safetensors",
-        "label": "BFS LTX-2.3 head swap v3 LoRA (rank 64)"
-      }
-    ],
-    "mage-flow-support-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/text_encoders/qwen3vl_4b_bf16.safetensors",
-        "label": "Mage-Flow Qwen3-VL-4B text encoder"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/mage_flow_vae_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/vae/mage_flow_vae_bf16.safetensors",
-        "label": "Mage VAE"
-      }
-    ],
-    "mage-flow-edit-model": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/mage_flow_edit_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/diffusion_models/mage_flow_edit_bf16.safetensors",
-        "label": "Mage-Flow Edit diffusion model (bf16)"
-      }
-    ],
-    "mage-flow-edit-turbo-model": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/mage_flow_edit_turbo_bf16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/diffusion_models/mage_flow_edit_turbo_bf16.safetensors",
-        "label": "Mage-Flow Edit Turbo diffusion model (bf16)"
-      }
-    ],
-    "heartmula-shared-config": [
-      {
-        "dest": "/workspace/ComfyUI/models/HeartMuLa/gen_config.json",
-        "url": "https://huggingface.co/HeartMuLa/HeartMuLaGen/resolve/main/gen_config.json",
-        "label": "HeartMuLa generation config"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/HeartMuLa/tokenizer.json",
-        "url": "https://huggingface.co/HeartMuLa/HeartMuLaGen/resolve/main/tokenizer.json",
-        "label": "HeartMuLa tokenizer"
-      }
-    ],
-    "heartmula-oss-3b-assets": [
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartMuLa-oss-3B-happy-new-year",
-        "repo_id": "HeartMuLa/HeartMuLa-oss-3B-happy-new-year",
-        "label": "HeartMuLa oss 3B (happy new year) generator"
-      },
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartCodec-oss-20260123",
-        "repo_id": "HeartMuLa/HeartCodec-oss-20260123",
-        "label": "HeartCodec oss 20260123 audio decoder"
-      }
-    ],
-    "heartmula-transcriptor-assets": [
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartTranscriptor-oss",
-        "repo_id": "HeartMuLa/HeartTranscriptor-oss",
-        "label": "HeartTranscriptor oss lyrics transcriber"
-      }
-    ],
-    "vibevoice-tokenizer": [
-      {
-        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer.json",
-        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer.json",
-        "label": "VibeVoice tokenizer (tokenizer.json)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer_config.json",
-        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer_config.json",
-        "label": "VibeVoice tokenizer (tokenizer_config.json)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/vocab.json",
-        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/vocab.json",
-        "label": "VibeVoice tokenizer (vocab.json)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/merges.txt",
-        "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/merges.txt",
-        "label": "VibeVoice tokenizer (merges.txt)"
-      }
-    ],
-    "vibevoice-1.5b-model": [
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-1.5B",
-        "repo_id": "microsoft/VibeVoice-1.5B",
-        "label": "VibeVoice 1.5B"
-      }
-    ],
-    "vibevoice-large-model": [
-      {
-        "type": "hf_snapshot",
-        "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-Large",
-        "repo_id": "aoi-ot/VibeVoice-Large",
-        "label": "VibeVoice Large"
-      }
-    ],
-    "minimax-h3-support-assets": [
-      {
-        "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
-        "label": "MiniMax H3 Qwen3-VL-32B text encoder (NVFP4 AWQ)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/minimax_h3_video_vae_fp16.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors",
-        "label": "MiniMax H3 video VAE (fp16)"
-      },
-      {
-        "dest": "/workspace/ComfyUI/models/vae/minimax_h3_audio_vae_fp32.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
-        "label": "MiniMax H3 audio VAE (fp32)"
-      }
-    ],
-    "minimax-h3-fl2va-model": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
-        "label": "MiniMax H3 first/last-frame to video+audio (pruned int8 convrot)"
-      }
-    ],
-    "minimax-h3-ref2va-model": [
-      {
-        "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
-        "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
-        "label": "MiniMax H3 reference to video+audio (pruned int8 convrot)"
-      }
-    ]
+  "heartmula-transcribe": {
+   "custom_node_example_workflows": [
+    "ComfyUI-HeartMuLa"
+   ]
+  },
+  "vibevoice-1.5b": {
+   "custom_node_example_workflows": [
+    "VibeVoice-ComfyUI"
+   ]
+  },
+  "vibevoice-large": {
+   "custom_node_example_workflows": [
+    "VibeVoice-ComfyUI"
+   ]
+  },
+  "tts-prompted-conversation": {
+   "custom_node_example_workflows": [
+    "VibeVoice-ComfyUI"
+   ]
   }
+ },
+ "custom_node_example_workflow_profiles": {
+  "ComfyUI-KJNodes": [
+   "leapfusion-hunyuanvideo-i2v"
+  ],
+  "ComfyUI-BFSNodes": [
+   "bfs-ltx-2.3-multishot"
+  ],
+  "ComfyUI-HeartMuLa": [
+   "heartmula-oss-3b",
+   "heartmula-transcribe"
+  ],
+  "VibeVoice-ComfyUI": [
+   "vibevoice-1.5b",
+   "vibevoice-large",
+   "tts-prompted-conversation"
+  ]
+ },
+ "groups": {
+  "wananimate-detection": [
+   {
+    "dest": "/workspace/ComfyUI/models/detection/vitpose-l-wholebody.onnx",
+    "url": "https://huggingface.co/JunkyByte/easy_ViTPose/resolve/main/onnx/wholebody/vitpose-l-wholebody.onnx",
+    "label": "WanAnimate ViTPose large model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/detection/onnx/yolov10m.onnx",
+    "url": "https://huggingface.co/Wan-AI/Wan2.2-Animate-14B/resolve/main/process_checkpoint/det/yolov10m.onnx",
+    "label": "WanAnimate YOLOv10m detection model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/sam2/sam2.1_hiera_base_plus.safetensors",
+    "url": "https://huggingface.co/Kijai/sam2-safetensors/resolve/main/sam2.1_hiera_base_plus.safetensors",
+    "label": "SAM2.1 Hiera base+ (WanAnimate segmentation)"
+   }
+  ],
+  "wan2.2-t2v-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
+    "label": "Wan 2.2 text-to-video low-noise diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
+    "label": "Wan 2.2 text-to-video high-noise diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors",
+    "label": "Wan 2.2 text-to-video low-noise Lightx2V LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
+    "label": "Wan 2.2 text-to-video high-noise Lightx2V LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "label": "Wan text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+    "label": "Wan VAE"
+   }
+  ],
+  "wan2.2-i2v-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+    "label": "Wan 2.2 image-to-video low-noise diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+    "label": "Wan 2.2 image-to-video high-noise diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+    "label": "Wan 2.2 image-to-video low-noise Lightx2V LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+    "label": "Wan 2.2 image-to-video high-noise Lightx2V LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "label": "Wan text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+    "label": "Wan VAE"
+   }
+  ],
+  "z-image-turbo-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
+    "label": "Z-Image-Turbo diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors",
+    "label": "Z-Image-Turbo text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/ae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors",
+    "label": "Z-Image-Turbo VAE"
+   }
+  ],
+  "z-image-turbo-union-controlnet": [
+   {
+    "dest": "/workspace/ComfyUI/models/model_patches/Z-Image-Turbo-Fun-Controlnet-Union.safetensors",
+    "url": "https://huggingface.co/alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union/resolve/main/Z-Image-Turbo-Fun-Controlnet-Union.safetensors",
+    "label": "Z-Image-Turbo union control model"
+   }
+  ],
+  "qwen-image-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
+    "label": "Qwen-Image diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "label": "Qwen-Image text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+    "label": "Qwen-Image VAE"
+   }
+  ],
+  "qwen-image-lightning-8step": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-Lightning-8steps-V1.0.safetensors",
+    "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-8steps-V1.0.safetensors",
+    "label": "Qwen-Image 8-step lightning LoRA"
+   }
+  ],
+  "qwen-image-lightning-4step": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-Lightning-4steps-V1.0.safetensors",
+    "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-4steps-V1.0.safetensors",
+    "label": "Qwen-Image 4-step lightning LoRA"
+   }
+  ],
+  "qwen-image-inpaint-controlnet": [
+   {
+    "dest": "/workspace/ComfyUI/models/controlnet/Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-InstantX-ControlNets/resolve/main/split_files/controlnet/Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
+    "label": "Qwen-Image inpainting controlnet"
+   }
+  ],
+  "qwen-image-2512-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+    "label": "Qwen-Image 2512 diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "label": "Qwen-Image text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+    "label": "Qwen-Image VAE"
+   }
+  ],
+  "qwen-image-2512-lightning-4step": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+    "url": "https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/resolve/main/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+    "label": "Qwen-Image 2512 4-step lightning LoRA"
+   }
+  ],
+  "qwen-image-edit-2511-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+    "label": "Qwen-Image Edit 2511 diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "label": "Qwen-Image Edit 2511 text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+    "label": "Qwen-Image VAE"
+   }
+  ],
+  "qwen-image-layered-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_layered_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Layered_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_layered_bf16.safetensors",
+    "label": "Qwen-Image Layered diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "label": "Qwen-Image Layered text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_layered_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Layered_ComfyUI/resolve/main/split_files/vae/qwen_image_layered_vae.safetensors",
+    "label": "Qwen-Image Layered VAE"
+   }
+  ],
+  "lotus-depth-support-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/lotus-depth-d-v1-1.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/lotus/resolve/main/lotus-depth-d-v1-1.safetensors",
+    "label": "Lotus depth model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/vae-ft-mse-840000-ema-pruned.safetensors",
+    "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+    "label": "SD1.5 VAE for Lotus depth workflows"
+   }
+  ],
+  "ace-step-1.5-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/acestep_v1.5_turbo.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/diffusion_models/acestep_v1.5_turbo.safetensors",
+    "label": "ACE-Step 1.5 diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_0.6b_ace15.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_0.6b_ace15.safetensors",
+    "label": "ACE-Step 1.5 small text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_4b_ace15.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_4b_ace15.safetensors",
+    "label": "ACE-Step 1.5 large text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/ace_1.5_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/vae/ace_1.5_vae.safetensors",
+    "label": "ACE-Step 1.5 VAE"
+   }
+  ],
+  "hunyuan3d-2.1-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/hunyuan_3d_v2.1.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/hunyuan3D_2.1_repackaged/resolve/main/hunyuan_3d_v2.1.safetensors",
+    "label": "Hunyuan3D 2.1 checkpoint"
+   }
+  ],
+  "leapfusion-hunyuanvideo-i2v-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/hyvideo/hunyuan_video_720_fp8_e4m3fn.safetensors",
+    "url": "https://huggingface.co/Kijai/HunyuanVideo_comfy/resolve/main/hunyuan_video_I2V_720_fixed_fp8_e4m3fn.safetensors",
+    "label": "HunyuanVideo image-to-video diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/hyvid/hunyuan_video_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/vae/hunyuan_video_vae_bf16.safetensors",
+    "label": "HunyuanVideo VAE"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/clip_l.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/clip_l.safetensors",
+    "label": "CLIP-L text encoder for HunyuanVideo workflows"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/llava_llama3_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/llava_llama3_fp16.safetensors",
+    "label": "LLaVA Llama 3 text encoder for HunyuanVideo workflows"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/hyvid/musubi-tuner/img2vid544p.safetensors",
+    "url": "https://huggingface.co/Kijai/Leapfusion-image2vid-comfy/resolve/main/leapfusion_img2vid544p_comfy.safetensors",
+    "label": "Leapfusion image-to-video LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/Mona-Lisa-oil-wood-panel-Leonardo-da.webp",
+    "url": "https://www.gstatic.com/webp/gallery/1.webp",
+    "label": "Leapfusion sample input image"
+   }
+  ],
+  "sam3-segmentation": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/sam3.1_multiplex_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/sam3.1/resolve/main/checkpoints/sam3.1_multiplex_fp16.safetensors",
+    "label": "SAM 3.1 multiplex fp16 (segmentation)"
+   }
+  ],
+  "wan2.1-vace-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.1_vace_14B_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_vace_14B_fp16.safetensors",
+    "label": "Wan 2.1 VACE diffusion model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/Wan21_CausVid_14B_T2V_lora_rank32.safetensors",
+    "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan21_CausVid_14B_T2V_lora_rank32.safetensors",
+    "label": "Wan 2.1 CausVid LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "label": "Wan text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/wan_2.1_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+    "label": "Wan VAE"
+   }
+  ],
+  "ltx-gemma3-snapshot-text-encoder": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma-3-12b-it-qat-q4_0-unquantized",
+    "repo_id": "google/gemma-3-12b-it-qat-q4_0-unquantized",
+    "label": "LTX Gemma 3 text encoder"
+   }
+  ],
+  "ltx-gemma3-comfy-text-encoder": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+    "label": "LTX Gemma 3 text encoder"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/text_encoders/comfy_gemma_3_12B_it.safetensors",
+    "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+    "label": "LTX Gemma 3 text encoder alias"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it.safetensors",
+    "target": "/workspace/ComfyUI/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+    "label": "LTX Gemma 3 text encoder plain-name alias (bundled LTX 2.0 LoRA template)"
+   }
+  ],
+  "ltx-2-distilled-checkpoint": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-distilled.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled.safetensors",
+    "label": "LTX-2 distilled checkpoint"
+   }
+  ],
+  "ltx-2-dev-checkpoint": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+    "label": "LTX-2 dev checkpoint"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev-fp8.safetensors",
+    "target": "/workspace/ComfyUI/models/checkpoints/ltx-2-19b-dev.safetensors",
+    "label": "LTX-2 dev fp8 alias (bundled templates ask for the fp8 name)"
+   }
+  ],
+  "ltx-2-upscaler": [
+   {
+    "dest": "/workspace/ComfyUI/models/latent_upscale_models/ltx-2-spatial-upscaler-x2-1.0.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors",
+    "label": "LTX-2 spatial upscaler"
+   }
+  ],
+  "ltx-2-distilled-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-distilled-lora-384.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+    "label": "LTX-2 distilled LoRA"
+   }
+  ],
+  "ltx-2-squish-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx2-squish.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/ltx2-squish.safetensors",
+    "label": "LTX-2 squish style LoRA (bundled i2v LoRA template)"
+   }
+  ],
+  "ltx-2-detailer-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-detailer.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors",
+    "label": "LTX-2 detailer IC LoRA"
+   }
+  ],
+  "ltx-2-iclora-all": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-canny-control.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Canny-Control/resolve/main/ltx-2-19b-ic-lora-canny-control.safetensors",
+    "label": "LTX-2 canny IC LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-depth-control.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Depth-Control/resolve/main/ltx-2-19b-ic-lora-depth-control.safetensors",
+    "label": "LTX-2 depth IC LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-pose-control.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Pose-Control/resolve/main/ltx-2-19b-ic-lora-pose-control.safetensors",
+    "label": "LTX-2 pose IC LoRA"
+   }
+  ],
+  "ltx-2-iclora-union-ref0.5": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2-19b-ic-lora-union-ref0.5.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Union-Control/resolve/main/ltx-2-19b-ic-lora-union-control-ref0.5.safetensors",
+    "label": "LTX-2 union control IC LoRA"
+   }
+  ],
+  "ltx-2.3-dev-checkpoint": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+    "label": "LTX-2.3 dev checkpoint"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-distilled-fp8.safetensors",
+    "target": "/workspace/ComfyUI/models/checkpoints/ltx-2.3-22b-dev.safetensors",
+    "label": "LTX-2.3 distilled fp8 alias (bundled templates ask for the fp8 name)"
+   }
+  ],
+  "ltx-2.3-upscaler": [
+   {
+    "dest": "/workspace/ComfyUI/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+    "label": "LTX-2.3 spatial upscaler"
+   }
+  ],
+  "ltx-2.3-distilled-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+    "label": "LTX-2.3 distilled LoRA"
+   }
+  ],
+  "ltx-2.3-iclora-support": [
+   {
+    "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "label": "MoGe 2 ViT-L normal (LTX 2.3 IC-LoRA control preprocessing)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+    "label": "Gemma 3 12B abliterated LoRA (LTX 2.3 prompt enhance)"
+   }
+  ],
+  "ltx-2.3-iclora-union": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control/resolve/main/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+    "label": "LTX-2.3 union control IC LoRA"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+    "target": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+    "label": "LTX-2.3 union control IC LoRA flat-name alias (bundled template)"
+   }
+  ],
+  "ltx-2.3-iclora-motion-track": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Motion-Track-Control/resolve/main/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
+    "label": "LTX-2.3 motion track IC LoRA"
+   }
+  ],
+  "ltx-2.3-iclora-hdr": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR/resolve/main/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
+    "label": "LTX-2.3 HDR IC LoRA"
+   }
+  ],
+  "ltx-2.3-iclora-lipdub": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-LipDub/resolve/main/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
+    "label": "LTX-2.3 lipdub IC LoRA"
+   }
+  ],
+  "krea-2-support-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+    "label": "Krea 2 Qwen3-VL-4B text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+    "label": "Qwen-Image VAE"
+   }
+  ],
+  "krea-2-turbo-fp8": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+    "label": "Krea 2 Turbo diffusion model (fp8)"
+   }
+  ],
+  "krea-2-turbo-nvfp4-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_turbo_nvfp4.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_nvfp4.safetensors",
+    "label": "Krea 2 Turbo diffusion model (nvfp4)"
+   }
+  ],
+  "krea-2-raw-fp8": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/krea2_raw_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_raw_fp8_scaled.safetensors",
+    "label": "Krea 2 RAW diffusion model (fp8)"
+   }
+  ],
+  "krea-2-style-loras": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_darkbrush.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_darkbrush.safetensors",
+    "label": "Krea 2 style LoRA (darkbrush)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_dotmatrix.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_dotmatrix.safetensors",
+    "label": "Krea 2 style LoRA (dotmatrix)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_kidsdrawing.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_kidsdrawing.safetensors",
+    "label": "Krea 2 style LoRA (kidsdrawing)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_neondrip.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_neondrip.safetensors",
+    "label": "Krea 2 style LoRA (neondrip)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_rainywindow.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_rainywindow.safetensors",
+    "label": "Krea 2 style LoRA (rainywindow)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_retroanime.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_retroanime.safetensors",
+    "label": "Krea 2 style LoRA (retroanime)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_softwatercolor.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_softwatercolor.safetensors",
+    "label": "Krea 2 style LoRA (softwatercolor)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_sunsetblur.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_sunsetblur.safetensors",
+    "label": "Krea 2 style LoRA (sunsetblur)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/krea2_vintagetarot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/loras/krea2_vintagetarot.safetensors",
+    "label": "Krea 2 style LoRA (vintagetarot)"
+   }
+  ],
+  "ideogram-4-support-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+    "label": "Ideogram 4 Qwen3-VL-8B text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors",
+    "label": "Flux 2 VAE"
+   }
+  ],
+  "ideogram-4-fp8": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
+    "label": "Ideogram 4 diffusion model (fp8)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+    "label": "Ideogram 4 unconditional diffusion model (fp8)"
+   }
+  ],
+  "ideogram-4-nvfp4-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
+    "label": "Ideogram 4 diffusion model (nvfp4)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
+    "label": "Ideogram 4 unconditional diffusion model (nvfp4)"
+   }
+  ],
+  "lucida-background-removal-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/background_removal/lucida.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/lucida.safetensors",
+    "label": "Lucida background removal model"
+   }
+  ],
+  "bfs-ltx-2.3-edit-anything-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_9000steps_adamw.safetensors",
+    "label": "BFS LTX-2.3 Edit Anything global LoRA (9000 steps, AdamW)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_edit_anything_global_rank128_v1_6000steps_prodigy.safetensors",
+    "label": "BFS LTX-2.3 Edit Anything global LoRA (6000 steps, Prodigy)"
+   }
+  ],
+  "bfs-ltx-2.3-style-swap-loras": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_anime2real_rank64_v1_4500.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_anime2real_rank64_v1_4500.safetensors",
+    "label": "BFS LTX-2.3 anime to live action LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_real2anime_rank64_v1_5000.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_real2anime_rank64_v1_5000.safetensors",
+    "label": "BFS LTX-2.3 live action to anime LoRA"
+   }
+  ],
+  "bfs-ltx-2.3-inpaint-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_t2v_rank128_v1_10000steps.safetensors",
+    "label": "BFS LTX-2.3 masked inpainting LoRA"
+   }
+  ],
+  "bfs-ltx-2.3-masked-ref-inpaint-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/LTX-LoRAs/resolve/main/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors",
+    "label": "BFS LTX-2.3 reference-driven masked inpainting LoRA"
+   }
+  ],
+  "bfs-ltx-2.3-head-swap-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_adaptive_fro_098.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_adaptive_fro_098.safetensors",
+    "label": "BFS LTX-2.3 head swap v3 LoRA (adaptive rank, fro 0.98)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/bfs/head_swap_v3_rank_64.safetensors",
+    "url": "https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap-Video/resolve/main/ltx-2.3/head_swap_v3_rank_64.safetensors",
+    "label": "BFS LTX-2.3 head swap v3 LoRA (rank 64)"
+   }
+  ],
+  "mage-flow-support-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/text_encoders/qwen3vl_4b_bf16.safetensors",
+    "label": "Mage-Flow Qwen3-VL-4B text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/mage_flow_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/vae/mage_flow_vae_bf16.safetensors",
+    "label": "Mage VAE"
+   }
+  ],
+  "mage-flow-edit-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/mage_flow_edit_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/diffusion_models/mage_flow_edit_bf16.safetensors",
+    "label": "Mage-Flow Edit diffusion model (bf16)"
+   }
+  ],
+  "mage-flow-edit-turbo-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/mage_flow_edit_turbo_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/main/diffusion_models/mage_flow_edit_turbo_bf16.safetensors",
+    "label": "Mage-Flow Edit Turbo diffusion model (bf16)"
+   }
+  ],
+  "heartmula-shared-config": [
+   {
+    "dest": "/workspace/ComfyUI/models/HeartMuLa/gen_config.json",
+    "url": "https://huggingface.co/HeartMuLa/HeartMuLaGen/resolve/main/gen_config.json",
+    "label": "HeartMuLa generation config"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/HeartMuLa/tokenizer.json",
+    "url": "https://huggingface.co/HeartMuLa/HeartMuLaGen/resolve/main/tokenizer.json",
+    "label": "HeartMuLa tokenizer"
+   }
+  ],
+  "heartmula-oss-3b-assets": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartMuLa-oss-3B-happy-new-year",
+    "repo_id": "HeartMuLa/HeartMuLa-oss-3B-happy-new-year",
+    "label": "HeartMuLa oss 3B (happy new year) generator"
+   },
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartCodec-oss-20260123",
+    "repo_id": "HeartMuLa/HeartCodec-oss-20260123",
+    "label": "HeartCodec oss 20260123 audio decoder"
+   }
+  ],
+  "heartmula-transcriptor-assets": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/HeartMuLa/HeartTranscriptor-oss",
+    "repo_id": "HeartMuLa/HeartTranscriptor-oss",
+    "label": "HeartTranscriptor oss lyrics transcriber"
+   }
+  ],
+  "vibevoice-tokenizer": [
+   {
+    "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer.json",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer.json",
+    "label": "VibeVoice tokenizer (tokenizer.json)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/tokenizer_config.json",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/tokenizer_config.json",
+    "label": "VibeVoice tokenizer (tokenizer_config.json)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/vocab.json",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/vocab.json",
+    "label": "VibeVoice tokenizer (vocab.json)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vibevoice/tokenizer/merges.txt",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B/resolve/main/merges.txt",
+    "label": "VibeVoice tokenizer (merges.txt)"
+   }
+  ],
+  "vibevoice-1.5b-model": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-1.5B",
+    "repo_id": "microsoft/VibeVoice-1.5B",
+    "label": "VibeVoice 1.5B"
+   }
+  ],
+  "vibevoice-large-model": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/vibevoice/VibeVoice-Large",
+    "repo_id": "aoi-ot/VibeVoice-Large",
+    "label": "VibeVoice Large"
+   }
+  ],
+  "minimax-h3-support-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "label": "MiniMax H3 Qwen3-VL-32B text encoder (NVFP4 AWQ)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/minimax_h3_video_vae_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_video_vae_fp16.safetensors",
+    "label": "MiniMax H3 video VAE (fp16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/minimax_h3_audio_vae_fp32.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors",
+    "label": "MiniMax H3 audio VAE (fp32)"
+   }
+  ],
+  "minimax-h3-fl2va-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "label": "MiniMax H3 first/last-frame to video+audio (pruned int8 convrot)"
+   }
+  ],
+  "minimax-h3-ref2va-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+    "label": "MiniMax H3 reference to video+audio (pruned int8 convrot)"
+   }
+  ],
+  "ltx-2.5-prompt-enhancer": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma4_e2b_it_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/gemma-4/resolve/main/text_encoders/gemma4_e2b_it_int8_convrot.safetensors",
+    "label": "Gemma 4 E2B prompt enhancer (int8 convrot)"
+   }
+  ],
+  "ltx-2.5-spatial-upscaler": [
+   {
+    "dest": "/workspace/ComfyUI/models/latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+    "label": "LTX-2.5 latent spatial upscaler x2 (bf16)"
+   }
+  ],
+  "ltx-2.5-distilled-int8": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/diffusion_models/ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+    "label": "LTX-2.5 22B distilled transformer (int8 convrot)"
+   }
+  ],
+  "ltx-2.5-distilled-nvfp4": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/ltx-2.5-22b-distilled-transformer-nvfp4.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/diffusion_models/ltx-2.5-22b-distilled-transformer-nvfp4.safetensors",
+    "label": "LTX-2.5 22B distilled transformer (NVFP4)"
+   }
+  ],
+  "ltx-2.5-text-encoder": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+    "label": "LTX-2.5 Gemma 4 12B text encoder (int8 convrot)"
+   }
+  ],
+  "ltx-2.5-video-vae": [
+   {
+    "dest": "/workspace/ComfyUI/models/vae/ltx-2.5-video-vae-bf16.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-video-vae-bf16.safetensors",
+    "label": "LTX-2.5 video VAE (bf16)"
+   }
+  ],
+  "ltx-2.5-audio-vae": [
+   {
+    "dest": "/workspace/ComfyUI/models/vae/ltx-2.5-audio-vae-bf16.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-audio-vae-bf16.safetensors",
+    "label": "LTX-2.5 audio VAE (bf16)"
+   }
+  ]
+ }
 }

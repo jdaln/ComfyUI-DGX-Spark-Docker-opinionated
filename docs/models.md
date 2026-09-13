@@ -84,6 +84,7 @@ without a token.
 | Repository | Used by | Licence to accept |
 | --- | --- | --- |
 | `google/gemma-3-12b-it-qat-q4_0-unquantized` | every `ltx-2.0-*` profile, via the Gemma 3 text encoder | Gemma |
+| `Lightricks/LTX-2.5` | `ltx-2.5-distilled`, `ltx-2.5-distilled-nvfp4` | Lightricks |
 | `Lightricks/LTX-2.3-22b-IC-LoRA-HDR` | `ltx-2.3-iclora-hdr-distilled` | Lightricks |
 | `Lightricks/LTX-2.3-22b-IC-LoRA-LipDub` | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Lightricks |
 | `Comfy-Org/Krea-2` | every `krea-2-*` profile | Krea 2 Community License |

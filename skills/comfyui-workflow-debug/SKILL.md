@@ -69,6 +69,29 @@ docker exec comfyui python3 -u /tmp/wf_smoke.py "/tmp/<name>.json" 1800
 | Tensor/shape mismatch inside an `...Inplace` or latent-merge node | Two latents being merged have incompatible lengths | Trace both latents back through the graph's `links` array to their length sources; target must be ≥ source |
 | `Is a directory: '.../input'` from `LoadAudio`/`LoadImage` | Widget default is intentionally empty; workflow needs a real file | Copy a real file into `ComfyUI/input/`, patch a **scratch copy** of the JSON, never the checked-in default |
 | Missing model with no working download URL anywhere | Weights may not be published yet | Search Hugging Face directly before accepting "pending"; check `scripts/smoke/pending_models.json` |
+| `403` on every file of one repo, token valid elsewhere | That repo's licence is not accepted | `gated: auto` means instant approval, not no approval. HEAD-probe the repo with the token; accept the licence on its HF page |
+| `einops` "can't divide axis of length N in chunks of 2" | Source dimensions not divisible by what the patchifier needs | LTX latents are pixels/4 then patched 2x2, so pixel dims must divide by 8, and 32 is the safe snap. Insert a resize rather than changing the source |
+| A widget receives its neighbour's value (`invalid literal for int()`, a combo string in a float) | `widgets_values` mapped positionally against a mismatched schema | Compare `len(widgets_values)` to required+optional widget-bearing inputs from `/object_info`. Run the upstream original through `wf_smoke.py` to prove it is the node, not your edit |
+| Free memory never returns after a render; box locks up on the next big model | ComfyUI keeps the last model resident | POST `/free`; see the memory section in docs/troubleshooting.md |
+
+**Before blaming the workflow, check memory.** ComfyUI does not release a
+model when a prompt finishes. Two large profiles run back to back ask for both
+at once, and a Spark answers that by locking up rather than raising an OOM.
+`run_lanes.py` now frees between lanes and `COMFY_IDLE_UNLOAD_MINUTES` handles
+the GUI case, but a hand-run sequence still needs:
+
+```bash
+docker exec -i comfyui python3 -c "
+import urllib.request, json
+req = urllib.request.Request('http://127.0.0.1:8188/free',
+      data=json.dumps({'unload_models': True, 'free_memory': True}).encode(),
+      headers={'Content-Type': 'application/json'})
+urllib.request.urlopen(req, timeout=60).read()"
+```
+
+Watch `MemAvailable` during an unfamiliar workflow rather than discovering the
+floor by crashing: LTX 2.5 bottoms out near 14 GB of 121 GB, MiniMax H3 near
+21 GB.
 
 **The one technique that always works:** the traceback names a `node_id` and
 `class_type`. Grep that class name in `custom_nodes/<pack>/**/*.py` or

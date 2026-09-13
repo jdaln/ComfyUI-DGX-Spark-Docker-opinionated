@@ -177,7 +177,7 @@ CATALOGUE = os.path.join("docs", "workflows.md")
 PENDING_HEADING = "## Provisioned, not yet hardware-verified"
 
 
-def check_catalogue(root, manifest, problems):
+def check_catalogue(root, manifest, problems, warnings):
     """Every profile appears in docs/workflows.md exactly once, and the counts
     that file states match reality. Both drifted before this check existed: the
     README claimed 35 verified profiles while the catalogue claimed 48."""
@@ -199,10 +199,14 @@ def check_catalogue(root, manifest, problems):
     row = re.compile(r"^\|[^|]*\|\s*`([a-z0-9][a-z0-9.\-]*)`\s*\|", re.M)
     verified = row.findall(head)
     pending = row.findall(tail)
+    verified_distinct = sorted(set(verified))
+    pending_distinct = sorted(set(pending))
     listed = verified + pending
 
+    # A profile may legitimately serve more than one workflow, so a repeat is
+    # worth surfacing but is not an error. Counts below use distinct profiles.
     for name in sorted({n for n in listed if listed.count(n) > 1}):
-        fail(problems, f"{CATALOGUE}: profile '{name}' appears in more than one row")
+        warn(warnings, f"{CATALOGUE}: profile '{name}' appears in more than one row")
 
     known = set(manifest.get("profiles", {}))
     for name in sorted(set(listed) - known):
@@ -220,11 +224,11 @@ def check_catalogue(root, manifest, problems):
         if int(total.group(1)) != len(known):
             fail(problems, f"{CATALOGUE} says {total.group(1)} profiles; "
                            f"asset-profiles.json defines {len(known)}")
-        if int(tabled.group(1)) != len(verified):
-            fail(problems, f"{CATALOGUE} claims {tabled.group(1)} verified rows; "
-                           f"the category tables hold {len(verified)}")
+        if int(tabled.group(1)) != len(verified_distinct):
+            fail(problems, f"{CATALOGUE} claims {tabled.group(1)} verified profiles; "
+                           f"the category tables hold {len(verified_distinct)}")
 
-    return len(verified), len(pending)
+    return len(verified_distinct), len(pending_distinct)
 
 
 def profile_files(manifest, profile):
@@ -533,7 +537,7 @@ def main():
                 continue
             fail(problems, f"lane '{profile}': {node_type} loads '{ref}', which the profile does not provision")
 
-    catalogue_verified, catalogue_pending = check_catalogue(root, manifest, problems)
+    catalogue_verified, catalogue_pending = check_catalogue(root, manifest, problems, warnings)
 
     print(f"{len(manifest.get('profiles', {}))} profiles, {len(manifest.get('groups', {}))} groups")
     print(f"{len(templates)} bundled templates checked")

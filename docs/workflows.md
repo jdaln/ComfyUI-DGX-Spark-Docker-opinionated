@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 53 profiles. The 51 in the category tables below
+`asset-profiles.json` defines 56 profiles. The 54 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 51 have an automated smoke lane. Three do not, because their
+Most of those 54 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -154,6 +154,65 @@ nodes.
 
 The four IC-LoRA profiles share one template. Select the LoRA in the `ic_lora`
 widget to match the profile you provisioned.
+
+### LTX 2.5, 22B, joint audio and video
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text, image or first/last frame to video, with audio | `ltx-2.5-distilled` | `video_ltx2_5_t2v`, `_i2v`, `_flf2v` | Template | 41 GB | 107 s |
+| Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 116 s |
+| Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 105 s |
+| Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
+
+LTX 2.5 conditions on Gemma 4, so it needs ComfyUI 0.35.0 or newer. Core ships
+the three templates and matching blueprints, all pointing at the int8-convrot
+transformer, which is what `ltx-2.5-distilled` provisions. The NVFP4 build is
+17.4 GB against 20.0 GB and no core template references it, so it gets a bundled
+copy with the loader switched, the same arrangement as Krea 2 and Ideogram
+NVFP4. Both profiles share the Gemma 4 encoder, both VAEs, the prompt enhancer
+and the spatial upscaler, so the second costs only its transformer.
+
+Output is 1280x704 at 24 fps, about 5 seconds, with a stereo track, so it is
+both higher resolution and roughly half the time of MiniMax H3.
+
+NVFP4 saves 3 GB on disk but measured slightly slower than int8 here, 116 s
+against 107 s, so pick it for space rather than speed. Only the transformer
+differs.
+
+`LTX Director 2 (LTX-2.5)` is the timeline editor from
+[WhatDreamsCost-ComfyUI](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI)
+(GPL-3.0), converted off LTX 2.3: `DualCLIPLoader` becomes a single `CLIPLoader`
+because 2.5 folds the text projection into its Gemma 4 encoder, the transformer,
+both VAEs and the upscaler move to 2.5 builds, and the KJNodes latent-preview
+pair is gone because it needed a 2.3-only tiny VAE. The derived file is GPL-3.0
+and carries its attribution in a note inside the workflow.
+
+It has no smoke lane. `LTXDirector` carries 23 widget values across 11 required
+and 12 optional inputs, several link-converted, so the headless UI-to-API
+conversion in `wf_smoke.py` maps them positionally and shifts. The upstream
+workflow fails the same way for the same reason, so this is the node's design
+rather than something the conversion introduced. The ComfyUI frontend builds the
+prompt from its own widget model and is unaffected, which is why the row reads
+GUI only.
+
+`ltx-2.5-latent-upscale` is the cheap one: the video VAE and the spatial
+upscaler only, 2.3 GB and no transformer. It takes a video file, snaps it to a
+multiple of 32, upscales the latent 2x and re-muxes the original audio, so it
+works on output from any model. Aimed at MiniMax H3, whose `ref2v` carries
+identity and voice from references and has no LTX equivalent, but whose 864x480
+is below what LTX 2.5 generates natively. Adapted from
+[Peter Duncan's MiniMax H3 + LTX 2.5 upscaler workflow](https://github.com/peterducan-hub/PeterDuncan_Comfyui),
+rebuilt on core nodes because the original needs eleven node types this repo
+does not install.
+
+This is the heaviest workflow in the catalogue for memory: a 15 GB text encoder
+and a 21 GB transformer put the floor at 13.9 GB free during VAE decode, against
+20.8 GB for MiniMax H3. Give it a quiet machine, and see
+[troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
+
+Weights are [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5),
+which is gated. Accept the licence on that page with the `HF_TOKEN` account or
+every file 403s. Approval is instant, but it is not automatic.
 
 ### HunyuanVideo
 

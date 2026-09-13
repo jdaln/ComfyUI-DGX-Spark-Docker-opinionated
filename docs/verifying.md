@@ -128,6 +128,11 @@ companion API graph stay in the matrix as `todo` or `blocked`.
 
 ## Adding a workflow
 
+1. First check whether ComfyUI core already ships a template for the model, and
+   whether the pinned core can load it at all. Core shipped templates for both
+   MiniMax H3 and LTX 2.5 before this repo did, and LTX 2.5 needs a Gemma 4
+   encoder that ComfyUI 0.30.0 did not have. Provision for core's template where
+   one exists; bundle your own only for variants it does not cover.
 1. Add or extend a profile in `asset-profiles.json`. Entry types are `file`
    (needs `url`), `symlink` (needs `target`, pointing at a dest another group
    provisions) and `hf_snapshot` (needs `repo_id`). Every entry needs a `label`.

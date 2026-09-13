@@ -14,6 +14,10 @@
     "HeartMuLaLyricsTranscriber": "ComfyUI-HeartMuLa",
     "VibeVoiceMultipleSpeakersNode": "VibeVoice-ComfyUI",
     "VibeVoiceSingleSpeakerNode": "VibeVoice-ComfyUI",
-    "VibeVoiceFreeMemoryNode": "VibeVoice-ComfyUI"
+    "VibeVoiceFreeMemoryNode": "VibeVoice-ComfyUI",
+    "ImageResizeKJv2": "ComfyUI-KJNodes",
+    "LTXDirector": "WhatDreamsCost-ComfyUI",
+    "LTXDirectorGuide": "WhatDreamsCost-ComfyUI",
+    "LTXDirectorCropGuides": "WhatDreamsCost-ComfyUI"
   }
 }
