@@ -18,6 +18,7 @@
     "ImageResizeKJv2": "ComfyUI-KJNodes",
     "LTXDirector": "WhatDreamsCost-ComfyUI",
     "LTXDirectorGuide": "WhatDreamsCost-ComfyUI",
-    "LTXDirectorCropGuides": "WhatDreamsCost-ComfyUI"
+    "LTXDirectorCropGuides": "WhatDreamsCost-ComfyUI",
+    "LTXSequencer": "WhatDreamsCost-ComfyUI"
   }
 }

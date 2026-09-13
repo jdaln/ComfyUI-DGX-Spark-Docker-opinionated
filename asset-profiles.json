@@ -280,6 +280,14 @@
   "ltx-2.5-latent-upscale": [
    "ltx-2.5-video-vae",
    "ltx-2.5-spatial-upscaler"
+  ],
+  "ltx-2.5-sequencer": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8"
   ]
  },
  "selection_metadata": {

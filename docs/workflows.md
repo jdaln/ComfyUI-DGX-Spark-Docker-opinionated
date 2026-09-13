@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 56 profiles. The 54 in the category tables below
+`asset-profiles.json` defines 57 profiles. The 55 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 54 have an automated smoke lane. Three do not, because their
+Most of those 55 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -163,6 +163,7 @@ widget to match the profile you provisioned.
 | Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 116 s |
 | Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 105 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
+| Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
 
 LTX 2.5 conditions on Gemma 4, so it needs ComfyUI 0.35.0 or newer. Core ships
 the three templates and matching blueprints, all pointing at the int8-convrot
@@ -187,7 +188,23 @@ both VAEs and the upscaler move to 2.5 builds, and the KJNodes latent-preview
 pair is gone because it needed a 2.3-only tiny VAE. The derived file is GPL-3.0
 and carries its attribution in a note inside the workflow.
 
-It has no smoke lane. `LTXDirector` carries 23 widget values across 11 required
+`Shot Sequencer (LTX-2.5)` is core's own `video_ltx2_5_i2v` with one node
+swapped: the stage-1 `LTXVImgToVideoInplace` becomes `LTXSequencer` from the same
+GPL-3.0 pack, which places up to 50 keyframes into the video latent at chosen
+frames. It ships with a single keyframe at frame 0, behaving like plain image to
+video; raise `num_images` and set `insert_frame_N` to sequence shots. Everything
+else is core's verified two-stage chain, so it uses the int8 transformer and
+needs no assets beyond `ltx-2.5-distilled`; `ltx-2.5-sequencer` is an alias of
+that profile.
+
+Two constraints are worth knowing before rewiring it. The Sequencer must sit
+before `LTXVConcatAVLatent`, because 2.5's combined audio+video latent is a
+NestedTensor and the node calls `.clone()`. And `LTXDirectorCropGuides` has to
+run after each sampler stage: the Sequencer appends keyframe tokens to the
+latent, the stage-2 upscale changes the spatial resolution, and without cropping
+the sampler rejects the token count.
+
+`LTX Director 2 (LTX-2.5)` has no smoke lane. `LTXDirector` carries 23 widget values across 11 required
 and 12 optional inputs, several link-converted, so the headless UI-to-API
 conversion in `wf_smoke.py` maps them positionally and shifts. The upstream
 workflow fails the same way for the same reason, so this is the node's design
