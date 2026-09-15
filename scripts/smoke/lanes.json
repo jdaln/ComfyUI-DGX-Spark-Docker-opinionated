@@ -54,6 +54,8 @@
     ["minimax-h3-t2v",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Video (MiniMax H3).json"],
     ["minimax-h3-i2v",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image to Video (MiniMax H3).json"],
     ["minimax-h3-ref2v",                            "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Reference to Video (MiniMax H3).json"],
+    ["minimax-h3-i2v-turbo",                        "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image to Video (MiniMax H3 Turbo).json"],
+    ["minimax-h3-vdn-8step",                        "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Video (MiniMax H3 VDN 8-step).json"],
     ["ltx-2.5-distilled",                           "video_ltx2_5_t2v"],
     ["ltx-2.5-distilled-nvfp4",                     "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Video (LTX-2.5 NVFP4).json"],
     ["ltx-2.5-latent-upscale",                      "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Upscale (LTX-2.5 Latent 2x).json"],

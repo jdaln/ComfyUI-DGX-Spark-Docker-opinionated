@@ -199,6 +199,18 @@
               4944
             ],
             "type": "COMBO"
+          },
+          {
+            "id": "ea8f7966-da23-4b38-a1f4-3d847d9e4aa8",
+            "linkIds": [
+              229
+            ],
+            "name": "lora_name",
+            "pos": [
+              -2460,
+              4970
+            ],
+            "type": "COMBO"
           }
         ],
         "links": [
@@ -220,7 +232,7 @@
           },
           {
             "id": 5,
-            "origin_id": 6,
+            "origin_id": 112,
             "origin_slot": 0,
             "target_id": 9,
             "target_slot": 0,
@@ -268,7 +280,7 @@
           },
           {
             "id": 193,
-            "origin_id": 6,
+            "origin_id": 112,
             "origin_slot": 0,
             "target_id": 16,
             "target_slot": 0,
@@ -440,6 +452,22 @@
             "origin_slot": 8,
             "target_id": 13,
             "target_slot": 0,
+            "type": "COMBO"
+          },
+          {
+            "id": 228,
+            "origin_id": 6,
+            "origin_slot": 0,
+            "target_id": 112,
+            "target_slot": 0,
+            "type": "MODEL"
+          },
+          {
+            "id": 229,
+            "origin_id": -10,
+            "origin_slot": 11,
+            "target_id": 112,
+            "target_slot": 1,
             "type": "COMBO"
           }
         ],
@@ -883,8 +911,7 @@
             "outputs": [
               {
                 "links": [
-                  5,
-                  193
+                  228
                 ],
                 "localized_name": "MODEL",
                 "name": "MODEL",
@@ -1313,6 +1340,65 @@
             "widgets_values": [
               2
             ]
+          },
+          {
+            "flags": {},
+            "id": 112,
+            "mode": 4,
+            "order": 2,
+            "inputs": [
+              {
+                "link": 228,
+                "localized_name": "model",
+                "name": "model",
+                "type": "MODEL"
+              },
+              {
+                "link": 229,
+                "localized_name": "lora_name",
+                "name": "lora_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "lora_name"
+                }
+              },
+              {
+                "link": null,
+                "localized_name": "strength_model",
+                "name": "strength_model",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "strength_model"
+                }
+              }
+            ],
+            "outputs": [
+              {
+                "links": [
+                  5,
+                  193
+                ],
+                "localized_name": "MODEL",
+                "name": "MODEL",
+                "type": "MODEL"
+              }
+            ],
+            "pos": [
+              -1320,
+              4820
+            ],
+            "size": [
+              640,
+              82
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "type": "LoraLoaderModelOnly",
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "outputNode": {
@@ -1707,6 +1793,14 @@
           "widget": {
             "name": "vae_name_1"
           }
+        },
+        {
+          "link": null,
+          "name": "lora_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "lora_name"
+          }
         }
       ],
       "mode": 0,
@@ -1742,7 +1836,8 @@
         "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
         "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
         "minimax_h3_video_vae_fp16.safetensors",
-        "minimax_h3_audio_vae_fp32.safetensors"
+        "minimax_h3_audio_vae_fp32.safetensors",
+        ""
       ]
     },
     {
@@ -1766,7 +1861,7 @@
       "title": "Note: MiniMax H3",
       "type": "MarkdownNote",
       "widgets_values": [
-        "## MiniMax H3\n\n[MiniMax H3](https://www.minimax.io/blog/minimax-h3) is MiniMax's general-purpose, omni-modal generation model. It jointly understands text, image, video, and audio, and generates video with **native stereo audio**: voice, sound effects, and music are modeled jointly in a single forward pass, not layered on afterward. Output is up to 2K resolution, 24fps, and up to about 15 seconds.\n\n## About this workflow\n\nThis template runs the **Image to Video** task (`MiniMaxH3ImageToVideo` node), which covers both:\n\n- **t2va** (text-to-video), when no images are connected\n- **fl2va** (first/last-frame image-to-video), when `first_frame` and/or `last_frame` are connected\n\n**Key inputs**\n\n- **first_frame / last_frame**: optional keyframes; the model generates the motion between them\n- **prompt**: describe the shots, motion, and the accompanying audio (dialogue, SFX, music) in one block\n- **width / height**: set via Resolution Selector. H3's native canvas is a 768px short edge, capped at 768x1344 pixels, rounded to a multiple of 32\n- **duration (seconds)**: converted to a valid frame `length` by the Math Expression node, snapping up to the model's 17-frame-per-block (17k+5) grid at 24fps"
+        "## MiniMax H3\n\n[MiniMax H3](https://www.minimax.io/blog/minimax-h3) is MiniMax's general-purpose, omni-modal generation model. It jointly understands text, image, video, and audio, and generates video with **native stereo audio**: voice, sound effects, and music are modeled jointly in a single forward pass, not layered on afterward. Output is up to 2K resolution, 24fps, and up to about 15 seconds.\n\n## About this workflow\n\nThis template runs the **Image to Video** task (`MiniMaxH3ImageToVideo` node), which covers both:\n\n- **t2va** (text-to-video), when no images are connected\n- **fl2va** (first/last-frame image-to-video), when `first_frame` and/or `last_frame` are connected\n\n**Key inputs**\n\n- **first_frame / last_frame**: optional keyframes; the model generates the motion between them\n- **prompt**: describe the shots, motion, and the accompanying audio (dialogue, SFX, music) in one block\n- **width / height**: set via Resolution Selector. H3's native canvas is a 768px short edge, capped at 768x1344 pixels, rounded to a multiple of 32\n- **duration (seconds)**: converted to a valid frame `length` by the Math Expression node, snapping up to the model's 17-frame-per-block (17k+5) grid at 24fps\n\n## Adding a LoRA\n\nA LoRA loader sits in the pipeline already, bypassed, so nothing is applied by default. Pick a file in the `lora_name` box on this node, then open the subgraph and press Ctrl+B on the loader to switch it on.\n\nIt is wired to both things that consume the model, the guider and the scheduler. Adding a loader by hand usually catches only the guider, which leaves the scheduler deriving sigmas from the unpatched model. That produces a wrong result with no error.\n"
       ]
     },
     {

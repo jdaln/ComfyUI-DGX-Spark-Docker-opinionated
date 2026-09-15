@@ -261,6 +261,16 @@
    "minimax-h3-support-assets",
    "minimax-h3-ref2va-model"
   ],
+  "minimax-h3-i2v-turbo": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-turbo-lora"
+  ],
+  "minimax-h3-vdn-8step": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-vdn-branch"
+  ],
   "ltx-2.5-distilled": [
    "ltx-2.5-text-encoder",
    "ltx-2.5-video-vae",
@@ -1120,6 +1130,55 @@
     "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
     "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
     "label": "MiniMax H3 reference to video+audio (pruned int8 convrot)"
+   }
+  ],
+  "minimax-h3-turbo-lora": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+    "label": "MiniMax H3 fl2v turbo LoRA (8 step, ComfyUI bf16)"
+   }
+  ],
+  "minimax-h3-vdn-branch": [
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/model_spec.json",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/model_spec.json",
+    "label": "VDN-H3 8-step model spec"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/metadata.json",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/metadata.json",
+    "label": "VDN-H3 8-step release metadata"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/linear_branch/config.json",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/linear_branch/config.json",
+    "label": "VDN-H3 linear branch config"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/linear_branch/model.safetensors",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/linear_branch/model.safetensors",
+    "label": "VDN-H3 linear attention branch (bf16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/adapters/default/adapter_spec.json",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/adapters/default/adapter_spec.json",
+    "label": "VDN-H3 default adapter spec"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/adapters/default/adapter_model.safetensors",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/adapters/default/adapter_model.safetensors",
+    "label": "VDN-H3 default adapter (50 step)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/adapters/turbo/adapter_spec.json",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/adapters/turbo/adapter_spec.json",
+    "label": "VDN-H3 turbo adapter spec"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vdn/stage-dmd-step-250/adapters/turbo/adapter_model.safetensors",
+    "url": "https://huggingface.co/OpenVDN/vdn-minimax-h3/resolve/main/stage-dmd-step-250/adapters/turbo/adapter_model.safetensors",
+    "label": "VDN-H3 turbo adapter (8 step DMD)"
    }
   ],
   "ltx-2.5-prompt-enhancer": [

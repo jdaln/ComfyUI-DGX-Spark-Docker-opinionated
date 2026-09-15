@@ -250,12 +250,19 @@ if [ "${INSTALL_CUSTOM_NODES}" = "true" ]; then
         [[ -z "$repo" || "$repo" =~ ^# ]] && continue
         dir=$(basename "$repo" .git)
         [ -d "$dir" ] || git clone "$repo"
-        # Update existing custom node if UPDATE_DEPS is true
+        # Update existing custom node if UPDATE_DEPS is true, but only when the
+        # pack is its own checkout. Most of these directories have no .git of
+        # their own, and git discovery then walks up to /workspace/ComfyUI and
+        # pulls ComfyUI core instead -- once per pack, on whatever branch the
+        # submodule is pinned to. Delete such a directory to have the clone
+        # above recreate it as a real checkout.
         if [ "${UPDATE_DEPS}" = "true" ] && [ -d "$dir" ]; then
-            echo "Updating custom node: $dir"
-            cd "$dir" || exit
-            git pull
-            cd ..
+            if [ -e "$dir/.git" ]; then
+                echo "Updating custom node: $dir"
+                git -C "$dir" pull
+            else
+                echo "WARNING: ${dir} has no .git of its own, skipping update; remove the directory to re-clone it" >&2
+            fi
         fi
         [ -f "$dir/requirements.txt" ] && python -m pip install -r "$dir/requirements.txt"
     done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt

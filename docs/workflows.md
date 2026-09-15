@@ -2,7 +2,7 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 57 profiles. The 55 in the category tables below
+`asset-profiles.json` defines 59 profiles. The 57 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
@@ -120,13 +120,83 @@ so they cannot run unattended, and the exports shared one workflow id. Ours
 point at `example.png` and carry distinct ids, which is what makes them smoke
 testable. Do not delete them as duplicates.
 
-Each run peaks around 40 GB resident on top of whatever else is on the box, not
-the 53 GiB core's template metadata advertises. All three produce 864x480 or
-640x640 at 24 fps, 5.2 s, with a stereo AAC track at roughly -14 dB mean, so the
-joint audio path really is generating sound rather than padding silence.
+The weights come to about 40 GB, not the 53 GiB core's template metadata
+advertises, but the allocator footprint is much larger: free memory drops to
+roughly 6 GiB during VAE decode, so a run wants most of the box. Do not start a
+second one alongside it; see "Run these one at a time" below. All three produce
+864x480 or 640x640 at 24 fps, 5.2 s, with a stereo AAC track at roughly -14 dB
+mean, so the joint audio path really is generating sound rather than padding
+silence.
 
 Nothing here is gated. Needs ComfyUI v0.30.0 or newer for the `MiniMaxH3*`
 nodes.
+
+### MiniMax H3 acceleration
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Same as `minimax-h3-i2v`, distilled to 8 steps with the turbo LoRA | `minimax-h3-i2v-turbo` | Image to Video (MiniMax H3 Turbo) | Ours | 44 GB | 145 s |
+| Same as `minimax-h3-t2v`, 8 steps through VDN hybrid attention | `minimax-h3-vdn-8step` | Text to Video (MiniMax H3 VDN 8-step) | Ours | 48 GB | 235 s |
+
+Two faster paths for MiniMax H3. The three profiles above are unchanged and
+still run 20 steps. Both fast paths lose some detail and motion stability, so
+keep using the slower ones when the frame matters more than the wait.
+
+Do not combine them. `minimax-h3-i2v-turbo` adds the lightx2v turbo LoRA, 1.96
+GB on top of the shared 42 GB stack. `minimax-h3-vdn-8step` adds VDN-H3
+instead. Its `stage-dmd-step-250` release is already an 8-step distillation
+carrying its own turbo adapter, so adding the LoRA as well distills the model
+twice.
+
+Both give 24 fps, 5.2 s, stereo AAC around -14 dB mean, same as the
+unaccelerated profiles.
+
+VDN changes how attention scales rather than only cutting steps. Exact softmax
+inside a local window, a linear-attention branch outside it, so cost rises
+linearly with clip length instead of quadratically. That pays off at 10-15 s
+and 720p+. At the ~5 s these templates default to, the turbo LoRA is faster and
+wants less disk. VDN picks its memory mode when it loads; here it logged
+`cache_gpu` with 54.7 GiB free against a 3.99 GiB stage, and ran the windowed
+softmax on the flash SDPA backend.
+
+The profile reuses the pruned int8 base the other H3 profiles already
+provision, not the 34 GB unpruned checkpoint upstream asks for, so it costs 5.5
+GB for the stage directory. The node spots the pruned base and skips its adaln
+deltas. Expect one `[vdn] pruned base: 51 adaln deltas cannot merge` per run,
+then `stage-dmd-step-250 applied on 50 blocks`. The backbone still merges, 104
+default and 208 turbo weights.
+
+`ComfyUI-VDN-H3` needs no extra Python packages. Upstream
+`OpenVDN/vdn-minimax-h3` wants its own torch, CUDA and FlashAttention-4 build
+and will not run here. The node switches off ComfyUI's model compiler while
+sampling on builds that crash with it, including this one, and logs a line
+saying so.
+
+#### Run these one at a time
+
+Free memory through each lane, sampled from `/system_stats` every 10 s on an
+idle 121.7 GiB box with only the vLLM stack loaded:
+
+| Lane | Run | Lowest free VRAM |
+| --- | ---: | ---: |
+| `minimax-h3-vdn-8step` | 231 s | 1.7 GiB |
+| `minimax-h3-i2v-turbo` | 140 s | 6.4 GiB |
+| `minimax-h3-i2v` (unaccelerated) | 301 s | 6.1 GiB |
+
+The low point is VAE decode and it holds for the last 40 s or so. Much of that
+is ComfyUI's `cudaMallocAsync` pool sitting on memory it is not using rather
+than live weights, but that memory is still unavailable to everything else.
+
+1.7 GiB out of 121.7 GiB leaves no room. If anything allocates during that
+window, the vLLM waker loading a model, a second generation, the next lane in
+the same script, the driver returns `NV_ERR_NO_MEMORY`. On GB10's unified
+memory that means a hard reboot rather than an OOM you can catch. A three-lane
+MiniMax script took this machine down. Run one lane at a time, in the
+foreground.
+
+`POST /free` gets back to about 87 GiB, not the 97 GiB a freshly started server
+reports. Use the lower number when working out whether a second job fits.
+
 
 ### LTX 2.0, fast video, distilled or full quality
 

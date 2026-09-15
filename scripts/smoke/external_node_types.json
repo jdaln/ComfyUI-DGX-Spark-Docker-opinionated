@@ -19,6 +19,7 @@
     "LTXDirector": "WhatDreamsCost-ComfyUI",
     "LTXDirectorGuide": "WhatDreamsCost-ComfyUI",
     "LTXDirectorCropGuides": "WhatDreamsCost-ComfyUI",
-    "LTXSequencer": "WhatDreamsCost-ComfyUI"
+    "LTXSequencer": "WhatDreamsCost-ComfyUI",
+    "ApplyVDNH3": "ComfyUI-VDN-H3"
   }
 }
