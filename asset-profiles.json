@@ -271,6 +271,24 @@
    "minimax-h3-fl2va-model",
    "minimax-h3-vdn-branch"
   ],
+  "minimax-h3-easy": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-turbo-lora",
+   "minimax-h3-easy-assets"
+  ],
+  "minimax-h3-easy-refine": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-turbo-lora",
+   "minimax-h3-easy-assets"
+  ],
+  "minimax-h3-easy-video-refine": [
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-turbo-lora",
+   "minimax-h3-easy-assets"
+  ],
   "ltx-2.5-distilled": [
    "ltx-2.5-text-encoder",
    "ltx-2.5-video-vae",
@@ -352,6 +370,9 @@
    "vibevoice-1.5b",
    "vibevoice-large",
    "tts-prompted-conversation"
+  ],
+  "ComfyUI-MiniMaxH3-Easy": [
+   "minimax-h3-easy"
   ]
  },
  "groups": {
@@ -1228,6 +1249,29 @@
     "dest": "/workspace/ComfyUI/models/vae/ltx-2.5-audio-vae-bf16.safetensors",
     "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-audio-vae-bf16.safetensors",
     "label": "LTX-2.5 audio VAE (bf16)"
+   }
+  ],
+  "minimax-h3-easy-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+    "label": "MiniMax H3 fl2v turbo LoRA (4 step v1.0, 768p)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/minimax_h3_fl2v_turbo_4step_v1.2_768p_comfyui_bf16.safetensors",
+    "url": "https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_fl2v_turbo_4step_v1.2_768p_comfyui_bf16.safetensors",
+    "label": "MiniMax H3 fl2v turbo LoRA (4 step v1.2, 768p)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_fl2va_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "label": "MiniMax H3 unpruned-name alias (MiniMaxH3-Easy workflows ask for it)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/latent_upscale_models/minimax_h3_latent_upscaler_3d_fp16.safetensors",
+    "url": "https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_fp16.safetensors",
+    "label": "MiniMax H3 3D latent upscaler (fp16)"
    }
   ]
  }

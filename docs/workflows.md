@@ -2,7 +2,7 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 59 profiles. The 57 in the category tables below
+`asset-profiles.json` defines 62 profiles. The 60 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
@@ -196,6 +196,93 @@ foreground.
 
 `POST /free` gets back to about 87 GiB, not the 97 GiB a freshly started server
 reports. Use the lower number when working out whether a second job fits.
+
+
+### MiniMax H3 Easy, long video in connected segments
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| A longer video built as several connected segments, from mixed media | `minimax-h3-easy` | Context Segments (MiniMax H3 Easy) | Ours | 48 GB | 225 s |
+
+[ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by
+nkxx188, MIT licensed. It folds the H3 loaders, conditioning and latent setup
+into one node, and its Context Segments node generates a long clip as a run of
+connected segments rather than one shot. Media goes in through a Media Loader
+that takes images, video and audio together and is addressed from the prompt by
+tag, so a segment can say `<Picture 1>` and get that subject.
+
+The profile selects the pack as a node example, so **all** its workflows appear
+in the template browser, not only the one below: context segments, the refine
+and control variants, and the selected-video refine. They carry no download
+links of their own, so nothing is fetched behind your back; the profile is what
+puts the weights on disk.
+
+`Context Segments (MiniMax H3 Easy)` is our copy of the pack's third workflow,
+kept so one of them has a smoke lane. It differs from the original in four
+ways: the pruned int8 base this repo already provisions instead of the 34 GB
+unpruned one, settings stored in English, `example.png` wired through the Media
+Loader as `<Picture 1>`, and 10 seconds instead of 900.
+
+That English point matters if you save your own. The pack's interface shows
+Chinese labels, and a workflow saved with those labels in it will not run: the
+server validates against the English values. Ours stores the English ones.
+
+Upstream's workflows ask for `minimax_h3_fl2va_int8_convrot.safetensors`, the
+34 GB unpruned build. Rather than ship a second base, the profile symlinks that
+name onto the pruned one, the same aliasing the LTX-2.3 fp8 name uses, so the
+pack's own files open without another download.
+
+Two of its workflows also want an H3 3D latent upscaler in
+`latent_upscale_models`. The README names the folder but no source, and it is
+not in `Comfy-Org/MiniMax-H3`, so it is recorded in
+`scripts/smoke/pending_models.json` and those two refine paths stay incomplete.
+
+The lane runs two five-second segments at 864x480 and returns one 10.1 s clip,
+so the segments really are being stitched rather than rendered separately.
+
+Its audio comes out much quieter than the other H3 workflows, about -46 dB mean
+against -14 dB, on ambient prompts with no dialogue. Sound is there, at a low
+level. Write speech or sharp effects into the segment prompts if you want it to
+carry.
+
+
+### MiniMax H3 Easy refine
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| The same segments, then a pixel-resize and a latent-upscale refine pass | `minimax-h3-easy-refine` | Context Segments Refine (MiniMax H3 Easy) | Ours | 49 GB | 517 s |
+
+Same weights as `minimax-h3-easy` plus the 3D latent upscaler, 659 MB. It writes
+the first pass and a latent-upscale refine. A pixel-resize refine is wired in
+alongside it but ships bypassed, the way upstream has it; switch the two over to
+compare the two ways of adding detail.
+
+It has its own profile rather than sharing one with `minimax-h3-easy` so each
+lane can be run on its own. Two MiniMax lanes back to back is what takes this
+machine down.
+
+The latent refine is the expensive half: the lane takes 517 s against 225 s for
+the plain segments, and free memory bottoms at 1.5 GiB, tighter than anything
+else here. Run it on its own.
+
+
+### MiniMax H3 Easy video refine
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 861 s |
+
+Takes a video in rather than generating one, so it is not limited to H3 output;
+any clip works. Ships pointed at `bedroom.mp4` and `example.png`, both already in
+`input/`. Same weights as `minimax-h3-easy-refine`.
+
+Like that one it carries a pixel-resize branch bypassed alongside the
+latent-upscale branch, and it gets its own profile so the lane runs alone.
+
+The lane feeds it `bedroom.mp4`, 960x540 and 6.7 s, and gets back 1920x1088 over
+the same 6.7 s with the audio intact, so the upscale is a real 2x rather than a
+re-encode. It is the slowest thing in the catalogue at 861 s; budget a quarter of
+an hour and do not run anything else while it works.
 
 
 ### LTX 2.0, fast video, distilled or full quality

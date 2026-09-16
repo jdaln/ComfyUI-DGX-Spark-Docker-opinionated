@@ -186,6 +186,14 @@ Two things do this automatically:
 - `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See
   [configuration.md](configuration.md).
 - `run_lanes.py` frees before every lane and once at the end.
+- `VRAM Cleanup`, a node, if you want the same thing inside a graph. Put it
+  after the output. It calls the same unload and empty-cache pair the endpoint
+  does, so mid-graph it will unload models the rest of the run still needs and
+  they reload.
+- `RAM Cleanup` sits beside it and hands free heap back to the OS. Its
+  `clean_processes` and `clean_dlls` switches are Windows-only and do nothing
+  here; they exist so workflows saved against `Comfyui-Memory_Cleanup` load
+  unchanged. Neither node can touch memory outside ComfyUI.
 
 The failure this prevents is worse than wasted memory. Running two large
 profiles back to back without unloading asks for both models at once, and a

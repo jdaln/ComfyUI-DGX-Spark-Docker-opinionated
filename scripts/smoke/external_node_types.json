@@ -20,6 +20,26 @@
     "LTXDirectorGuide": "WhatDreamsCost-ComfyUI",
     "LTXDirectorCropGuides": "WhatDreamsCost-ComfyUI",
     "LTXSequencer": "WhatDreamsCost-ComfyUI",
-    "ApplyVDNH3": "ComfyUI-VDN-H3"
+    "ApplyVDNH3": "ComfyUI-VDN-H3",
+    "MiniMaxH3Easy": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyLoader": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyOutput": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyModelAdapter": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyMediaLoader": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyMediaBridge": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyContextSegments": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySampler": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySelfLiftStrategy": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentRender": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentSampleSetup": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentStep": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentCollect": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentRefine": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySegmentDecode": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySelectedVideoContext": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasyAspectRatio": "ComfyUI-MiniMaxH3-Easy",
+    "MiniMaxH3EasySecondPassConditioning": "ComfyUI-MiniMaxH3-Easy",
+    "RAMCleanup": "ComfyUI-DGX-Spark-Templates",
+    "VRAMCleanup": "ComfyUI-DGX-Spark-Templates"
   }
 }
