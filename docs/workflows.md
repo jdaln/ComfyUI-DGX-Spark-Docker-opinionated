@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 66 profiles. The 64 in the category tables below
+`asset-profiles.json` defines 67 profiles. The 65 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 64 have an automated smoke lane. Three do not, because their
+Most of those 65 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -510,6 +510,33 @@ almost word for word.
 
 YuE2 and SheetSage2 are licensed CC BY-NC 4.0, non-commercial use only. Nothing
 here is gated. Core's templates need ComfyUI 0.36.0 or newer.
+
+### MiniMax Music 3
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| A full song from a structured description and lyrics, up to 5 minutes | `minimax-music-3` | `audio_minimax_music_3` | Template | 14 GB | 200 s |
+
+MiniMax Music 3 plans a song with an 8B language model for the long-range
+structure and a 0.6B one for frame-level detail, then renders 32 kHz stereo with
+a flow-matching DiT and a Flow-VAE. The template asks for 60 seconds; the model
+goes to about five minutes, and run time grows with the length.
+
+It takes a caption and lyrics. The caption works best in the three parts the
+template uses: global metadata (genre, BPM, key, mood), vocal details, and
+arrangement. Section tags in the lyrics (`[Intro]`, `[Verse]`, `[Chorus]`,
+`[Bridge]`, `[Outro]`) set the structure. The same graph is also the
+`Text to Music (MiniMax Music 3)` blueprint, whose caption starts empty.
+
+The lane renders the template's 60 s song in 200 s. HeartMuLa's lyrics
+transcriber returns its lyrics almost word for word.
+
+The profile provisions the fp16 DiT the template loads. Comfy-Org also
+publishes an int8 DiT for small GPUs, which the Spark does not need.
+
+The weights are under the MiniMax-Music3 Community License: commercial use is
+allowed for companies under 20 million USD in yearly revenue, and above that
+MiniMax sells a commercial licence through Comfy. Nothing is gated.
 
 ## 3D
 

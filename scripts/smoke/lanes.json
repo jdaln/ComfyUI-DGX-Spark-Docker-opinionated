@@ -66,6 +66,7 @@
     ["yue2",                                        "audio_yue2_text2music"],
     ["yue2-cover",                                  "audio_yue2_music_cover"],
     ["yue2-bf16",                                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (YuE2 bf16).json"],
-    ["yue2-bo8",                                    "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (YuE2 Best of 8).json"]
+    ["yue2-bo8",                                    "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (YuE2 Best of 8).json"],
+    ["minimax-music-3",                             "audio_minimax_music_3"]
   ]
 }

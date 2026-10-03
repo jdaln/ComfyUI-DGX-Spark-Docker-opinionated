@@ -23,7 +23,7 @@ Prefer profiles. Use them for anything you want to be able to reproduce or test.
 
 ## Asset profiles
 
-A profile is a named set of file groups in `asset-profiles.json`. There are 66.
+A profile is a named set of file groups in `asset-profiles.json`. There are 67.
 Each entry is a direct download, a symlink to a file another group provides, or
 a whole Hugging Face repo snapshot. Groups are shared, so two profiles that use
 the same text encoder download it once.

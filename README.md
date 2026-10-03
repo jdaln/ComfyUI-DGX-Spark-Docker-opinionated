@@ -14,7 +14,7 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   than compiling them on every machine.
 - **30 custom node packs**, cloned at startup from
   [`custom_nodes/custom_nodes.txt`](custom_nodes/custom_nodes.txt).
-- **66 asset profiles.** Name one in `.env` and the container downloads every
+- **67 asset profiles.** Name one in `.env` and the container downloads every
   model that workflow needs before it starts.
 - **31 bundled templates**, for models ComfyUI ships no template for and for
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
@@ -149,7 +149,7 @@ from
 | `entrypoint.sh` | runs on every start: venv, deps, custom nodes, patches, asset bootstrap |
 | `.env.example` | template for `.env` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions |
-| `asset-profiles.json` | the 66 profiles and the files each one downloads |
+| `asset-profiles.json` | the 67 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |
 | `patches/` | startup patches applied to ComfyUI and to cloned node packs |
