@@ -70,7 +70,7 @@ download nothing. See [models.md](models.md) for the current gated list.
 | Split an image into editable layers | `qwen-image-layered-core` | `image_qwen_image_layered` | Template | 47 GB | 65 s |
 | Compose from a control image (canny, depth, pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 80 s |
 | Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 275 s |
-| Same, 4-step distilled, about 7x faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 25 s |
+| Same, 4-step distilled, about 7x faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 30 s |
 
 The two Mage-Flow profiles share an 8.3 GB text encoder and a VAE, so whichever
 you add second costs 7.7 GB. ComfyUI supports Mage-Flow in core, so neither
@@ -155,9 +155,12 @@ VDN changes how attention scales rather than only cutting steps. Exact softmax
 inside a local window, a linear-attention branch outside it, so cost rises
 linearly with clip length instead of quadratically. That pays off at 10-15 s
 and 720p+. At the ~5 s these templates default to, the turbo LoRA is faster and
-wants less disk. VDN picks its memory mode when it loads; here it logged
-`cache_gpu` with 54.7 GiB free against a 3.99 GiB stage, and ran the windowed
-softmax on the flash SDPA backend.
+wants less disk. VDN picks its memory mode when it loads, from the free VRAM
+ComfyUI reports. Here it logged `cache_gpu` and kept its buffers with 17.4 GiB
+reported free against a 3.99 GiB stage, and ran the windowed softmax on the
+flash SDPA backend. It wants about 10 GiB free for `cache_gpu` and 14 GiB to
+keep its buffers. That figure counts the page cache as used, so with a lot of
+cached model files it can fall back to its slower streaming mode.
 
 The profile reuses the pruned int8 base the other H3 profiles already
 provision, not the 34 GB unpruned checkpoint upstream asks for, so it costs 5.5
@@ -183,6 +186,13 @@ idle 121.7 GiB box with only the vLLM stack loaded:
 | `minimax-h3-i2v-turbo` | 140 s | 6.4 GiB |
 | `minimax-h3-i2v` (unaccelerated) | 301 s | 6.1 GiB |
 
+These were measured before the core bump to v0.38. `vram_free` counts the page
+cache as used, so it reads lower than what can actually be allocated. On the
+current core `minimax-h3-vdn-8step` bottoms at 3.9 GiB by that measure with
+45.6 GiB still available, and `minimax-h3-i2v-turbo` at 2.6 GiB with 50.5 GiB
+available. Available is `ram_free` in `/system_stats`, the same figure as the
+`available` column of `free -g`.
+
 The low point is VAE decode and it holds for the last 40 s or so. Much of that
 is ComfyUI's `cudaMallocAsync` pool sitting on memory it is not using rather
 than live weights, but that memory is still unavailable to everything else.
@@ -194,8 +204,10 @@ memory that means a hard reboot rather than an OOM you can catch. A three-lane
 MiniMax script took this machine down. Run one lane at a time, in the
 foreground.
 
-`POST /free` gets back to about 87 GiB, not the 97 GiB a freshly started server
-reports. Use the lower number when working out whether a second job fits.
+`POST /free` releases what ComfyUI holds but not the page cache, so afterwards
+`vram_free` sits somewhere between 30 and 60 GiB while available memory is back
+at 92 to 97 GiB. Use available memory when working out whether a second job
+fits.
 
 
 ### MiniMax H3 Easy, long video in connected segments
@@ -418,7 +430,7 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Conversations between up to 4 characters, voices cloned from samples [^h] | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
-| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 172 s |
+| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 100 s |
 | Both at once: describe one voice, clone the rest, run the conversation [^h] | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)

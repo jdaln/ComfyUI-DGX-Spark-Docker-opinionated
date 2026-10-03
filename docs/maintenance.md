@@ -69,8 +69,9 @@ lands and the pack is pulled.
 
 ## ComfyUI submodule
 
-The submodule tracks `jdaln/ComfyUI` branch `dgx-state`, currently at `56f644d`
-(v0.30.0, 2026-07-13). It is a fork rather than upstream because the branch
+The submodule tracks `jdaln/ComfyUI` branch `dgx-state`, currently at `6fdaf61`:
+upstream master as of 2026-10-03 (v0.38.0 plus 32 commits) with the four DGX
+commits rebased on top. It is a fork rather than upstream because the branch
 carries changes ahead of a release.
 
 ```bash

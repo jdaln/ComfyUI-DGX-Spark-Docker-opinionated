@@ -181,6 +181,11 @@ req = urllib.request.Request('http://127.0.0.1:8188/free',
 urllib.request.urlopen(req, timeout=60).read()"
 ```
 
+Memory that stays used after `/free` is usually the page cache. `free -g` and
+the `vram_free` figure in `/system_stats` both count cached model files as used,
+so after a few runs they read 30 to 60 GiB below what is really available. Go by
+the `available` column of `free -g`, which is `ram_free` in `/system_stats`.
+
 Two things do this automatically:
 
 - `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See
