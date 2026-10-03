@@ -62,6 +62,10 @@
     ["ltx-2.5-distilled",                           "video_ltx2_5_t2v"],
     ["ltx-2.5-distilled-nvfp4",                     "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Video (LTX-2.5 NVFP4).json"],
     ["ltx-2.5-latent-upscale",                      "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Upscale (LTX-2.5 Latent 2x).json"],
-    ["ltx-2.5-sequencer",                           "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Shot Sequencer (LTX-2.5).json"]
+    ["ltx-2.5-sequencer",                           "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Shot Sequencer (LTX-2.5).json"],
+    ["yue2",                                        "audio_yue2_text2music"],
+    ["yue2-cover",                                  "audio_yue2_music_cover"],
+    ["yue2-bf16",                                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (YuE2 bf16).json"],
+    ["yue2-bo8",                                    "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Music (YuE2 Best of 8).json"]
   ]
 }

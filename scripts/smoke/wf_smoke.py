@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Workflow smoke: UI-format workflow (template name or path) -> expand subgraphs -> API prompt -> queue -> wait."""
-import json, sys, time, urllib.request, uuid, glob, os, itertools
+import json, sys, time, urllib.request, uuid, glob, os, itertools, re
 
 BASE = "http://127.0.0.1:8188"
 TARGET = sys.argv[1] if len(sys.argv) > 1 else "image_z_image_turbo"
@@ -43,8 +43,53 @@ def api(path, data=None):
         print("HTTP", e.code, e.read().decode()[:3000]); sys.exit(1)
 
 _newlink = itertools.count(10_000_000)
+MODEL_FILE = re.compile(r"\.(safetensors|gguf|sft|ckpt|pt|pth|onnx|bin)$", re.I)
 
-def expand_subgraphs(wf):
+def accepts(node, slot, value, object_info):
+    """Whether `value` could be what input `slot` of `node` holds."""
+    info = object_info.get(node["type"])
+    if info is None or slot >= len(node.get("inputs", [])):
+        return True  # nested subgraph or frontend-only node: nothing to check against
+    name = node["inputs"][slot]["name"]
+    spec = (info["input"].get("required") or {}).get(name) or (info["input"].get("optional") or {}).get(name)
+    if not spec:
+        return True
+    typ = spec[0]
+    cfg = spec[1] if len(spec) > 1 and isinstance(spec[1], dict) else {}
+    if isinstance(typ, list) or typ == "COMBO":
+        options = typ if isinstance(typ, list) else cfg.get("options") or []
+        if isinstance(value, str) and MODEL_FILE.search(value) and \
+                (not options or any(isinstance(o, str) and MODEL_FILE.search(o) for o in options)):
+            return True  # a model list: the file may just not be on this machine
+        return value in options
+    if typ == "BOOLEAN": return isinstance(value, bool)
+    if typ == "INT": return isinstance(value, int) and not isinstance(value, bool)
+    if typ == "FLOAT": return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if typ == "STRING": return isinstance(value, str)
+    return True
+
+def promoted_values(sg, wv, in_links, nodes, object_info):
+    """Map a subgraph node's widgets_values onto the subgraph's own inputs.
+
+    Newer frontends save promoted widget values in the order of the subgraph's
+    inputs while listing only some of them in the node's `inputs`. Use that order
+    only when the count works out and every value suits the inner input it lands
+    on; anything else returns None and keeps the inner node defaults."""
+    values, wi = {}, 0
+    for k, sin in enumerate(sg.get("inputs", [])):
+        if sin.get("type") not in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO"):
+            continue
+        if wi >= len(wv): return None
+        values[k] = wv[wi]; wi += 1
+        if sin.get("type") == "INT" and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
+            wi += 1
+    if wi != len(wv): return None
+    for k, v in values.items():
+        for tid, tslot in in_links.get(k, []):
+            if not accepts(nodes[tid], tslot, v, object_info): return None
+    return values
+
+def expand_subgraphs(wf, object_info):
     """Inline-expand subgraph nodes. Returns (nodes_by_id, links_list, forced_values, dangling)."""
     sgs = {s["id"]: s for s in (wf.get("definitions") or {}).get("subgraphs") or []}
     nodes = {str(n["id"]): json.loads(json.dumps(n)) for n in wf["nodes"]}
@@ -74,12 +119,15 @@ def expand_subgraphs(wf):
         wv = list(o.get("widgets_values") or [])
         widget_inputs = [i for i in o.get("inputs", []) if i.get("widget")]
         # widgets_values order is only trustworthy when its length matches the
-        # promoted widget count; otherwise fall back to the inner nodes' own
+        # promoted widget count, or when it lines up with the subgraph's own
+        # inputs (promoted_values); otherwise fall back to the inner nodes' own
         # widgets_values (which carry the blueprint's intended defaults).
         align = len(wv) == len(widget_inputs)
-        if wv and not align:
+        promoted = None if align or not wv else promoted_values(sg, wv, in_links, nodes, object_info)
+        if wv and not align and promoted is None:
             print(f"subgraph {sg.get('name', o['type'])[:40]}: widgets_values ({len(wv)}) "
                   f"!= promoted widgets ({len(widget_inputs)}); using inner node defaults")
+        linked = set()
         wi = 0
         # the outer node's inputs[] can be a reordered subset of the subgraph's
         # promoted inputs, so resolve the inner slot by NAME, not by position
@@ -90,6 +138,7 @@ def expand_subgraphs(wf):
             if ext:
                 l = ext[0]
                 links.remove(l)
+                linked.add(inp.get("name"))
                 for (tid, tslot) in targets:
                     links.append([next(_newlink), l[1], l[2], tid, tslot, l[5]])
                 if inp.get("widget") and wi < len(wv):
@@ -107,6 +156,13 @@ def expand_subgraphs(wf):
                             forced[(tid, tin[tslot]["name"])] = v
             elif inp.get("widget"):
                 pass
+        for k, v in (promoted or {}).items():
+            if sg["inputs"][k].get("name") in linked:
+                continue
+            for (tid, tslot) in in_links.get(k, []):
+                tin = nodes[tid].get("inputs", [])
+                if tslot < len(tin):
+                    forced[(tid, tin[tslot]["name"])] = v
         # rewire outer outputs
         consumed = set()
         for l in links[:]:
@@ -130,7 +186,7 @@ def expand_subgraphs(wf):
     return nodes, links, forced, dangling
 
 def ui_to_api(wf, object_info):
-    nodes, linklist, forced, dangling = expand_subgraphs(wf)
+    nodes, linklist, forced, dangling = expand_subgraphs(wf, object_info)
     links = {l[0]: (str(l[1]), l[2], l[5] if len(l) > 5 else "*") for l in linklist}
     by_dst = {}
     for l in linklist:
@@ -183,7 +239,10 @@ def ui_to_api(wf, object_info):
             lid = by_dst.get(nid, {}).get(slot)
             if lid is not None:
                 r = resolve(lid)
-                if r: inputs[inp["name"]] = r
+                if r and nodes[r[0]]["type"] == "PrimitiveNode":
+                    # frontend-only: the frontend sends the primitive's value, not a link
+                    inputs[inp["name"]] = sub((nodes[r[0]].get("widgets_values") or [None])[0])
+                elif r: inputs[inp["name"]] = r
         wv = n.get("widgets_values")
         if isinstance(wv, dict):
             for k, v in wv.items():

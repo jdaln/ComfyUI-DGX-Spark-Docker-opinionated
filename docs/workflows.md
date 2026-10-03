@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 62 profiles. The 60 in the category tables below
+`asset-profiles.json` defines 66 profiles. The 64 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 55 have an automated smoke lane. Three do not, because their
+Most of those 64 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -328,8 +328,8 @@ widget to match the profile you provisioned.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Text, image or first/last frame to video, with audio | `ltx-2.5-distilled` | `video_ltx2_5_t2v`, `_i2v`, `_flf2v` | Template | 41 GB | 107 s |
-| Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 116 s |
+| Text, image or first/last frame to video, with audio | `ltx-2.5-distilled` | `video_ltx2_5_t2v`, `_i2v`, `_flf2v` | Template | 41 GB | 100 s |
+| Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 90 s |
 | Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 105 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
 | Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
@@ -345,9 +345,8 @@ and the spatial upscaler, so the second costs only its transformer.
 Output is 1280x704 at 24 fps, about 5 seconds, with a stereo track, so it is
 both higher resolution and roughly half the time of MiniMax H3.
 
-NVFP4 saves 3 GB on disk but measured slightly slower than int8 here, 116 s
-against 107 s, so pick it for space rather than speed. Only the transformer
-differs.
+NVFP4 saves 3 GB on disk and measured a little faster than int8 here, 90 s
+against 100 s. Only the transformer differs.
 
 `LTX Director 2 (LTX-2.5)` is the timeline editor from
 [WhatDreamsCost-ComfyUI](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI)
@@ -460,6 +459,57 @@ Japanese, Korean and Spanish lyrics all work.
 
 The transcription template needs a track you put in `ComfyUI/input/`. The repo
 ships no sample audio, so its run time was measured with a supplied clip.
+
+### YuE2, songs planned as a score first
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| A full song from a style prompt and lyrics | `yue2` | `audio_yue2_text2music` | Template | 13 GB | 50 s |
+| A new version of an existing song, keeping its melody | `yue2-cover` | `audio_yue2_music_cover` | Template | 13 GB | 45 s |
+| A full song on the bf16 weights, from comfyanonymous's test workflow | `yue2-bf16` | Text to Music (YuE2 bf16) | Ours | 13 GB | 70 s |
+| Eight takes of a song in one run, to pick from | `yue2-bo8` | Text to Music (YuE2 Best of 8) | Ours | 13 GB | 370 s |
+
+[YuE2](https://huggingface.co/m-a-p/YuE2-3B) is a 3B music model from M-A-P. It
+writes a song in two passes: an ABC score first, the melody and optionally the
+chords, then the audio, 48 kHz stereo. Style and lyrics are separate inputs, and
+section tags in the lyrics (`[Verse]`, `[Chorus]`) set the structure. `full` mode
+plans melody and chords; `melody` plans only the melody and is the mode for
+covers. The score is plain text: the generate node takes an edited one in its
+`abc` input.
+
+The four profiles provision the same files, and any one of them covers all four
+workflows. There are four only so that each workflow has its own lane.
+
+Core's two templates load the int8 build of the checkpoint. Ours load the bf16
+build, the unquantized weights the model card measures, which is twice the size.
+
+The cover template transcribes the melody of a recording into a score with
+SheetSage2, then has YuE2 sing your lyrics over it in a new style. The profile
+puts Comfy's sample song, `yue2_reference_song.flac`, in `input/`, which is what
+the lane runs on; load your own song in its Load Audio node. The lane's cover
+comes back at 101 s against the sample's 100 s.
+
+`Text to Music (YuE2 bf16)` is the test workflow comfyanonymous attached to
+[ComfyUI PR #16250](https://github.com/Comfy-Org/ComfyUI/pull/16250), which
+added YuE2 to ComfyUI, found through
+[AI Search's video](https://www.youtube.com/watch?v=9RtywbN--QE) on YouTube. This
+copy loads the bf16 checkpoint and decodes with the regular VAE decoder instead
+of the tiled one. It also carries a cover path, bypassed; the note beside it
+says how to switch it on.
+
+The model card's headline score is best-of-8: eight candidate songs per prompt,
+ranked by a musicality judge, then by prompt adherence, then by phoneme error
+rate. ComfyUI has none of those judges, so `Text to Music (YuE2 Best of 8)`
+renders the eight candidates in one run and leaves the choice to you. A Seed
+List node gives each take its own seed for the score, the music tokens and the
+audio, so the takes differ in length as well as sound: the lane's ran from 25 s
+to 63 s. All eight are saved together when the run ends.
+
+HeartMuLa's lyrics transcriber, run over the lane outputs, returns the lyrics
+almost word for word.
+
+YuE2 and SheetSage2 are licensed CC BY-NC 4.0, non-commercial use only. Nothing
+here is gated. Core's templates need ComfyUI 0.36.0 or newer.
 
 ## 3D
 

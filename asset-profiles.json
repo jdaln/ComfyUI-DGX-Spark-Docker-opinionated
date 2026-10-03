@@ -316,6 +316,18 @@
    "ltx-2.5-prompt-enhancer",
    "ltx-2.5-spatial-upscaler",
    "ltx-2.5-distilled-int8"
+  ],
+  "yue2": [
+   "yue2-assets"
+  ],
+  "yue2-cover": [
+   "yue2-assets"
+  ],
+  "yue2-bf16": [
+   "yue2-assets"
+  ],
+  "yue2-bo8": [
+   "yue2-assets"
   ]
  },
  "selection_metadata": {
@@ -1272,6 +1284,28 @@
     "dest": "/workspace/ComfyUI/models/latent_upscale_models/minimax_h3_latent_upscaler_3d_fp16.safetensors",
     "url": "https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_fp16.safetensors",
     "label": "MiniMax H3 3D latent upscaler (fp16)"
+   }
+  ],
+  "yue2-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/yue2_3b_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/YuE2/resolve/main/checkpoints/yue2_3b_bf16.safetensors",
+    "label": "YuE2 3B checkpoint (bf16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/yue2_3b_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/YuE2/resolve/main/checkpoints/yue2_3b_int8_convrot.safetensors",
+    "label": "YuE2 3B checkpoint (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/audio_encoders/sheetsage2_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/YuE2/resolve/main/audio_encoders/sheetsage2_bf16.safetensors",
+    "label": "SheetSage2 audio to ABC transcriber (bf16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/yue2_reference_song.flac",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/yue2_reference_song.flac",
+    "label": "YuE2 cover sample input song"
    }
   ]
  }

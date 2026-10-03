@@ -40,6 +40,7 @@
     "MiniMaxH3EasyAspectRatio": "ComfyUI-MiniMaxH3-Easy",
     "MiniMaxH3EasySecondPassConditioning": "ComfyUI-MiniMaxH3-Easy",
     "RAMCleanup": "ComfyUI-DGX-Spark-Templates",
-    "VRAMCleanup": "ComfyUI-DGX-Spark-Templates"
+    "VRAMCleanup": "ComfyUI-DGX-Spark-Templates",
+    "SeedList": "ComfyUI-DGX-Spark-Templates"
   }
 }
