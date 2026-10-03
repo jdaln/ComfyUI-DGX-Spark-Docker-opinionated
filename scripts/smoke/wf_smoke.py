@@ -316,6 +316,10 @@ def ui_to_api(wf, object_info):
                 inputs[name] = cfg["default"]
             elif isinstance(typ, list) and typ:
                 inputs[name] = typ[0]
+            elif cfg.get("socketless"):
+                # display-only widget the workflow stores no value for, such as
+                # ImageCompare's compare_view; the frontend still sends one
+                inputs[name] = {}
         if t in FALLBACK_INPUT:
             for k, v in list(inputs.items()):
                 if isinstance(v, str) and "." in v and not os.path.exists(os.path.join(INPUT_DIR, v)):

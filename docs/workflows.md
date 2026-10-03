@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 67 profiles. The 65 in the category tables below
+`asset-profiles.json` defines 70 profiles. The 68 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 65 have an automated smoke lane. Three do not, because their
+Most of those 68 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -75,6 +75,44 @@ download nothing. See [models.md](models.md) for the current gated list.
 The two Mage-Flow profiles share an 8.3 GB text encoder and a VAE, so whichever
 you add second costs 7.7 GB. ComfyUI supports Mage-Flow in core, so neither
 template installs a custom node. There is no NVFP4 build that ComfyUI can load.
+
+### Qwen-Image 2.1, generation and editing in one model
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text to image at up to 2K, with dense text and transparent backgrounds | `qwen-image-2.1-t2i` | `image_qwen_image_2_1_t2i` | Template | 24 GB | 25 s |
+| Instruction edits with up to ten reference images | `qwen-image-2.1-edit` | `image_qwen_image_2_1_image_edit` | Template | 24 GB | 35 s |
+| Background removal by instruction, with a real alpha channel | `qwen-image-2.1-remove-background` | `image_qwen_image_2_1_background_removal` | Template | 14 GB | 30 s |
+
+One set of weights serves both text to image and editing. Output goes up to 2K
+natively, small text and dense layouts hold up, and the VAE carries four
+channels, so a transparent background comes out of the model instead of being
+cut out afterwards. Core ships the three templates; the profiles provision what
+they load, and the three share all but a few files.
+
+The templates load the int8 text encoder. These profiles download the smaller
+w4a8 build instead, 6.3 GB against 9.4 GB, and link the int8 filename to it, so
+the templates open unchanged and run on the smaller file. ComfyUI runs w4a8
+natively on the Spark. For the int8 or bf16 encoder, delete the link and fetch
+the file from [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1).
+The diffusion model is the int8 build the templates load, the smallest that
+repository publishes.
+
+The text to image and edit templates also load a 9.5 GB prompt enhancer, a
+Qwen3.5 9B that rewrites the prompt when `refine_prompt` is switched on. It is
+off by default, but its loader is in the graph, so those two profiles download
+it. That is most of the difference between 24 GB and the 14 GB of background
+removal.
+
+The edit template addresses its references from the prompt as `<image1>`,
+`<image2>` and so on; `image_1` is the image being edited. With `resolution`
+at 0, the template default, each reference keeps its own pixel size, so a large
+photo makes a large and slow edit. Set `resolution` to 1024 for a roughly
+1 MP canvas. The profiles put Comfy's sample inputs in `input/`: on them the
+edit lane dresses the model in the denim shirt from the second image, and the
+background removal lane leaves 58% of the broccoli image fully transparent.
+
+Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 
 ## Video
 

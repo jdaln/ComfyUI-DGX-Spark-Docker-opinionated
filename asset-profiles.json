@@ -331,6 +331,19 @@
   ],
   "minimax-music-3": [
    "minimax-music-3-assets"
+  ],
+  "qwen-image-2.1-t2i": [
+   "qwen-image-2.1-core-assets",
+   "qwen-image-2.1-pe-t2i"
+  ],
+  "qwen-image-2.1-edit": [
+   "qwen-image-2.1-core-assets",
+   "qwen-image-2.1-pe-i2i",
+   "qwen-image-2.1-edit-inputs"
+  ],
+  "qwen-image-2.1-remove-background": [
+   "qwen-image-2.1-core-assets",
+   "qwen-image-2.1-remove-background-input"
   ]
  },
  "selection_metadata": {
@@ -1326,6 +1339,62 @@
     "dest": "/workspace/ComfyUI/models/vae/minimax_music3_dav.safetensors",
     "url": "https://huggingface.co/Comfy-Org/MiniMax-Music-3/resolve/main/vae/minimax_music3_dav.safetensors",
     "label": "MiniMax Music 3 audio VAE"
+   }
+  ],
+  "qwen-image-2.1-core-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+    "label": "Qwen-Image 2.1 diffusion model (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_w4a8.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_w4a8.safetensors",
+    "label": "Qwen-Image 2.1 Qwen3-VL 8B text encoder (w4a8)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/text_encoders/qwen3vl_8b_w4a8.safetensors",
+    "label": "Qwen-Image 2.1 int8 text encoder name, pointed at the w4a8 build (core templates ask for it)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/qwen_image_2.1_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+    "label": "Qwen-Image 2.1 VAE (bf16)"
+   }
+  ],
+  "qwen-image-2.1-pe-t2i": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors",
+    "label": "Qwen-Image 2.1 text-to-image prompt enhancer (Qwen3.5 9B, int8 convrot)"
+   }
+  ],
+  "qwen-image-2.1-pe-i2i": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_i2i.int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_i2i.int8_convrot.safetensors",
+    "label": "Qwen-Image 2.1 image-edit prompt enhancer (Qwen3.5 9B, int8 convrot)"
+   }
+  ],
+  "qwen-image-2.1-edit-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/portrait_model_denim.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/portrait_model_denim.png",
+    "label": "Qwen-Image 2.1 image edit sample input (portrait)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/clothing_light_blue_denim_shirt.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/clothing_light_blue_denim_shirt.png",
+    "label": "Qwen-Image 2.1 image edit sample input (shirt)"
+   }
+  ],
+  "qwen-image-2.1-remove-background-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/angry_broccoli.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/angry_broccoli.png",
+    "label": "Qwen-Image 2.1 background removal sample input"
    }
   ]
  }
