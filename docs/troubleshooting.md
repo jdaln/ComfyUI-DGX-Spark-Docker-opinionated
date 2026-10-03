@@ -190,7 +190,8 @@ Two things do this automatically:
 
 - `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See
   [configuration.md](configuration.md).
-- `run_lanes.py` frees before every lane and once at the end.
+- `run_lanes.py` frees before every lane and once at the end, and holds the
+  next lane until available memory is back above 85 GiB.
 - `VRAM Cleanup`, a node, if you want the same thing inside a graph. Put it
   after the output. It calls the same unload and empty-cache pair the endpoint
   does, so mid-graph it will unload models the rest of the run still needs and

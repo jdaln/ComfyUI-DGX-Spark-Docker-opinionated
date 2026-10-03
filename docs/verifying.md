@@ -8,8 +8,13 @@ output. The harness lives in [`scripts/smoke/`](../scripts/smoke).
 | --- | --- | --- | --- |
 | `validate_manifest.py` | host, offline | no | manifest structure, dangling symlink targets, node types no installed pack provides, lane to profile mismatches, undeclared self-provisioning |
 | `wf_smoke.py <workflow> <timeout> [subs]` | in container | yes | converts a UI workflow to an API prompt, expanding subgraphs, queues it and waits. The only script that executes a graph |
-| `run_lanes.py [profiles...]` | in container | yes | runs every `lanes.json` entry through `wf_smoke.py`, writes `/tmp/lane_report.json` |
+| `run_lanes.py [profiles...]` | in container | yes | runs every `lanes.json` entry through `wf_smoke.py` one at a time behind a memory gate, writes `/tmp/lane_report.json` |
+| `sweep.sh [profiles...]` | host, drives the container | yes | stages the harness and runs `run_lanes.py`, the audit and a contact sheet detached in the container, for unattended runs |
 | `audit_refs.py [profiles...]` | in container | yes | every model a lane's workflow references resolves on disk |
+| `lane_prompt_diff.py <old> <new> [profiles...]` | in container | no | what a change to `wf_smoke.py` does to every lane's prompt, without queueing anything |
+| `contact_sheet.py <out> [--report r] [files...]` | in container | no | lane outputs side by side, video as its middle frame |
+| `audio_check.py <files...>` | in container | no | duration, level, silence and spectral flatness, to tell music from noise |
+| `transcribe_lyrics.py <files...>` | in container | yes | sung lyrics read back out of song outputs with HeartMuLa's transcriber |
 | `build_matrix.py` | host and container | yes | cross-checks profile file sets against workflow model references |
 
 ## 1. Offline first
@@ -78,8 +83,24 @@ docker exec comfyui cat /tmp/lane_report.json
 
 `run_lanes.py` frees ComfyUI's cached models before each lane and once at the
 end, because nothing else does and a batch of large profiles otherwise stacks
-them until the machine falls over. See
+them until the machine falls over. It then waits for available memory to come
+back above 85 GiB before starting the next lane (`LANE_MIN_AVAILABLE_GIB`), and
+stops the run if it has not after 15 minutes. After a failed lane it interrupts
+the server and clears the queue, so a prompt that outlived its timeout cannot
+keep running under the next one. The report records each lane's lowest
+available memory and free VRAM. See
 [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
+
+For a long run, such as every lane after a core bump, start it with
+`sweep.sh` instead. It refuses to start while ComfyUI is busy, runs everything
+inside the container so it carries on after your shell closes, and ends with
+the audit and a contact sheet:
+
+```bash
+scripts/smoke/sweep.sh                     # every lane, or name profiles
+scripts/smoke/sweep.sh --status            # progress
+docker cp comfyui:/tmp/sweep ./tmp/        # report, audit and sheet.jpg once finished
+```
 
 A passing lane is weaker evidence than it looks. The harness can satisfy a
 missing model from an inner-node default, a stub input, or a lane-declared
@@ -94,6 +115,22 @@ Then open the output file. A `COMPLETED` result only proves the graph executed.
 
 ```bash
 docker exec comfyui bash -lc "ls -lt /workspace/ComfyUI/output | head"
+```
+
+`contact_sheet.py` lays out a report's outputs in one image. For audio,
+`audio_check.py` separates music from noise: spectral flatness near 0.5 is
+noise, while the music and song outputs here read 1e-3 and below. For songs,
+`transcribe_lyrics.py` gives back the sung lyrics; if they match the workflow's,
+the vocals are real words. Copy the scripts in like the rest of the harness.
+
+When you change `wf_smoke.py`, check what it does to every lane before running
+any of them:
+
+```bash
+git show HEAD:scripts/smoke/wf_smoke.py > /tmp/wf_smoke_old.py
+docker cp /tmp/wf_smoke_old.py comfyui:/tmp/
+docker cp scripts/smoke/lane_prompt_diff.py comfyui:/tmp/
+docker exec comfyui python3 /tmp/lane_prompt_diff.py /tmp/wf_smoke_old.py /tmp/wf_smoke.py
 ```
 
 ## 3. Workflows with no lane

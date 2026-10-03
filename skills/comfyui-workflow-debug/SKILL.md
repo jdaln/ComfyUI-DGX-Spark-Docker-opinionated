@@ -73,12 +73,18 @@ docker exec comfyui python3 -u /tmp/wf_smoke.py "/tmp/<name>.json" 1800
 | `einops` "can't divide axis of length N in chunks of 2" | Source dimensions not divisible by what the patchifier needs | LTX latents are pixels/4 then patched 2x2, so pixel dims must divide by 8, and 32 is the safe snap. Insert a resize rather than changing the source |
 | A widget receives its neighbour's value (`invalid literal for int()`, a combo string in a float) | `widgets_values` mapped positionally against a mismatched schema | Compare `len(widgets_values)` to required+optional widget-bearing inputs from `/object_info`. Run the upstream original through `wf_smoke.py` to prove it is the node, not your edit |
 | Free memory never returns after a render; box locks up on the next big model | ComfyUI keeps the last model resident | POST `/free`; see the memory section in docs/troubleshooting.md |
+| Lane passes but the output ignores the workflow's prompt; the harness log says `using inner node defaults` or `defaulted <Node>.prompt = ''` | `wf_smoke.py` could not place the workflow's own widget values: a subgraph node saved its promoted widgets in an order the harness cannot verify, or a widget type it does not know | Compare the outer node's `widgets_values` with the subgraph's `inputs` and `/object_info`; `lane_prompt_diff.py` shows what a harness change does to every lane |
+| `Required input is missing: X` then `Output will be ignored`, yet the lane passes | The server dropped that one output node and ran the rest. Usually a widget the workflow stores no value for, which the frontend fills in | The input's spec in `/object_info`. Socketless display widgets such as ImageCompare's `compare_view` are now filled by the harness |
+| An image that is only "Image blocked by safety filter" on grey | Ideogram 4 given an empty prompt. No ComfyUI code produces it; it is the model's learned placeholder | The prompt the lane sent. The `ideogram-4` blueprint's prompt is empty by design, so that lane proves loading and sampling only |
+| `vram_free` in `/system_stats` far below the available column of `free -g` | `vram_free` counts the page cache as used, and model files stay cached after loading | Go by `ram_free` (available memory), as `run_lanes.py`'s gate does |
 
 **Before blaming the workflow, check memory.** ComfyUI does not release a
 model when a prompt finishes. Two large profiles run back to back ask for both
 at once, and a Spark answers that by locking up rather than raising an OOM.
-`run_lanes.py` now frees between lanes and `COMFY_IDLE_UNLOAD_MINUTES` handles
-the GUI case, but a hand-run sequence still needs:
+`run_lanes.py` frees before every lane, waits until available memory is back
+above 85 GiB before starting the next, and interrupts the server after a failed
+lane; `COMFY_IDLE_UNLOAD_MINUTES` handles the GUI case. A hand-run sequence
+still needs:
 
 ```bash
 docker exec -i comfyui python3 -c "
@@ -89,9 +95,12 @@ req = urllib.request.Request('http://127.0.0.1:8188/free',
 urllib.request.urlopen(req, timeout=60).read()"
 ```
 
-Watch `MemAvailable` during an unfamiliar workflow rather than discovering the
-floor by crashing: LTX 2.5 bottoms out near 14 GB of 121 GB, MiniMax H3 near
-21 GB.
+Watch available memory during an unfamiliar workflow rather than discovering
+the floor by crashing: `MemAvailable`, or `ram_free` in `/system_stats`, never
+`vram_free`, which also counts the page cache. On the v0.38 core the heaviest
+lanes bottom out at roughly 45 to 55 GiB available: the MiniMax H3 lanes near
+45, LTX 2.5 near 52. `run_lanes.py` records each lane's low point in its
+report.
 
 **The one technique that always works:** the traceback names a `node_id` and
 `class_type`. Grep that class name in `custom_nodes/<pack>/**/*.py` or
@@ -109,7 +118,11 @@ that only hides the problem from the next person.
 
 **6. Re-run lane + audit, then look at the actual output file once** (image,
 video, audio, or text) before calling it fixed. A `COMPLETED` result only
-proves the graph executed.
+proves the graph executed. `contact_sheet.py` lays out images and video
+frames, `audio_check.py` tells music from noise by spectral flatness, and
+`transcribe_lyrics.py` reads sung lyrics back out of a song. For many lanes at
+once, `scripts/smoke/sweep.sh` runs them unattended and leaves the report, the
+audit and a contact sheet in the container's `/tmp/sweep/`.
 
 ## Input-dependent workflows
 

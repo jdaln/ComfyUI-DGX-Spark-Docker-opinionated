@@ -35,6 +35,24 @@ cover (an NVFP4 build, a different checkpoint). Check what core's template
 already contains too: LTX 2.5's core templates already chain the latent
 upscaler, so a separate "upscale" template would have duplicated it.
 
+**Does a newer core ship it, or fix it?** The pinned templates package lags
+upstream. YuE2's official templates arrived in a later
+`comfyui-workflow-templates` than this checkout pinned and need ComfyUI 0.36;
+the `minComfyUIVersion` in a template's index entry says what it wants. Upstream
+also fixed MiniMax Music 3 producing noise with CUDA graphs after the old pin.
+Compare before bundling or debugging:
+
+```bash
+git -C ComfyUI fetch upstream master
+git -C ComfyUI diff HEAD upstream/master -- requirements.txt
+git -C ComfyUI log --oneline HEAD..upstream/master -- comfy/ldm/YOUR_MODEL comfy/text_encoders comfy_extras
+```
+
+If upstream has what you need, rebase `dgx-state` onto upstream master first
+(backup branch, then a separate `core: bump comfyui` commit; see
+[docs/maintenance.md](../../docs/maintenance.md)) instead of bundling a copy or
+cherry-picking.
+
 **Can the pinned core even load the model?** A new model family often needs a
 new text encoder or ldm module. LTX 2.5 conditions on Gemma 4, which 0.30.0
 did not have at all, so no profile or template could have worked.
@@ -80,6 +98,26 @@ testable — add or extend an entry in `asset-profiles.json`:
 Entry types: `file` (needs `url`), `symlink` (needs `target`, must point at a
 dest another group already provisions), `hf_snapshot` (needs `repo_id`, pulls
 a whole HF repo directory). Every entry needs a `label`.
+
+Patterns that keep coming back:
+
+- **A smaller quant behind the template's filename.** When Comfy-Org publishes
+  a smaller build than the one a core template loads, provision the small file
+  and add a `symlink` from the template's filename to it. ComfyUI reads the
+  quant format from the file, not the name, so the template runs unchanged on
+  the smaller weights; the load log shows the resolved path. Qwen-Image 2.1's
+  int8 text encoder name points at the w4a8 build this way. Say so in the docs.
+- **Sample inputs.** When a template's `LoadImage` or `LoadAudio` names a file
+  from Comfy-Org/workflow_templates' `input/` folder, a `file` entry with its
+  raw.githubusercontent.com URL and a `/workspace/ComfyUI/input/` dest makes
+  the template runnable unattended (YuE2 cover, Qwen-Image 2.1 edit).
+- **Alias profiles.** Lanes are keyed by profile, so several workflows on one
+  file set each need their own profile name pointing at the same groups
+  (`yue2`, `yue2-cover`, `yue2-bf16`, `yue2-bo8`).
+- **Loaders on switched-off branches still count.** Qwen-Image 2.1's prompt
+  enhancer only loads with `refine_prompt` on, but its loader sits in the
+  graph, so the GUI reports the file missing and `audit_refs.py` fails without
+  it. Provision it.
 
 If the template belongs to a custom-node pack that ships its own
 `example_workflows/`, also check
@@ -159,6 +197,14 @@ it is the node and not your edit by running the upstream original through
 than chasing it. The ComfyUI frontend builds prompts from its own widget
 model and is unaffected.
 
+Read the harness log of a new lane before trusting a pass. `using inner node
+defaults` means `wf_smoke.py` could not place a subgraph node's own values,
+and `defaulted <Node>.prompt = ''` means a prompt went out empty. Both still
+pass, on input the workflow never shows a user; before the subgraph and
+primitive fixes, the MiniMax Music 3 and YuE2 lanes would have run on empty
+text. After changing `wf_smoke.py`, `lane_prompt_diff.py` shows what the change
+does to every lane's prompt without queueing anything.
+
 ## 4. Validate offline first
 
 ```bash
@@ -187,17 +233,31 @@ docker exec comfyui python3 /tmp/audit_refs.py my-new-profile
 Both must pass. A passing lane alone is not sufficient proof — `audit_refs.py`
 catches models the harness silently stubbed or substituted.
 
+For more than a couple of lanes, or anything left running unattended, use
+`scripts/smoke/sweep.sh <profiles>`. It runs them one at a time inside the
+container behind `run_lanes.py`'s memory gate and leaves the report, the audit
+and a contact sheet in `/tmp/sweep/`.
+
 ## 6. Look at the output once
 
 Open the produced image/video/audio/text file. A `COMPLETED` smoke result only
-proves the graph executed, not that the result is any good.
+proves the graph executed, not that the result is any good. Compare it with
+the prompt the lane actually sent, not the one you expect.
+
+- `contact_sheet.py` puts images and video frames side by side.
+- `audio_check.py` separates music from noise: spectral flatness near 0.5 is
+  noise, the music outputs here read 1e-3 and below.
+- `transcribe_lyrics.py` reads sung lyrics back out with HeartMuLa's
+  transcriber. Getting the workflow's lyrics back shows the vocals are words.
 
 ## 7. Promote it in docs/workflows.md
 
 Move the row from *Provisioned — not yet hardware-verified* into its category
 table (or add a new row/table if this is the first of its kind), filling in
-the measured Run time from the smoke output, and bump the "All N entries...
-verified end to end" count at the top of the file.
+the measured Run time from the smoke output. Then update the counts in the
+opening paragraph ("defines N profiles. The M in the category tables") and the
+"Most of those M" line under it; `validate_manifest.py` checks the first two.
+README.md and docs/models.md state the profile and template counts as well.
 
 If something is genuinely blocked upstream (weights not published), verify
 that by searching Hugging Face directly rather than trusting an old note —

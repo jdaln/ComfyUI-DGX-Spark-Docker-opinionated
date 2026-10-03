@@ -88,7 +88,8 @@ After a bump:
    pinned checkout registers, so a node that moved or was renamed shows up here.
 2. `docker compose build --no-cache && docker compose up -d`, then read the log
    for patches that no longer apply and for custom nodes that fail to import.
-3. Re-run the lanes for the profiles you use. See [verifying.md](verifying.md).
+3. Re-run the lanes for the profiles you use. `scripts/smoke/sweep.sh` runs
+   them unattended, one at a time. See [verifying.md](verifying.md).
 
 Expect patch warnings when the branch already contains a patch's content. The
 patches target the older pin so a fresh clone still gets the behaviour.
