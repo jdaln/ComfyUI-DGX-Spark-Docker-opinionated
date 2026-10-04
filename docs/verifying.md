@@ -93,10 +93,10 @@ available memory and free VRAM. See
 
 For a long run, such as every lane after a core bump, start it with
 `sweep.sh` instead. It refuses to start while ComfyUI is busy and runs as a
-detached process on the host, so it carries on after your shell closes. Some
-custom nodes leave memory in the ComfyUI process that `/free` cannot return, so
-when the memory gate stops the run, the sweep restarts the container and
-carries on from that lane, up to three times (`SWEEP_RESTARTS`). It ends with
+detached process on the host, so it carries on after your shell closes. CPU
+memory a workflow frees stays in the ComfyUI process until a restart, so when
+the memory gate stops the run, the sweep restarts the container and carries on
+from that lane, up to three times (`SWEEP_RESTARTS`). It ends with
 the audit and a contact sheet:
 
 ```bash

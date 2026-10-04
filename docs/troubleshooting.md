@@ -201,14 +201,28 @@ the `vram_free` figure in `/system_stats` both count cached model files as used,
 so after a few runs they read 30 to 60 GiB below what is really available. Go by
 the `available` column of `free -g`, which is `ram_free` in `/system_stats`.
 
-Some custom nodes allocate GPU memory outside ComfyUI's model management, and on
-a Spark that memory is host RAM. After a HeartMuLa run about 15 GB stays mapped
-in the ComfyUI process. Neither `/free` nor `RAM Cleanup` returns it, the next
-HeartMuLa run reuses it, and only restarting the container gives it back:
-`docker restart comfyui`. The MiniMax H3 Easy refine workflows do the same on a
-smaller scale, a few GB each.
+CPU memory that a workflow frees stays with the process too. PyTorch's aarch64
+build allocates CPU tensors through a copy of mimalloc inside `libc10.so`, and
+mimalloc returns freed pages to the system only during its own later
+allocation work, which an idle server never does. Workflows that move their own
+models between CPU and GPU leave the most behind: after a HeartMuLa run and
+`/free` the server holds 17 GiB, against 1.1 GiB fresh. A sequence of Z-Image,
+LTX-2.5, YuE2 and the MiniMax H3 Easy refine took it from 1.1 to 9.8 GiB, LTX-2.5
+being the largest step at about 4.5 GiB. A second run mostly reuses what the
+first left. Neither `/free` nor `RAM Cleanup` reaches this memory; restarting
+the container returns it: `docker restart comfyui`. PyTorch tracks the
+retention in [issue #178726](https://github.com/pytorch/pytorch/issues/178726).
 
-Two things do this automatically:
+To have it returned as soon as it is freed, set `MIMALLOC_PURGE_DELAY=0` in
+`.env` and recreate the container. HeartMuLa then leaves 2.3 GiB instead of
+17 GiB, and the same sequence stays under 4 GiB. The price is speed, because
+memory that used to be reused is faulted in afresh: LTX-2.5 lanes ran about 20%
+slower, the MiniMax H3 Easy refine about 8% slower, and a repeated HeartMuLa run
+took 144 s instead of 66 s. Z-Image and YuE2 ran at the same speed. A longer
+delay is no middle ground: with 60 s the purge still waits for allocation work,
+and the memory stayed until a restart.
+
+Ways to unload:
 
 - `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See
   [configuration.md](configuration.md).
@@ -218,7 +232,8 @@ Two things do this automatically:
   after the output. It calls the same unload and empty-cache pair the endpoint
   does, so mid-graph it will unload models the rest of the run still needs and
   they reload.
-- `RAM Cleanup` sits beside it and hands free heap back to the OS. Its
+- `RAM Cleanup` sits beside it and hands glibc's free heap back to the OS with
+  `malloc_trim`. PyTorch's tensors live in mimalloc, out of its reach. Its
   `clean_processes` and `clean_dlls` switches are Windows-only and do nothing
   here; they exist so workflows saved against `Comfyui-Memory_Cleanup` load
   unchanged. Neither node can touch memory outside ComfyUI.

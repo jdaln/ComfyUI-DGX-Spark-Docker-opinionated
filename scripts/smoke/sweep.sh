@@ -7,10 +7,11 @@
 #
 # The sweep runs in a detached process on the host, so it carries on after
 # this shell closes. Lanes run one at a time inside the container behind
-# run_lanes.py's memory gate. Some custom nodes leave memory mapped in the
-# ComfyUI process that /free cannot return (HeartMuLa holds about 15 GB until
-# a restart), so when the gate stops the run, the sweep restarts the container
-# and carries on from the lane it stopped at, at most SWEEP_RESTARTS (3) times.
+# run_lanes.py's memory gate. CPU memory a workflow frees stays in the ComfyUI
+# process until a restart, because PyTorch's allocator keeps it (about 16 GB
+# after HeartMuLa), so when the gate stops the run, the sweep restarts the
+# container and carries on from the lane it stopped at, at most
+# SWEEP_RESTARTS (3) times.
 # At the end it audits the models of the lanes it ran and builds a contact
 # sheet of their outputs. Everything lands in tmp/sweep/ in the repository.
 # It refuses to start while ComfyUI is busy, so nothing else shares the GPU.
