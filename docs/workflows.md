@@ -53,13 +53,18 @@ download nothing. See [models.md](models.md) for the current gated list.
 | --- | --- | --- | --- | ---: | ---: |
 | Fastest general purpose image model | `z-image-turbo-core` | `image_z_image_turbo` | Template | 19 GB | 20 s |
 | High-aesthetic 8-step distilled model | `krea-2-turbo` | `image_krea2_turbo_t2i` | Template | 17 GB | 35 s |
-| Same, NVFP4 build; smaller and faster on Blackwell | `krea-2-turbo-nvfp4` | Text to Image (Krea 2 Turbo NVFP4) | Ours | 12 GB | 20 s |
-| Krea 2 with nine style LoRAs (ink wash, retro anime, watercolour) | `krea-2-turbo-styleloras` | Text to Image (Krea 2 Turbo Style LoRA) | Ours | 21 GB | 20 s |
+| Same, NVFP4 build; smaller and faster on Blackwell | `krea-2-turbo-nvfp4` | Text to Image (Krea 2 Turbo NVFP4) | Ours | 12 GB | 25 s |
+| Krea 2 with nine style LoRAs (ink wash, retro anime, watercolour) | `krea-2-turbo-styleloras` | Text to Image (Krea 2 Turbo Style LoRA) | Ours | 21 GB | 35 s |
 | Krea 2 base model, full 52-step sampling; best for LoRA training and variety | `krea-2-raw` | Text to Image (Krea 2 RAW) | Ours | 17 GB | 90 s |
 | Qwen-Image, 8-step Lightning LoRA | `qwen-image-t2i-lightning-8step` | Text to Image (Qwen-Image) | Blueprint | 30 GB | 115 s |
 | Qwen-Image 2512, 4-step Lightning LoRA | `qwen-image-2512-t2i-lightning-4step` | `image_qwen_Image_2512` | Template | 30 GB | 230 s |
 | Ideogram 4; strongest text rendering in images | `ideogram-4` | Text to Image (Ideogram v4) | Blueprint | 27 GB | 55 s |
 | Same, NVFP4 build | `ideogram-4-nvfp4` | Text to Image (Ideogram v4 NVFP4) | Ours | 20 GB | 70 s |
+
+The `ideogram-4` lane runs the blueprint as it ships, with an empty prompt, and
+Ideogram answers an empty prompt with a grey card reading "Image blocked by
+safety filter". The card comes from the model, not from ComfyUI; that lane only
+proves the model loads and samples.
 
 ## Editing existing images
 
@@ -320,7 +325,7 @@ else here. Run it on its own.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 861 s |
+| Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 685 s |
 
 Takes a video in rather than generating one, so it is not limited to H3 output;
 any clip works. Ships pointed at `bedroom.mp4` and `example.png`, both already in
@@ -331,7 +336,7 @@ latent-upscale branch, and it gets its own profile so the lane runs alone.
 
 The lane feeds it `bedroom.mp4`, 960x540 and 6.7 s, and gets back 1920x1088 over
 the same 6.7 s with the audio intact, so the upscale is a real 2x rather than a
-re-encode. It is the slowest thing in the catalogue at 861 s; budget a quarter of
+re-encode. It is the slowest thing in the catalogue at 685 s; budget a quarter of
 an hour and do not run anything else while it works.
 
 
@@ -340,7 +345,7 @@ an hour and do not run anything else while it works.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, distilled (quickest) | `ltx-2.0-t2v-distilled` | `video_ltx2_t2v_distilled` | Template | 64 GB | 80 s |
-| Image to video, distilled | `ltx-2.0-i2v-distilled` | `video_ltx2_i2v_distilled` | Template | 64 GB | 55 s |
+| Image to video, distilled | `ltx-2.0-i2v-distilled` | `video_ltx2_i2v_distilled` | Template | 64 GB | 80 s |
 | Text to video, full dev checkpoint | `ltx-2.0-t2v-full` | `video_ltx2_t2v` | Template | 71 GB | 165 s |
 | Image to video, full dev checkpoint | `ltx-2.0-i2v-full` | `video_ltx2_i2v` | Template | 72 GB | 165 s |
 | Refine an existing video (detailer LoRA) | `ltx-2.0-v2v-detailer` | `video_ltx2_i2v_lora` | Template | 74 GB | 6 min |
@@ -353,14 +358,17 @@ an hour and do not run anything else while it works.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Blueprint | 60 GB | 140 s |
-| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 105 s |
+| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 135 s |
 | Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 270 s |
-| Transfer motion from a source video | `ltx-2.3-iclora-motion-track-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 160 s |
-| HDR and relighting pass | `ltx-2.3-iclora-hdr-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 240 s |
+| Transfer motion from a source video | `ltx-2.3-iclora-motion-track-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 230 s |
+| HDR and relighting pass | `ltx-2.3-iclora-hdr-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 295 s |
 | Lip-sync a face to audio | `ltx-2.3-iclora-lipdub-two-stage-distilled` | `video_ltx2_3_ic_lora` | Template | 63 GB | 260 s |
 
 The four IC-LoRA profiles share one template. Select the LoRA in the `ic_lora`
-widget to match the profile you provisioned.
+widget to match the profile you provisioned. Their lanes all feed the template's
+depth control from `bedroom.mp4`, which only the union-control LoRA is made for.
+The motion-track, HDR and LipDub lanes prove their LoRA loads and samples; their
+output mostly reproduces the depth video.
 
 ### LTX 2.5, 22B, joint audio and video
 
@@ -432,9 +440,10 @@ It decodes in tiles, with the settings core's LTX 2.5 templates use. Decoding
 the doubled video in one piece took available memory down to 16 GiB; in tiles it
 stays above 80 GiB, for 6 s more run time.
 
-This is the heaviest workflow in the catalogue for memory: a 15 GB text encoder
-and a 21 GB transformer put the floor at 13.9 GB free during VAE decode, against
-20.8 GB for MiniMax H3. Give it a quiet machine, and see
+LTX 2.5 loads a 15 GB text encoder and a 21 GB transformer. On the v0.38 core
+its lanes bottom out at 52 to 56 GiB available, about where MiniMax H3 sits at
+43 to 61 GiB. The lowest floors in the catalogue are now the BFS LTX-2.3 edits,
+at 15 to 18 GiB available; give those a quiet machine, and see
 [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
 
 Weights are [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5),
@@ -640,7 +649,7 @@ stack. Tracked in `scripts/smoke/pending_models.json`.
   aesthetics. Prefer the `-nvfp4` variants on Blackwell.
 - **Text inside the image**: `ideogram-4`.
 - **Editing a photo you already have**: `qwen-image-edit-2511-core`.
-- **First video**: `ltx-2.0-i2v-distilled` at 55 s, before committing to Wan 2.2
+- **First video**: `ltx-2.0-i2v-distilled` at 80 s, before committing to Wan 2.2
   at around 10 minutes a clip.
 - **Best video quality**: the LTX 2.3 pair, or Wan 2.2 for motion.
 - **Tight on disk**: image profiles are 12–30 GB, LTX profiles 60–75 GB each.
