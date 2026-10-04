@@ -344,6 +344,10 @@
   "qwen-image-2.1-remove-background": [
    "qwen-image-2.1-core-assets",
    "qwen-image-2.1-remove-background-input"
+  ],
+  "muscriptor": [
+   "muscriptor-assets",
+   "muscriptor-input"
   ]
  },
  "selection_metadata": {
@@ -1410,6 +1414,20 @@
     "dest": "/workspace/ComfyUI/input/angry_broccoli.png",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/angry_broccoli.png",
     "label": "Qwen-Image 2.1 background removal sample input"
+   }
+  ],
+  "muscriptor-assets": [
+   {
+    "dest": "/workspace/ComfyUI/models/muscriptor/muscriptor-large.safetensors",
+    "url": "https://huggingface.co/MuScriptor/muscriptor-large/resolve/main/model.safetensors",
+    "label": "MuScriptor large audio to MIDI transcriber (1.4B)"
+   }
+  ],
+  "muscriptor-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/yue2_reference_song.flac",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/yue2_reference_song.flac",
+    "label": "MuScriptor sample input song (the YuE2 cover sample)"
    }
   ]
  }

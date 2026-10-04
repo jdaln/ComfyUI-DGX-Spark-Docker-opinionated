@@ -53,6 +53,9 @@
     "LTXVSetAudioRefTokens": "ComfyUI-LTXVideo",
     "GemmaAPITextEncode": "ComfyUI-LTXVideo",
     "SimpleMath+": "ComfyUI_essentials",
-    "GetImageSizeAndCount": "ComfyUI-KJNodes"
+    "GetImageSizeAndCount": "ComfyUI-KJNodes",
+    "MuScriptorLoadModel": "ComfyUI-muscriptor",
+    "MuScriptorTranscribe": "ComfyUI-muscriptor",
+    "MuScriptorSaveMIDI": "ComfyUI-muscriptor"
   }
 }

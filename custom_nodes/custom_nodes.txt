@@ -57,3 +57,6 @@ https://github.com/Saganaki22/ComfyUI-VDN-H3.git
 
 # MiniMax H3 Easy: one-node setup for H3 text/image/reference to video (MIT)
 https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy.git
+
+# MuScriptor audio to MIDI transcription; node code MIT, weights CC BY-NC 4.0
+https://github.com/jtydhr88/ComfyUI-muscriptor.git
