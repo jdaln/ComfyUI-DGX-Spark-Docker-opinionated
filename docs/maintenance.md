@@ -61,7 +61,6 @@ warning and is skipped, costing only its own feature, never startup.
 | `comfyui/ltx-blueprint-profile-alignment.patch` | `blueprints/*.json` | points the LTX blueprints at the filenames the `ltx-*` profiles download |
 | `comfyui/bundled-template-smoke-harness.patch` | `tests/inference/` | the coverage manifest and API smoke graphs used by [verifying.md](verifying.md) |
 | `custom_nodes/wananimate-detection-onnx-extension.patch` | `ComfyUI-WanAnimatePreprocess/nodes.py` | makes the detection ONNX models selectable |
-| `custom_nodes/ltxvideo-kornia-pad-fallback.patch` | `ComfyUI-LTXVideo/pyramid_blending.py` | fixes a kornia import that breaks on the pinned version |
 
 Node packs are re-cloned on a fresh machine, so a fix that is not carried as a
 patch here is lost. Send the fix upstream as well; delete the patch once it
