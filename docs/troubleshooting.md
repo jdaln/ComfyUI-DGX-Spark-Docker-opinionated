@@ -13,6 +13,7 @@
 | Tensor size mismatch inside an `...Inplace` node | Two latents being merged have different lengths | [Latent length mismatch](#latent-length-mismatch) |
 | `[Errno 21] Is a directory: '.../input'` | The workflow needs a file you have not supplied | [Workflow needs your own input](#workflow-needs-your-own-input) |
 | Black images, or a hang at `Requested to load WanVAE` | The SAM3 pack | [Black output or a VAE hang](#black-output-or-a-vae-hang) |
+| `Input type (float) and bias type (c10::BFloat16)` in `LTXVAudioVAEEncode` | `--bf16-vae` on a core without the audio encode fix | [Audio encode fails with a dtype mismatch](#audio-encode-fails-with-a-dtype-mismatch) |
 | Free memory never returns after a render | ComfyUI still holds the model | [Memory stays used after a run](#memory-stays-used-after-a-run) |
 | The whole machine locks up or reboots during a big run | Two large models resident at once | [Memory stays used after a run](#memory-stays-used-after-a-run) |
 | A model that exists nowhere | The weights may not be published | [Weights not published yet](#weights-not-published-yet) |
@@ -160,6 +161,20 @@ project name. This one clones from `dr-vij/ComfyUI-SAM3-DGX-Spark`, so the
 directory is `ComfyUI-SAM3-DGX-Spark`. A name that matches no directory
 disables nothing; startup warns when that happens, and `ls custom_nodes/` is the
 authoritative list.
+
+## Audio encode fails with a dtype mismatch
+
+`LTXVAudioVAEEncode` stops with `Input type (float) and bias type
+(c10::BFloat16) should be the same`. The default `COMFY_CMDLINE_EXTRA` passes
+`--bf16-vae`, which loads the LTX audio VAE in bf16, while core computes the
+mel spectrogram it encodes in float32. Decoding takes another path, so
+text-to-video workflows with sound work and only those that encode audio fail,
+such as Video Dubbing (LTX-2.3 Dub-It).
+
+Upstream tracks it in issues #13550 and #14811. The `dgx-state` fork carries
+the fix from upstream PR #14804, which casts the spectrogram to the encoder's
+dtype, so this only shows up on a ComfyUI checkout older than the current
+submodule pin. Update the submodule and restart.
 
 ## Memory stays used after a run
 

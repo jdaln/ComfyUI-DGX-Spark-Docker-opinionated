@@ -863,6 +863,11 @@
     "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
     "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Motion-Track-Control/resolve/main/ltx-2.3-22b-ic-lora-motion-track-control-ref0.5.safetensors",
     "label": "LTX-2.3 motion track IC LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/motion_track_input.jpg",
+    "url": "https://media.githubusercontent.com/media/Lightricks/ComfyUI-LTXVideo/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/assets/motion_track_input.jpg",
+    "label": "LTX-2.3 motion track sample image"
    }
   ],
   "ltx-2.3-iclora-hdr": [
@@ -870,13 +875,23 @@
     "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
     "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR/resolve/main/ltx-2.3-22b-ic-lora-hdr-0.9.safetensors",
     "label": "LTX-2.3 HDR IC LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/hdr_input_video.mp4",
+    "url": "https://media.githubusercontent.com/media/Lightricks/ComfyUI-LTXVideo/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/assets/hdr_input_video.mp4",
+    "label": "LTX-2.3 HDR sample clip"
    }
   ],
   "ltx-2.3-iclora-lipdub": [
    {
-    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
-    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-LipDub/resolve/main/ltx-2.3-22b-ic-lora-lipdub-0.9.safetensors",
-    "label": "LTX-2.3 lipdub IC LoRA"
+    "dest": "/workspace/ComfyUI/models/loras/ltxv/ltx2/ltx-2.3-22b-ic-lora-dubit-0.9.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-DubIt/resolve/main/ltx-2.3-22b-ic-lora-dubit-0.9.safetensors",
+    "label": "LTX-2.3 Dub-It IC LoRA"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/dubit_input.mp4",
+    "url": "https://media.githubusercontent.com/media/Lightricks/ComfyUI-LTXVideo/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/assets/dubit_input.mp4",
+    "label": "LTX-2.3 Dub-It sample clip"
    }
   ],
   "krea-2-support-assets": [

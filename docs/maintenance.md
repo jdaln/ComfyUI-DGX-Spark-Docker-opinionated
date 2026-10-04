@@ -69,10 +69,15 @@ lands and the pack is pulled.
 
 ## ComfyUI submodule
 
-The submodule tracks `jdaln/ComfyUI` branch `dgx-state`, currently at `6fdaf61`:
-upstream master as of 2026-10-03 (v0.38.0 plus 32 commits) with the four DGX
-commits rebased on top. It is a fork rather than upstream because the branch
-carries changes ahead of a release.
+The submodule tracks `jdaln/ComfyUI` branch `dgx-state`, currently at `c2683d2`:
+upstream master as of 2026-10-03 (v0.38.0 plus 32 commits) with the DGX commits
+rebased on top. It is a fork rather than upstream because the branch carries
+changes ahead of a release.
+
+One of them is an upstream fix that is not merged yet:
+[PR #14804](https://github.com/Comfy-Org/ComfyUI/pull/14804), which lets
+`LTXVAudioVAEEncode` run under `--bf16-vae`. At the next rebase, drop it if
+upstream has merged it or fixed the bug another way.
 
 ```bash
 cd ComfyUI

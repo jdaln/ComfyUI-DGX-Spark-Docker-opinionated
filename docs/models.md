@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 31
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 34
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
 A bare Hugging Face repo link anywhere in a template file is enough for the
 resolver to match a loader's filename against that repo.
@@ -86,13 +86,13 @@ without a token.
 | `google/gemma-3-12b-it-qat-q4_0-unquantized` | every `ltx-2.0-*` profile, via the Gemma 3 text encoder | Gemma |
 | `Lightricks/LTX-2.5` | `ltx-2.5-distilled`, `ltx-2.5-distilled-nvfp4` | Lightricks |
 | `Lightricks/LTX-2.3-22b-IC-LoRA-HDR` | `ltx-2.3-iclora-hdr-distilled` | Lightricks |
-| `Lightricks/LTX-2.3-22b-IC-LoRA-LipDub` | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Lightricks |
+| `Lightricks/LTX-2.3-22b-IC-LoRA-DubIt` | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Lightricks |
 | `Comfy-Org/Krea-2` | every `krea-2-*` profile | Krea 2 Community License |
 | `Comfy-Org/Ideogram-4` | `ideogram-4`, `ideogram-4-nvfp4` | Ideogram non-commercial |
 | `Comfy-Org/flux2-dev` | `flux2-vae.safetensors` for both Ideogram profiles | FLUX dev non-commercial |
 
 Approval is per repository. A token accepted for the Gemma repo is still denied
-for the LipDub LoRA until that repo is accepted too.
+for the Dub-It LoRA until that repo is accepted too.
 
 `ideogram-4-nvfp4` downloads the half-size quants but does not rewire the
 blueprint. Switch both model loader selections to the `_nvfp4_mixed` files by

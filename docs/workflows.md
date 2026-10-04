@@ -362,15 +362,29 @@ an hour and do not run anything else while it works.
 | Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Blueprint | 60 GB | 140 s |
 | Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 135 s |
 | Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 270 s |
-| Transfer motion from a source video | `ltx-2.3-iclora-motion-track-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 230 s |
-| HDR and relighting pass | `ltx-2.3-iclora-hdr-distilled` | `video_ltx2_3_ic_lora` | Template | 60 GB | 295 s |
-| Lip-sync a face to audio | `ltx-2.3-iclora-lipdub-two-stage-distilled` | `video_ltx2_3_ic_lora` | Template | 63 GB | 260 s |
+| Animate an image along drawn motion tracks | `ltx-2.3-iclora-motion-track-distilled` | Motion Track to Video (LTX-2.3) | Ours | 60 GB | 150 s |
+| SDR video to HDR, saved as EXR frames | `ltx-2.3-iclora-hdr-distilled` | Video SDR to HDR (LTX-2.3) | Ours | 60 GB | 200 s |
+| New speech for a talking clip, lips to match | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Video Dubbing (LTX-2.3 Dub-It) | Ours | 63 GB | 463 s |
 
-The four IC-LoRA profiles share one template. Select the LoRA in the `ic_lora`
-widget to match the profile you provisioned. Their lanes all feed the template's
-depth control from `bedroom.mp4`, which only the union-control LoRA is made for.
-The motion-track, HDR and LipDub lanes prove their LoRA loads and samples; their
-output mostly reproduces the depth video.
+Core's IC-LoRA template feeds the union-control LoRA a depth, canny or pose
+video. The other three IC-LoRAs each need a guide of their own, so their
+profiles come with Lightricks' official examples from ComfyUI-LTXVideo, bundled
+here with the sample input each one was made for:
+
+- **Motion Track to Video** animates an image along splines drawn in the LTX
+  Sparse Track Editor. The `tracks` video it also saves shows the guide the
+  LoRA follows.
+- **Video SDR to HDR** writes its result as half-float EXR frames to
+  `output/output/hdr_exr3/`, 336 MB for the 121-frame sample. The MP4 it saves
+  is the linear result clipped to SDR, so it looks dark with hard highlights;
+  open the EXR frames in an HDR viewer such as DJV.
+- **Video Dubbing** replaces the speech in a clip with the line written in the
+  prompt, in the speaker's own voice, and moves the lips to match. Lightricks
+  renamed the LipDub LoRA to Dub-It without changing the file; the profile
+  keeps its old name. Its second stage renders at 1920x1088 and bottoms out
+  near 20 GiB available, so run it on a quiet machine. The workflow encodes
+  the source audio, which fails on a core without the fix in
+  [troubleshooting.md](troubleshooting.md#audio-encode-fails-with-a-dtype-mismatch).
 
 ### LTX 2.5, 22B, joint audio and video
 

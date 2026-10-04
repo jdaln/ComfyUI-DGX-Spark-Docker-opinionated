@@ -41,6 +41,18 @@
     "MiniMaxH3EasySecondPassConditioning": "ComfyUI-MiniMaxH3-Easy",
     "RAMCleanup": "ComfyUI-DGX-Spark-Templates",
     "VRAMCleanup": "ComfyUI-DGX-Spark-Templates",
-    "SeedList": "ComfyUI-DGX-Spark-Templates"
+    "SeedList": "ComfyUI-DGX-Spark-Templates",
+    "LTXICLoRALoaderModelOnly": "ComfyUI-LTXVideo",
+    "LTXAddVideoICLoRAGuide": "ComfyUI-LTXVideo",
+    "LTXVImgToVideoConditionOnly": "ComfyUI-LTXVideo",
+    "LTXVTiledVAEDecode": "ComfyUI-LTXVideo",
+    "LTXFloatToInt": "ComfyUI-LTXVideo",
+    "LTXVSparseTrackEditor": "ComfyUI-LTXVideo",
+    "LTXVDrawTracks": "ComfyUI-LTXVideo",
+    "LTXVHDRDecodePostprocess": "ComfyUI-LTXVideo",
+    "LTXVSetAudioRefTokens": "ComfyUI-LTXVideo",
+    "GemmaAPITextEncode": "ComfyUI-LTXVideo",
+    "SimpleMath+": "ComfyUI_essentials",
+    "GetImageSizeAndCount": "ComfyUI-KJNodes"
   }
 }

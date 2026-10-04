@@ -164,6 +164,17 @@ model:
   "download the models here" note intact re-provisions the entire 2.3 stack.
 - **Declare its node types** in `scripts/smoke/external_node_types.json`, or
   `validate_manifest.py` rejects the template.
+- **Adapt the pack's current example, not the installed copy.** A fresh
+  install clones the latest pack, but a pack directory without its own `.git`
+  never updates (the entrypoint warns `has no .git of its own`). One such
+  ComfyUI-LTXVideo copy had sat two months behind; its HDR example
+  predated a rewrite of `LTXVHDRDecodePostprocess`, and its LipDub example had
+  become Dub-It upstream. Compare with the upstream repository before copying,
+  and if the installed pack is stale, move it aside and clone it again.
+- **Check a renamed file before downloading it again.** Hugging Face's `ETag`
+  on a Xet-backed file is the Xet hash, not the sha256. The sha256 is
+  `lfs.oid` from `POST /api/models/<repo>/paths-info/main`. Lightricks' Dub-It
+  LoRA turned out byte-identical to the LipDub file already on disk.
 - **Architecture changes are not filename swaps.** LTX 2.3 loaded a separate
   text projection through `DualCLIPLoader`; 2.5 folds it into the encoder and
   needs a single `CLIPLoader`. Check the loader's input list, not just the
@@ -180,7 +191,10 @@ Add a row to `scripts/smoke/lanes.json`:
 An optional third element is a per-lane model substitution map, for when a
 profile shares a template but points at a different checkpoint/LoRA — use
 this only for genuine "same template, different weights" cases, never to
-paper over a missing model.
+paper over a missing model. A LoRA trained on a different kind of guide is not
+one: the LTX-2.3 motion-track, HDR and LipDub lanes once ran core's
+union-control template with their LoRA swapped in, passed, and produced a copy
+of the depth video. Each now runs its own official example.
 
 Skip the lane (and note why in `scripts/smoke/pending_models.json` if
 upstream weights are missing) when the workflow is genuinely
