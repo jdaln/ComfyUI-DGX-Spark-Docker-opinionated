@@ -368,7 +368,7 @@ widget to match the profile you provisioned.
 | --- | --- | --- | --- | ---: | ---: |
 | Text, image or first/last frame to video, with audio | `ltx-2.5-distilled` | `video_ltx2_5_t2v`, `_i2v`, `_flf2v` | Template | 41 GB | 100 s |
 | Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 90 s |
-| Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 105 s |
+| Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 140 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
 | Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
 
@@ -427,6 +427,10 @@ is below what LTX 2.5 generates natively. Adapted from
 [Peter Duncan's MiniMax H3 + LTX 2.5 upscaler workflow](https://github.com/peterducan-hub/PeterDuncan_Comfyui),
 rebuilt on core nodes because the original needs eleven node types this repo
 does not install.
+
+It decodes in tiles, with the settings core's LTX 2.5 templates use. Decoding
+the doubled video in one piece took available memory down to 16 GiB; in tiles it
+stays above 80 GiB, for 6 s more run time.
 
 This is the heaviest workflow in the catalogue for memory: a 15 GB text encoder
 and a 21 GB transformer put the floor at 13.9 GB free during VAE decode, against

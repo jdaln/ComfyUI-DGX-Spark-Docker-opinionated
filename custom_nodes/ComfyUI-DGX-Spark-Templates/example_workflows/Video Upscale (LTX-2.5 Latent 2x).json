@@ -259,7 +259,7 @@
     },
     {
       "id": 7,
-      "type": "VAEDecode",
+      "type": "VAEDecodeTiled",
       "pos": [
         1400,
         40
@@ -293,9 +293,14 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "VAEDecode"
+        "Node name for S&R": "VAEDecodeTiled"
       },
-      "widgets_values": []
+      "widgets_values": [
+        512,
+        64,
+        64,
+        16
+      ]
     },
     {
       "id": 8,
