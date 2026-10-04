@@ -58,13 +58,15 @@ download nothing. See [models.md](models.md) for the current gated list.
 | Krea 2 base model, full 52-step sampling; best for LoRA training and variety | `krea-2-raw` | Text to Image (Krea 2 RAW) | Ours | 17 GB | 90 s |
 | Qwen-Image, 8-step Lightning LoRA | `qwen-image-t2i-lightning-8step` | Text to Image (Qwen-Image) | Blueprint | 30 GB | 115 s |
 | Qwen-Image 2512, 4-step Lightning LoRA | `qwen-image-2512-t2i-lightning-4step` | `image_qwen_Image_2512` | Template | 30 GB | 230 s |
-| Ideogram 4; strongest text rendering in images | `ideogram-4` | Text to Image (Ideogram v4) | Blueprint | 27 GB | 55 s |
+| Ideogram 4; strongest text rendering in images | `ideogram-4` | Text to Image (Ideogram v4) | Blueprint | 27 GB | 50 s |
 | Same, NVFP4 build | `ideogram-4-nvfp4` | Text to Image (Ideogram v4 NVFP4) | Ours | 20 GB | 70 s |
 
-The `ideogram-4` lane runs the blueprint as it ships, with an empty prompt, and
-Ideogram answers an empty prompt with a grey card reading "Image blocked by
-safety filter". The card comes from the model, not from ComfyUI; that lane only
-proves the model loads and samples.
+Upstream ships the Ideogram blueprint with an empty prompt, and Ideogram answers
+an empty prompt with a grey card reading "Image blocked by safety filter"; the
+card comes from the model, not from ComfyUI. The blueprint here carries the
+structured caption from core's `image_ideogram4_t2i` template as its default, so
+it renders a collage poster with all of its lettering intact out of the box.
+That template loads the same files and works as well.
 
 ## Editing existing images
 
