@@ -9,7 +9,7 @@ output. The harness lives in [`scripts/smoke/`](../scripts/smoke).
 | `validate_manifest.py` | host, offline | no | manifest structure, dangling symlink targets, node types no installed pack provides, lane to profile mismatches, undeclared self-provisioning |
 | `wf_smoke.py <workflow> <timeout> [subs]` | in container | yes | converts a UI workflow to an API prompt, expanding subgraphs, queues it and waits. The only script that executes a graph |
 | `run_lanes.py [profiles...]` | in container | yes | runs every `lanes.json` entry through `wf_smoke.py` one at a time behind a memory gate, writes `/tmp/lane_report.json` |
-| `sweep.sh [profiles...]` | host, drives the container | yes | stages the harness and runs `run_lanes.py`, the audit and a contact sheet detached in the container, for unattended runs |
+| `sweep.sh [profiles...]` | host | yes | runs `run_lanes.py` unattended from a detached host process, restarting the container when the memory gate stops it, then the audit and a contact sheet |
 | `audit_refs.py [profiles...]` | in container | yes | every model a lane's workflow references resolves on disk |
 | `lane_prompt_diff.py <old> <new> [profiles...]` | in container | no | what a change to `wf_smoke.py` does to every lane's prompt, without queueing anything |
 | `contact_sheet.py <out> [--report r] [files...]` | in container | no | lane outputs side by side, video as its middle frame |
@@ -85,21 +85,24 @@ docker exec comfyui cat /tmp/lane_report.json
 end, because nothing else does and a batch of large profiles otherwise stacks
 them until the machine falls over. It then waits for available memory to come
 back above 85 GiB before starting the next lane (`LANE_MIN_AVAILABLE_GIB`), and
-stops the run if it has not after 15 minutes. After a failed lane it interrupts
+stops the run if it has not after 15 minutes (`LANE_GATE_WAIT_S`). After a failed lane it interrupts
 the server and clears the queue, so a prompt that outlived its timeout cannot
 keep running under the next one. The report records each lane's lowest
 available memory and free VRAM. See
 [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
 
 For a long run, such as every lane after a core bump, start it with
-`sweep.sh` instead. It refuses to start while ComfyUI is busy, runs everything
-inside the container so it carries on after your shell closes, and ends with
+`sweep.sh` instead. It refuses to start while ComfyUI is busy and runs as a
+detached process on the host, so it carries on after your shell closes. Some
+custom nodes leave memory in the ComfyUI process that `/free` cannot return, so
+when the memory gate stops the run, the sweep restarts the container and
+carries on from that lane, up to three times (`SWEEP_RESTARTS`). It ends with
 the audit and a contact sheet:
 
 ```bash
 scripts/smoke/sweep.sh                     # every lane, or name profiles
 scripts/smoke/sweep.sh --status            # progress
-docker cp comfyui:/tmp/sweep ./tmp/        # report, audit and sheet.jpg once finished
+ls tmp/sweep/                              # report, audit and sheet.jpg once finished
 ```
 
 A passing lane is weaker evidence than it looks. The harness can satisfy a

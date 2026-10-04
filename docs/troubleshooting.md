@@ -186,6 +186,13 @@ the `vram_free` figure in `/system_stats` both count cached model files as used,
 so after a few runs they read 30 to 60 GiB below what is really available. Go by
 the `available` column of `free -g`, which is `ram_free` in `/system_stats`.
 
+Some custom nodes allocate GPU memory outside ComfyUI's model management, and on
+a Spark that memory is host RAM. After a HeartMuLa run about 15 GB stays mapped
+in the ComfyUI process. Neither `/free` nor `RAM Cleanup` returns it, the next
+HeartMuLa run reuses it, and only restarting the container gives it back:
+`docker restart comfyui`. The MiniMax H3 Easy refine workflows do the same on a
+smaller scale, a few GB each.
+
 Two things do this automatically:
 
 - `COMFY_IDLE_UNLOAD_MINUTES` (default 60) unloads after an idle spell. See

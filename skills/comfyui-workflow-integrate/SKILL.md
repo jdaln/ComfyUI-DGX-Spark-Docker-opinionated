@@ -234,9 +234,10 @@ Both must pass. A passing lane alone is not sufficient proof — `audit_refs.py`
 catches models the harness silently stubbed or substituted.
 
 For more than a couple of lanes, or anything left running unattended, use
-`scripts/smoke/sweep.sh <profiles>`. It runs them one at a time inside the
-container behind `run_lanes.py`'s memory gate and leaves the report, the audit
-and a contact sheet in `/tmp/sweep/`.
+`scripts/smoke/sweep.sh <profiles>`. It runs them one at a time behind
+`run_lanes.py`'s memory gate, restarts the container when something holds memory
+`/free` cannot return, and leaves the report, the audit and a contact sheet in
+`tmp/sweep/`.
 
 ## 6. Look at the output once
 

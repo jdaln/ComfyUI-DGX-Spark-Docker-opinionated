@@ -3,8 +3,8 @@
 
 Lanes run strictly one at a time. Before each lane it frees ComfyUI's models and
 waits until available memory is back above LANE_MIN_AVAILABLE_GIB (default 85).
-If it does not come back within 15 minutes the sweep stops rather than start a
-lane on top of whatever is still holding memory. After a failed lane it also
+If it does not come back within 15 minutes (LANE_GATE_WAIT_S) the sweep stops
+rather than start a lane on top of whatever is still holding memory. After a failed lane it also
 interrupts the server and clears its queue, so a prompt that outlived its
 timeout cannot keep running under the next lane. While a lane runs,
 /system_stats is sampled every 10 s and the lowest available memory and lowest
@@ -14,6 +14,7 @@ import json, os, subprocess, sys, threading, time, urllib.request
 
 PORT = 8188
 MIN_AVAILABLE_GIB = float(os.environ.get('LANE_MIN_AVAILABLE_GIB', '85'))
+GATE_WAIT_S = float(os.environ.get('LANE_GATE_WAIT_S', '900'))
 
 
 def free_models():
@@ -55,7 +56,7 @@ def memory():
 
 
 def wait_for_memory(prof):
-    deadline = time.time() + 900
+    deadline = time.time() + GATE_WAIT_S
     while True:
         try:
             available = memory()[0]

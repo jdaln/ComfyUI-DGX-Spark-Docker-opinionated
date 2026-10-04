@@ -76,6 +76,7 @@ docker exec comfyui python3 -u /tmp/wf_smoke.py "/tmp/<name>.json" 1800
 | Lane passes but the output ignores the workflow's prompt; the harness log says `using inner node defaults` or `defaulted <Node>.prompt = ''` | `wf_smoke.py` could not place the workflow's own widget values: a subgraph node saved its promoted widgets in an order the harness cannot verify, or a widget type it does not know | Compare the outer node's `widgets_values` with the subgraph's `inputs` and `/object_info`; `lane_prompt_diff.py` shows what a harness change does to every lane |
 | `Required input is missing: X` then `Output will be ignored`, yet the lane passes | The server dropped that one output node and ran the rest. Usually a widget the workflow stores no value for, which the frontend fills in | The input's spec in `/object_info`. Socketless display widgets such as ImageCompare's `compare_view` are now filled by the harness |
 | An image that is only "Image blocked by safety filter" on grey | Ideogram 4 given an empty prompt. No ComfyUI code produces it; it is the model's learned placeholder | The prompt the lane sent. The `ideogram-4` blueprint's prompt is empty by design, so that lane proves loading and sampling only |
+| Available memory stays 10 to 15 GiB lower after a HeartMuLa or MiniMax H3 Easy refine run, even after `/free` and RAM Cleanup | The node allocated GPU memory outside ComfyUI's model management; on GB10 that is host RAM in the ComfyUI process, below anything `/free`, `empty_cache` or `malloc_trim` can return. The next run of the same workflow reuses it | Restart the container (`docker restart comfyui`); `sweep.sh` does that when the memory gate stops a run |
 | `vram_free` in `/system_stats` far below the available column of `free -g` | `vram_free` counts the page cache as used, and model files stay cached after loading | Go by `ram_free` (available memory), as `run_lanes.py`'s gate does |
 
 **Before blaming the workflow, check memory.** ComfyUI does not release a
@@ -122,7 +123,7 @@ proves the graph executed. `contact_sheet.py` lays out images and video
 frames, `audio_check.py` tells music from noise by spectral flatness, and
 `transcribe_lyrics.py` reads sung lyrics back out of a song. For many lanes at
 once, `scripts/smoke/sweep.sh` runs them unattended and leaves the report, the
-audit and a contact sheet in the container's `/tmp/sweep/`.
+audit and a contact sheet in `tmp/sweep/`.
 
 ## Input-dependent workflows
 
