@@ -38,7 +38,7 @@ CI runs it on every push and pull request
 
 Expect a difference between CI and your machine. CI has only the tracked
 template pack in `custom_nodes/`, so it reports only what this repo owns. Once
-the container has run, that directory also holds the 30 third-party packs cloned
+the container has run, that directory also holds the 31 third-party packs cloned
 at startup, and the check audits their example workflows too. Those account for
 almost all of the output and are not yours to fix. Filter them out:
 

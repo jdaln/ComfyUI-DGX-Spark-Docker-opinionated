@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 70 profiles. The 68 in the category tables below
+`asset-profiles.json` defines 71 profiles. The 69 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 2 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 68 have an automated smoke lane. Three do not, because their
+Most of those 69 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -41,7 +41,7 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | **Ours** | Browse Templates → `ComfyUI-DGX-Spark-Templates` |
    | **Node example** | Browse Templates → the custom node's section |
 
-Krea 2, Ideogram 4, Gemma 3 and two LTX LoRAs are gated on Hugging Face. Accept
+Krea 2, Ideogram 4, Gemma 3, MuScriptor and two LTX LoRAs are gated on Hugging Face. Accept
 the licence on the model page and set `HF_TOKEN` in `.env`, or those profiles
 download nothing. See [models.md](models.md) for the current gated list.
 
@@ -604,6 +604,42 @@ publishes an int8 DiT for small GPUs, which the Spark does not need.
 The weights are under the MiniMax-Music3 Community License: commercial use is
 allowed for companies under 20 million USD in yearly revenue, and above that
 MiniMax sells a commercial licence through Comfy. Nothing is gated.
+
+### MuScriptor, recordings to MIDI
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| A multi-instrument MIDI file from a recording, drums included | `muscriptor` | Audio to MIDI (MuScriptor) | Ours | 5.5 GB | 145 s |
+
+[MuScriptor](https://github.com/muscriptor/muscriptor), from Kyutai and Mirelo,
+transcribes a recording into notes. A decoder-only transformer reads the audio
+five seconds at a time and writes note events: pitch, start, end and one of 35
+instrument groups, drums included. Velocity is not recovered, so every note
+comes out at the same loudness. The nodes are
+[ComfyUI-muscriptor](https://github.com/jtydhr88/ComfyUI-muscriptor) by
+jtydhr88. They need no Python packages beyond ComfyUI's own.
+
+The profile provisions the large model, 1.4B parameters, as
+`models/muscriptor/muscriptor-large.safetensors`. The loader also lists `small`,
+`medium` and `large` by name. Those download from Hugging Face into its cache
+when the workflow runs, outside any profile, so picking `large` there stores the
+same weights a second time.
+
+The MIDI file goes to `output/midi/` and the preview node shows its path.
+ComfyUI cannot play MIDI; open it in a DAW or MuseScore.
+
+The lane transcribes `yue2_reference_song.flac`, the sample the YuE2 cover lane
+uses. The 99.9 s song takes 137 s, slower than real time, and the time grows
+with the length of the recording. It comes back as 2380 notes on five tracks:
+guitar, drums, voice, bass, and strings in the intro. Note starts line up with
+onsets in the audio to within 23 ms, one analysis frame. Loading the weights as
+`float16` instead of `auto` saved 4% and wrote the same file, so the template
+keeps the default.
+
+The weights are CC BY-NC 4.0, non-commercial use only, and gated: accept the
+licence on [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large)
+with the `HF_TOKEN` account. Approval is instant. `small` and `medium` are
+separate repositories and need their own acceptance. The code is MIT.
 
 ## 3D
 
