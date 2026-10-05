@@ -9,9 +9,14 @@ path amounts to one `malloc_trim` call, so `memory_nodes` reimplements the same
 interface here rather than pulling the pack in. See that module for detail.
 `seed_nodes` holds the Seed List node the YuE2 best-of-8 template uses to turn
 one run into eight takes.
+
+`cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
+to the system once the queue has been idle for a minute.
 """
 
-from . import memory_nodes, seed_nodes
+from . import cpu_memory, memory_nodes, seed_nodes
+
+cpu_memory.start()
 
 NODE_CLASS_MAPPINGS = {**memory_nodes.NODE_CLASS_MAPPINGS, **seed_nodes.NODE_CLASS_MAPPINGS}
 NODE_DISPLAY_NAME_MAPPINGS = {**memory_nodes.NODE_DISPLAY_NAME_MAPPINGS,

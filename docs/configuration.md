@@ -20,7 +20,8 @@ the existing container and is a common source of "my change did nothing".
 | `COMFY_CMDLINE_EXTRA` | Extra arguments appended to `main.py`. | `--bf16-unet --bf16-vae --bf16-text-enc --use-sage-attention` |
 | `COMFY_IDLE_UNLOAD_MINUTES` | Unload cached models after this many minutes with no activity. `0` disables. | `60` |
 | `COMFY_IDLE_UNLOAD_POLL_SECONDS` | How often the idle watcher checks. | `60` |
-| `MIMALLOC_PURGE_DELAY` | `0` makes PyTorch's CPU allocator return freed memory at once instead of keeping it until a restart; heavy workflows run up to 20% slower. See [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run). | unset |
+| `COMFY_CPU_PURGE_IDLE_SECONDS` | Seconds the queue must stay empty before the templates pack hands the CPU memory PyTorch has freed back to the system. `0` turns it off. See [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run). | `60` |
+| `MIMALLOC_PURGE_DELAY` | `0` makes PyTorch's CPU allocator return freed memory on every free rather than after the idle wait above; heavy workflows run up to 20% slower. | unset |
 | `UPDATE_DEPS` | `git pull` ComfyUI and every custom node on each start. | `false`, set to `true` in `.env.example` |
 | `COMFY_ASSET_PROFILES` | Comma-separated asset profiles to download. See [models.md](models.md). | empty |
 | `HF_TOKEN` | Hugging Face token, required for gated models. | empty |

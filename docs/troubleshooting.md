@@ -208,19 +208,32 @@ allocation work, which an idle server never does. Workflows that move their own
 models between CPU and GPU leave the most behind: after a HeartMuLa run and
 `/free` the server holds 17 GiB, against 1.1 GiB fresh. A sequence of Z-Image,
 LTX-2.5, YuE2 and the MiniMax H3 Easy refine took it from 1.1 to 9.8 GiB, LTX-2.5
-being the largest step at about 4.5 GiB. A second run mostly reuses what the
-first left. Neither `/free` nor `RAM Cleanup` reaches this memory; restarting
-the container returns it: `docker restart comfyui`. PyTorch tracks the
-retention in [issue #178726](https://github.com/pytorch/pytorch/issues/178726).
+being the largest step at about 4.5 GiB. `/free` does not reach this memory.
+PyTorch tracks the retention in
+[issue #178726](https://github.com/pytorch/pytorch/issues/178726).
 
-To have it returned as soon as it is freed, set `MIMALLOC_PURGE_DELAY=0` in
-`.env` and recreate the container. HeartMuLa then leaves 2.3 GiB instead of
-17 GiB, and the same sequence stays under 4 GiB. The price is speed, because
-memory that used to be reused is faulted in afresh: LTX-2.5 lanes ran about 20%
-slower, the MiniMax H3 Easy refine about 8% slower, and a repeated HeartMuLa run
-took 144 s instead of 66 s. Z-Image and YuE2 ran at the same speed. A longer
-delay is no middle ground: with 60 s the purge still waits for allocation work,
-and the memory stayed until a restart.
+The templates pack gives it back. Once the queue has been empty for a minute,
+`cpu_memory.py` calls mimalloc's own collect function, which `libc10.so` does
+not export; the pack finds it in the library's symbol table. A minute after a
+HeartMuLa run the server is back to 2.3 GiB. Jobs queued back to back keep
+reusing the memory in between, so a batch runs at full speed.
+`COMFY_CPU_PURGE_IDLE_SECONDS` sets the wait (`0` turns the watcher off), and a
+`RAM Cleanup` node purges at once. The startup log says which applies:
+
+```
+cpu-purge: mimalloc 2.2.4 found; returning freed CPU memory after 60 s idle
+cpu-purge: disabled, libc10.so carries no mimalloc symbols
+```
+
+When it is disabled, restarting the container is what returns the memory:
+`docker restart comfyui`.
+
+`MIMALLOC_PURGE_DELAY=0` in `.env` purges on every free instead, and costs
+speed, because memory that used to be reused is faulted in afresh: LTX-2.5
+lanes ran about 20% slower, the MiniMax H3 Easy refine about 8% slower, and a
+repeated HeartMuLa run took 144 s instead of 66 s. A longer delay is no middle
+ground: with 60 s the purge still waits for allocation work, and the memory
+stayed until a restart.
 
 Ways to unload:
 
@@ -233,7 +246,7 @@ Ways to unload:
   does, so mid-graph it will unload models the rest of the run still needs and
   they reload.
 - `RAM Cleanup` sits beside it and hands glibc's free heap back to the OS with
-  `malloc_trim`. PyTorch's tensors live in mimalloc, out of its reach. Its
+  `malloc_trim`, then has PyTorch's allocator return what it has freed. Its
   `clean_processes` and `clean_dlls` switches are Windows-only and do nothing
   here; they exist so workflows saved against `Comfyui-Memory_Cleanup` load
   unchanged. Neither node can touch memory outside ComfyUI.

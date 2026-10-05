@@ -5,7 +5,8 @@ output. That node comes from LAOGOU-666/Comfyui-Memory_Cleanup (GPL-3.0), which
 is most of a thousand lines of Windows API calls that do nothing on Linux: its
 `clean_processes` and `clean_dlls` options are Windows-only branches, and the
 only thing the Linux path does is call `malloc_trim`. Rather than ship that pack
-for two small nodes, this reimplements the same interface.
+for two small nodes, this reimplements the same interface. Here RAM Cleanup also
+asks PyTorch's CPU allocator to return what it has freed; see `cpu_memory`.
 
 The class names, input names, order and defaults match the original, so a
 workflow saved against it loads here with its widget values intact.
@@ -24,6 +25,8 @@ import time
 
 import comfy.model_management
 from server import PromptServer
+
+from . import cpu_memory
 
 try:
     import psutil
@@ -101,7 +104,8 @@ class RAMCleanup:
         return {
             "required": {
                 "clean_file_cache": ("BOOLEAN", {"default": True,
-                                                 "tooltip": "Return free heap to the OS (malloc_trim)."}),
+                                                 "tooltip": "Return free memory to the OS: glibc's heap "
+                                                            "(malloc_trim) and PyTorch's CPU allocator."}),
                 "clean_processes": ("BOOLEAN", {"default": True,
                                                 "tooltip": "Windows only; ignored on Linux."}),
                 "clean_dlls": ("BOOLEAN", {"default": True,
@@ -117,7 +121,7 @@ class RAMCleanup:
     OUTPUT_NODE = True
     FUNCTION = "clean_ram"
     CATEGORY = "Memory Management"
-    DESCRIPTION = ("Return free heap to the OS. Only clean_file_cache does anything off "
+    DESCRIPTION = ("Return free memory to the OS. Only clean_file_cache does anything off "
                    "Windows; the other two switches are kept so workflows saved against "
                    "Comfyui-Memory_Cleanup load unchanged.")
 
@@ -150,6 +154,8 @@ class RAMCleanup:
                             break
                     else:
                         break
+                if system == "Linux":
+                    cpu_memory.release("RAM Cleanup")
             if (clean_processes or clean_dlls) and system != "Windows":
                 _log.debug("RAM cleanup: clean_processes/clean_dlls are Windows-only, ignored")
 

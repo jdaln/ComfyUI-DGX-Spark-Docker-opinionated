@@ -13,6 +13,16 @@ The runtime target is set in two places and both must agree:
 also holds every custom node's dependency resolution to the same torch build.
 Change the version in both files, then rebuild the ABI-sensitive wheels below.
 
+A torch bump also needs a look at `cpu_memory.py` in the templates pack. It
+calls mimalloc inside `libc10.so` through the library's symbol table, which a
+new build can change. The startup log must still read `cpu-purge: mimalloc
+<version> found`; `disabled` means the build dropped mimalloc or its symbols,
+and freed CPU memory then stays until a restart. Check it with one HeartMuLa
+run: a minute after it ends, the server's `RssAnon` should be back near 2 GiB.
+Once PyTorch ships an API that releases allocator memory
+([#192078](https://github.com/pytorch/pytorch/pull/192078)), the module should
+call that instead.
+
 ## Wheels
 
 The image needs five wheels that have no upstream build for CUDA 13.0 on Python
@@ -91,7 +101,8 @@ After a bump:
 1. `python3 scripts/smoke/validate_manifest.py`. It harvests every node id the
    pinned checkout registers, so a node that moved or was renamed shows up here.
 2. `docker compose build --no-cache && docker compose up -d`, then read the log
-   for patches that no longer apply and for custom nodes that fail to import.
+   for patches that no longer apply, for custom nodes that fail to import, and
+   for the `cpu-purge:` line described under [PyTorch pin](#pytorch-pin).
 3. Re-run the lanes for the profiles you use. `scripts/smoke/sweep.sh` runs
    them unattended, one at a time. See [verifying.md](verifying.md).
 

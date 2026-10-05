@@ -53,6 +53,22 @@ If upstream has what you need, rebase `dgx-state` onto upstream master first
 [docs/maintenance.md](../../docs/maintenance.md)) instead of bundling a copy or
 cherry-picking.
 
+After any core or torch bump, check the CPU purge. The templates pack's
+`cpu_memory.py` calls a function torch does not export (mimalloc's collect, in
+`libc10.so`) and reads ComfyUI's prompt queue. Restart and read the log: it
+must say `cpu-purge: mimalloc <version> found`, and must not later say
+`cannot read the prompt queue`. Then run HeartMuLa once and confirm the
+server's `RssAnon` drops back near 2 GiB a minute after it finishes:
+
+```bash
+docker logs comfyui 2>&1 | grep cpu-purge
+docker exec comfyui sh -c 'grep RssAnon /proc/$(pgrep -f ComfyUI/main.py | head -1)/status'
+```
+
+If PyTorch has shipped its release API by then
+([#192078](https://github.com/pytorch/pytorch/pull/192078)), switch the module
+to it.
+
 **Can the pinned core even load the model?** A new model family often needs a
 new text encoder or ldm module. LTX 2.5 conditions on Gemma 4, which 0.30.0
 did not have at all, so no profile or template could have worked.
