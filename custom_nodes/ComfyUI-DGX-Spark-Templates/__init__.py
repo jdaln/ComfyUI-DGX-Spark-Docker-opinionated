@@ -11,15 +11,19 @@ interface here rather than pulling the pack in. See that module for detail.
 one run into eight takes. `dialogue_nodes` splits a script into one speech clip
 per line, joins the clips back and writes, burns in and saves subtitles, for
 the dialogue and subtitle templates. `speech_nodes` adds Whisper large-v3 speech
-to text with word timings and Finnish-NLP's Finnish fine-tune of Chatterbox.
+to text with word timings, and Chatterbox Speech, which runs the multilingual
+Chatterbox or Finnish-NLP's Finnish fine-tune of it.
 
 `cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
-to the system once the queue has been idle for a minute.
+to the system once the queue has been idle for a minute. `example_inputs` copies
+sample files that ship with the pack, the InfiniteTalk speaker masks, into the
+input folder when they are missing.
 """
 
-from . import cpu_memory, dialogue_nodes, memory_nodes, seed_nodes, speech_nodes
+from . import cpu_memory, dialogue_nodes, example_inputs, memory_nodes, seed_nodes, speech_nodes
 
 cpu_memory.start()
+example_inputs.install()
 
 NODE_CLASS_MAPPINGS = {**memory_nodes.NODE_CLASS_MAPPINGS, **seed_nodes.NODE_CLASS_MAPPINGS,
                        **dialogue_nodes.NODE_CLASS_MAPPINGS, **speech_nodes.NODE_CLASS_MAPPINGS}

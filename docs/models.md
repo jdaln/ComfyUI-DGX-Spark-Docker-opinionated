@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 44
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 45
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
 A bare Hugging Face repo link anywhere in a template file is enough for the
 resolver to match a loader's filename against that repo.

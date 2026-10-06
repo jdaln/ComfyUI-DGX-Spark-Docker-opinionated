@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 89 profiles. The 84 in the category tables below
+`asset-profiles.json` defines 89 profiles. The 88 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
-workflow's default settings. The remaining 5 are listed under
+workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 84 have an automated smoke lane. Three do not, because their
+Most of those 88 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -141,6 +141,7 @@ Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 | Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 5 s |
 | The person in a video replaced by a character from one picture | `scail-2-int8` | `video_wan21_scail2_character_replacement_int8` | Template | 29 GB | 383 s |
 | A character picture moved by a reference video, distilled | `wan-animate-2-distilled` | `video_wan_animate2_distilled` | Template | 25 GB | 396 s |
+| Two people in a picture speak two recorded tracks, lips matched | `infinitetalk` | Talking Video (InfiniteTalk Two Speakers) | Ours | 30 GB | 555 s |
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
 Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
@@ -151,6 +152,16 @@ text encoder and VAE the rest of that workflow loads come from you.
 Animate 2 templates with their sample inputs, and share the UMT5 encoder and
 the Wan 2.1 VAE. In the SCAIL-2 sample the girl in the orchard becomes the
 model from the reference picture and keeps every movement.
+
+Talking Video (InfiniteTalk Two Speakers) is core's `video_wan2_1_infinitetalk`
+with its two speaker masks preset for the sample picture. Core ships them
+empty, and without them neither speaker's lips follow their track and the
+second window drifts to another scene. The masks ship with the template pack,
+which copies them into `input/` at startup; for your own picture, paint over
+each speaker in the two Painter nodes. It extends the clip window by window, so
+it covers conversations longer than one LTX-2.5 clip. Each 81-frame window, 3.24
+s, takes about four and a half minutes: six steps of the 14B model at about 42 s
+each. The wav2vec2 encoder goes in `audio_encoders/`, where core's loader looks.
 
 ### MiniMax H3, video with its own soundtrack
 
@@ -538,6 +549,7 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Conversations between up to 4 characters, voices cloned from samples [^h] | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
+| Same, on the small model | `vibevoice-1.5b` | Text to Speech (Multi-Character Conversation) | Ours | 5 GB | 60 s |
 | A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 95 s |
 | Both at once: describe one voice, clone the rest, run the conversation [^h] | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
 | A voice described in words from a small model, 10 languages | `qwen3-tts-voice-design` | Text to Speech (Qwen3-TTS Voice Design) | Ours | 4.5 GB | 45 s |
@@ -741,6 +753,23 @@ separate repositories and need their own acceptance. The code is MIT.
 | --- | --- | --- | --- | ---: | ---: |
 | Turn one image into a textured 3D mesh (`.glb`) | `hunyuan3d-2.1-core` | Image to Model (Hunyuan3d 2.1) | Blueprint | 7 GB | 60 s |
 | Front, side and back views to a 3D model | `hunyuan3d-2.0-mv-turbo` | `3d_hunyuan3d_multiview_to_model_turbo` | Template | 4.9 GB | 35 s |
+| One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | 155 s |
+| A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | 270 s |
+
+Both Pixal3D templates save a model of about 700,000 triangles with PBR
+textures, about 65 MB, to `output/3d/`. The weights are Comfy-Org's repackaged
+files in [Comfy-Org/Pixal3D](https://huggingface.co/Comfy-Org/Pixal3D), made
+from TencentARC's [Pixal3D](https://github.com/TencentARC/Pixal3D) (MIT). The
+background cut before it uses BiRefNet, which comes from a separate repository,
+[Comfy-Org/BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet). The two
+profiles share the TRELLIS.2 VAEs, the DINOv3 encoder and BiRefNet, so the
+second costs 5.6 GB. They need the `dgx-state` fork: with `--bf16-vae`,
+upstream ComfyUI stops at the texture bake and again at the GLB export with
+`Got unsupported ScalarType BFloat16`. See
+[3D export fails on bf16](troubleshooting.md#3d-export-fails-on-bf16).
+
+Hunyuan3D 2.1 with PBR textures is not here yet: the native paint port, ComfyUI
+PR #15020, is still open, and the wrapper packs compile CUDA extensions.
 
 ## Utility
 
@@ -772,45 +801,6 @@ what is missing.
 
 Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
 both pass and the output looks right. Commands in [verifying.md](verifying.md).
-
-### Speech
-
-| What you get | Profile | Workflow | Type | Disk | Run |
-| --- | --- | --- | --- | ---: | ---: |
-| Same as `vibevoice-large`, on the small model | `vibevoice-1.5b` | Text to Speech (Multi-Character Conversation) | Ours | 5 GB | — |
-
-### Talking video
-
-| What you get | Profile | Workflow | Type | Disk | Run |
-| --- | --- | --- | --- | ---: | ---: |
-| Audio-driven talking video for one or two speakers, long clips | `infinitetalk` | `video_wan2_1_infinitetalk` | Template | 30 GB | — |
-
-InfiniteTalk extends a talking clip window by window, so it covers
-conversations longer than one LTX-2.5 clip. Its lane runs end to end in 556 s,
-but core's template wants a mask drawn over each speaker in its two Painter
-nodes and ships them empty, which no lane can draw; with them empty the
-extension jumped to another scene. Draw both masks before judging it. The
-profile provisions the template's models and sample inputs; its wav2vec2
-encoder goes in `audio_encoders/`, where core's loader looks.
-
-### 3D
-
-| What you get | Profile | Workflow | Type | Disk | Run |
-| --- | --- | --- | --- | ---: | ---: |
-| One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | — |
-| A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | — |
-
-Both of core's Pixal3D templates end in a vertex-colour preview built with the
-Paint Mesh node, and on the DGX Spark that node crashes ComfyUI with a
-segmentation fault (found with the TRELLIS.2 template). Mute Paint Mesh, or the
-Preview 3D after it, and the rest runs: the TRELLIS.2 sample saved a 67 MB
-textured model to `output/3d/`. Neither has a smoke lane until that
-is fixed.
-
-The two Pixal3D profiles share the TRELLIS.2 VAEs, the DINOv3 encoder and
-BiRefNet, so the second costs 5.6 GB. Hunyuan3D 2.1 with PBR textures is not
-here yet: the native paint port, ComfyUI PR #15020, is still open, and the
-wrapper packs compile CUDA extensions.
 
 ### Video editing with LTX-2.3 task LoRAs
 

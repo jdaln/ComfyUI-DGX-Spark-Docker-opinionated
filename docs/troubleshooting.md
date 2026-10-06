@@ -14,6 +14,8 @@
 | `[Errno 21] Is a directory: '.../input'` | The workflow needs a file you have not supplied | [Workflow needs your own input](#workflow-needs-your-own-input) |
 | Black images, or a hang at `Requested to load WanVAE` | The SAM3 pack | [Black output or a VAE hang](#black-output-or-a-vae-hang) |
 | `Input type (float) and bias type (c10::BFloat16)` in `LTXVAudioVAEEncode` | `--bf16-vae` on a core without the audio encode fix | [Audio encode fails with a dtype mismatch](#audio-encode-fails-with-a-dtype-mismatch) |
+| `Got unsupported ScalarType BFloat16` in a 3D node | `--bf16-vae` on a core without the 3D export fixes | [3D export fails on bf16](#3d-export-fails-on-bf16) |
+| ComfyUI dies with a segmentation fault in Paint Mesh | A node pack that loads the DyNet library | [Paint Mesh crashes ComfyUI](#paint-mesh-crashes-comfyui) |
 | Free memory never returns after a render | ComfyUI still holds the model | [Memory stays used after a run](#memory-stays-used-after-a-run) |
 | The whole machine locks up or reboots during a big run | Two large models resident at once | [Memory stays used after a run](#memory-stays-used-after-a-run) |
 | A model that exists nowhere | The weights may not be published | [Weights not published yet](#weights-not-published-yet) |
@@ -175,6 +177,42 @@ Upstream tracks it in issues #13550 and #14811. The `dgx-state` fork carries
 the fix from upstream PR #14804, which casts the spectrogram to the encoder's
 dtype, so this only shows up on a ComfyUI checkout older than the current
 submodule pin. Update the submodule and restart.
+
+## 3D export fails on bf16
+
+Core's Pixal3D templates stop with `Got unsupported ScalarType BFloat16`, first
+in the texture bake and then in `MeshToFile3D`. With `--bf16-vae` the TRELLIS.2
+decoders produce bf16 colours, both steps convert them to NumPy, and NumPy has
+no bf16. The `dgx-state` fork casts them to float first, so as with the audio
+encode error, update the submodule and restart.
+
+On upstream ComfyUI, which has neither cast, start without `--bf16-vae`. The
+TRELLIS.2 VAEs then run in float16, which NumPy reads, and the multi-view
+template completes. That flag sets the precision of every VAE, though, not only
+these two, so this repo keeps it and carries the casts instead. For float32
+data, which is what worked before, the casts change nothing: a Hunyuan3D
+multi-view model saved before and after them is byte for byte the same.
+
+## Paint Mesh crashes ComfyUI
+
+The server dies with a segmentation fault in core's Paint Mesh node, the
+vertex-colour preview at the end of the Pixal3D templates, and the container
+restarts. The workflow is not at fault. Paint Mesh searches a SciPy KD-tree,
+and that search crashes once the DyNet library is loaded into the process.
+DyNet came in with ComfyUI-Qwen3-ASR, through its Japanese tokenizer nagisa,
+and that pack has been removed. If the crash returns after you add a pack,
+check whether DyNet is loaded:
+
+```bash
+docker exec comfyui bash -c 'grep -l libdynet /proc/[0-9]*/maps'
+```
+
+Any output names a process that has it. `pip show dyNET38` in the container
+lists the package that requires it.
+
+A crash like this writes a core dump the size of the process, 20 to 30 GB.
+`docker-compose.yml` sets the container's core size limit to 0 so a crash
+cannot fill the disk.
 
 ## Memory stays used after a run
 
