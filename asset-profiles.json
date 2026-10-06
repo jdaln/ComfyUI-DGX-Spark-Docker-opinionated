@@ -348,6 +348,134 @@
   "muscriptor": [
    "muscriptor-assets",
    "muscriptor-input"
+  ],
+  "ltx-2.5-a2v": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.5-a2v-inputs"
+  ],
+  "ltx-2.5-ingredients": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.5-iclora-ingredients",
+   "ltx-2.5-ingredients-input"
+  ],
+  "ltx-2.5-clean-plate": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.5-iclora-clean-plate",
+   "ltx-2.5-v2v-inputs"
+  ],
+  "ltx-2.5-alpha-matte": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.5-iclora-alpha-gen",
+   "ltx-2.5-v2v-inputs"
+  ],
+  "ltx-2.5-foley": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.3-lora-foley-v2a",
+   "ltx-2.5-foley-input"
+  ],
+  "chatterbox-multilingual": [
+   "chatterbox-multilingual-model",
+   "chatterbox-finnish-t3",
+   "chatterbox-voice-sample"
+  ],
+  "qwen3-tts-voice-design": [
+   "qwen3-tts-voice-design-model"
+  ],
+  "qwen3-asr-subtitles": [
+   "qwen3-asr-models",
+   "subtitles-sample-input"
+  ],
+  "whisper-subtitles": [
+   "whisper-large-v3",
+   "subtitles-sample-input"
+  ],
+  "talking-characters": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "chatterbox-multilingual-model",
+   "chatterbox-finnish-t3",
+   "chatterbox-voice-sample",
+   "qwen3-tts-voice-design-model",
+   "talking-characters-inputs"
+  ],
+  "infinitetalk": [
+   "wan-umt5-fp8",
+   "wan2.1-kj-vae",
+   "lightx2v-i2v-480p-rank64",
+   "infinitetalk-model",
+   "infinitetalk-inputs"
+  ],
+  "scail-2-int8": [
+   "wan-umt5-fp8",
+   "wan2.1-kj-vae",
+   "wan-clip-vision-h",
+   "lightx2v-i2v-480p-rank64",
+   "sam3-segmentation",
+   "scail-2-int8-model",
+   "scail-2-inputs"
+  ],
+  "wan-animate-2-distilled": [
+   "wan-umt5-fp8",
+   "wan2.1-kj-vae",
+   "wan-clip-vision-h",
+   "wan-animate-2-distilled-model",
+   "wan-animate-2-inputs"
+  ],
+  "flux2-klein-4b-edit": [
+   "flux2-klein-4b-nvfp4",
+   "flux2-klein-support",
+   "flux2-klein-4b-edit-inputs"
+  ],
+  "pixal3d-trellis2": [
+   "pixal3d-common",
+   "pixal3d-trellis2-models",
+   "pixal3d-trellis2-input"
+  ],
+  "pixal3d-multiview": [
+   "pixal3d-common",
+   "pixal3d-multiview-model",
+   "pixal3d-multiview-input"
+  ],
+  "hunyuan3d-2.0-mv-turbo": [
+   "hunyuan3d-2.0-mv-turbo-model",
+   "hunyuan3d-2.0-mv-turbo-inputs"
+  ],
+  "frame-interpolation-film": [
+   "frame-interpolation-film-model",
+   "frame-interpolation-input"
+  ],
+  "seedvr2-video-upscale": [
+   "seedvr2-3b-int8",
+   "seedvr2-video-input"
   ]
  },
  "selection_metadata": {
@@ -1428,6 +1556,485 @@
     "dest": "/workspace/ComfyUI/input/yue2_reference_song.flac",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/yue2_reference_song.flac",
     "label": "MuScriptor sample input song (the YuE2 cover sample)"
+   }
+  ],
+  "ltx-2.5-iclora-ingredients": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2.5-22b-ic-lora-ingredients-0.9.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients/resolve/main/ltx-2.5-22b-ic-lora-ingredients-0.9.safetensors",
+    "label": "LTX-2.5 Ingredients IC-LoRA"
+   }
+  ],
+  "ltx-2.5-iclora-clean-plate": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2.5-22b-ic-lora-clean-plate-1.0.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate/resolve/main/ltx-2.5-22b-ic-lora-clean-plate-1.0.safetensors",
+    "label": "LTX-2.5 Clean Plate IC-LoRA"
+   }
+  ],
+  "ltx-2.5-iclora-alpha-gen": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2.5-22b-ic-lora-alpha-gen-0.9.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen/resolve/main/ltx-2.5-22b-ic-lora-alpha-gen-0.9.safetensors",
+    "label": "LTX-2.5 Alpha Gen IC-LoRA"
+   }
+  ],
+  "ltx-2.3-lora-foley-v2a": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/ltx-2.3-22b-lora-foley-v2a-1.0.safetensors",
+    "url": "https://huggingface.co/Lightricks/LTX-2.3-22b-LoRA-Foley-V2A/resolve/main/ltx-2.3-22b-lora-foley-v2a-1.0.safetensors",
+    "label": "LTX-2.3 Foley V2A LoRA, run on LTX-2.5"
+   }
+  ],
+  "ltx-2.5-a2v-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/cactus_man.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/cactus_man.png",
+    "label": "LTX-2.5 audio to video sample picture"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/ltx_23_audio.mp3",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/ltx_23_audio.mp3",
+    "label": "LTX-2.5 audio to video sample speech"
+   }
+  ],
+  "ltx-2.5-ingredients-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/german_shepherd_news_anchor_ref.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/german_shepherd_news_anchor_ref.png",
+    "label": "LTX-2.5 Ingredients sample sheet"
+   }
+  ],
+  "ltx-2.5-v2v-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/drive_doll_street_dance.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/drive_doll_street_dance.mp4",
+    "label": "Clean plate sample clip"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/street_dance_drive.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/street_dance_drive.mp4",
+    "label": "Alpha matte sample clip"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/comfy_logo_blue.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/comfy_logo_blue.png",
+    "label": "Placeholder start image for the V2V templates"
+   }
+  ],
+  "ltx-2.5-foley-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/white_armored_warrior.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/white_armored_warrior.mp4",
+    "label": "Foley sample clip"
+   }
+  ],
+  "chatterbox-multilingual-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/ve.pt",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/ve.pt",
+    "label": "Chatterbox multilingual: ve.pt"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/t3_mtl23ls_v2.safetensors",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/t3_mtl23ls_v2.safetensors",
+    "label": "Chatterbox multilingual: t3_mtl23ls_v2.safetensors"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/s3gen.pt",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/s3gen.pt",
+    "label": "Chatterbox multilingual: s3gen.pt"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/grapheme_mtl_merged_expanded_v1.json",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/grapheme_mtl_merged_expanded_v1.json",
+    "label": "Chatterbox multilingual: grapheme_mtl_merged_expanded_v1.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/conds.pt",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/conds.pt",
+    "label": "Chatterbox multilingual: conds.pt"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_multilingual/Cangjie5_TC.json",
+    "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/Cangjie5_TC.json",
+    "label": "Chatterbox multilingual: Cangjie5_TC.json"
+   }
+  ],
+  "chatterbox-finnish-t3": [
+   {
+    "dest": "/workspace/ComfyUI/models/chatterbox/chatterbox_finnish/best_finnish_multilingual_cp986.safetensors",
+    "url": "https://huggingface.co/Finnish-NLP/Chatterbox-Finnish/resolve/main/models/best_finnish_multilingual_cp986.safetensors",
+    "label": "Chatterbox Finnish fine-tune (T3, Finnish-NLP)"
+   }
+  ],
+  "chatterbox-voice-sample": [
+   {
+    "dest": "/workspace/ComfyUI/input/chatterbox_input_target_voice.mp3",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/chatterbox_input_target_voice.mp3",
+    "label": "Chatterbox sample voice"
+   }
+  ],
+  "qwen3-tts-voice-design-model": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/TTS/Qwen3-TTS/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "repo_id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "label": "Qwen3-TTS 1.7B VoiceDesign"
+   }
+  ],
+  "qwen3-asr-models": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/Qwen3-ASR/Qwen3-ASR-1.7B",
+    "repo_id": "Qwen/Qwen3-ASR-1.7B",
+    "label": "Qwen3-ASR 1.7B"
+   },
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/Qwen3-ASR/Qwen3-ForcedAligner-0.6B",
+    "repo_id": "Qwen/Qwen3-ForcedAligner-0.6B",
+    "label": "Qwen3 forced aligner 0.6B (word timestamps)"
+   }
+  ],
+  "whisper-large-v3": [
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/config.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/config.json",
+    "label": "Whisper large-v3: config.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/generation_config.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/generation_config.json",
+    "label": "Whisper large-v3: generation_config.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/preprocessor_config.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/preprocessor_config.json",
+    "label": "Whisper large-v3: preprocessor_config.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/model.safetensors",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/model.safetensors",
+    "label": "Whisper large-v3: model.safetensors"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/tokenizer.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/tokenizer.json",
+    "label": "Whisper large-v3: tokenizer.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/tokenizer_config.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/tokenizer_config.json",
+    "label": "Whisper large-v3: tokenizer_config.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/vocab.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/vocab.json",
+    "label": "Whisper large-v3: vocab.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/merges.txt",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/merges.txt",
+    "label": "Whisper large-v3: merges.txt"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/normalizer.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/normalizer.json",
+    "label": "Whisper large-v3: normalizer.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/added_tokens.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/added_tokens.json",
+    "label": "Whisper large-v3: added_tokens.json"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/whisper/whisper-large-v3/special_tokens_map.json",
+    "url": "https://huggingface.co/openai/whisper-large-v3/resolve/main/special_tokens_map.json",
+    "label": "Whisper large-v3: special_tokens_map.json"
+   }
+  ],
+  "subtitles-sample-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/dubit_input.mp4",
+    "url": "https://media.githubusercontent.com/media/Lightricks/ComfyUI-LTXVideo/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/assets/dubit_input.mp4",
+    "label": "Speech sample clip"
+   }
+  ],
+  "talking-characters-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/two_character_talking.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/two_character_talking.png",
+    "label": "Two-character sample picture"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/fish_audio_example.mp3",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/fish_audio_example.mp3",
+    "label": "Second sample voice for own recordings"
+   }
+  ],
+  "wan-umt5-fp8": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+    "label": "UMT5 XXL text encoder (fp8)"
+   }
+  ],
+  "wan2.1-kj-vae": [
+   {
+    "dest": "/workspace/ComfyUI/models/vae/Wan2_1_VAE_bf16.safetensors",
+    "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors",
+    "label": "Wan 2.1 VAE (bf16)"
+   }
+  ],
+  "wan-clip-vision-h": [
+   {
+    "dest": "/workspace/ComfyUI/models/clip_vision/clip_vision_h.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors",
+    "label": "CLIP vision H"
+   }
+  ],
+  "lightx2v-i2v-480p-rank64": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+    "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+    "label": "lightx2v I2V 480p step-distill LoRA (rank 64)"
+   }
+  ],
+  "infinitetalk-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors",
+    "url": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/I2V/Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors",
+    "label": "Wan 2.1 I2V 14B 480p (fp8)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/model_patches/wan2.1_infiniteTalk_multi_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/model_patches/wan2.1_infiniteTalk_multi_fp16.safetensors",
+    "label": "InfiniteTalk multi-speaker patch"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/audio_encoders/wav2vec2-chinese-base_fp16.safetensors",
+    "url": "https://huggingface.co/Kijai/wav2vec2_safetensors/resolve/main/wav2vec2-chinese-base_fp16.safetensors",
+    "label": "wav2vec2 Chinese base audio encoder"
+   }
+  ],
+  "infinitetalk-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/two_character_talking.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/two_character_talking.png",
+    "label": "InfiniteTalk sample picture"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/audio_speaker1_woman.mp3",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/audio_speaker1_woman.mp3",
+    "label": "InfiniteTalk sample speaker 1"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/audio_speaker2_man.mp3",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/audio_speaker2_man.mp3",
+    "label": "InfiniteTalk sample speaker 2"
+   }
+  ],
+  "scail-2-int8-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan2.1_14B_SCAIL_2_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SCAIL-2/resolve/main/diffusion_models/wan2.1_14B_SCAIL_2_int8_convrot.safetensors",
+    "label": "SCAIL-2 14B (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/loras/wan2.1_SCAIL_2_DPO_lora_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SCAIL-2/resolve/main/loras/wan2.1_SCAIL_2_DPO_lora_bf16.safetensors",
+    "label": "SCAIL-2 DPO LoRA"
+   }
+  ],
+  "scail-2-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/girl_eats_apple.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/girl_eats_apple.mp4",
+    "label": "SCAIL-2 sample clip"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/asian_model_in_white_clothes.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/asian_model_in_white_clothes.png",
+    "label": "SCAIL-2 sample character"
+   }
+  ],
+  "wan-animate-2-distilled-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/wan_animate_2_distill_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Wan-Animate-2/resolve/main/diffusion_models/wan_animate_2_distill_int8_convrot.safetensors",
+    "label": "Wan Animate 2 distilled (int8 convrot)"
+   }
+  ],
+  "wan-animate-2-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/ref_doll_realistic.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/ref_doll_realistic.png",
+    "label": "Wan Animate 2 sample character"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/drive_doll_street_dance.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/drive_doll_street_dance.mp4",
+    "label": "Wan Animate 2 sample motion"
+   }
+  ],
+  "flux2-klein-4b-nvfp4": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b-nvfp4.safetensors",
+    "url": "https://huggingface.co/black-forest-labs/FLUX.2-klein-4b-nvfp4/resolve/main/flux-2-klein-4b-nvfp4.safetensors",
+    "label": "FLUX.2 Klein 4B distilled (NVFP4)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b-fp8.safetensors",
+    "target": "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b-nvfp4.safetensors",
+    "label": "FLUX.2 Klein 4B fp8 name, pointed at the NVFP4 build (core's edit template asks for it)"
+   }
+  ],
+  "flux2-klein-support": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors",
+    "label": "Qwen3 4B text encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/flux2-klein/resolve/main/split_files/vae/flux2-vae.safetensors",
+    "label": "FLUX.2 VAE"
+   }
+  ],
+  "flux2-klein-4b-edit-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/comfy_logo_blue.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/comfy_logo_blue.png",
+    "label": "Klein edit sample logo"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/handbag_white.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/handbag_white.png",
+    "label": "Klein edit sample handbag"
+   }
+  ],
+  "pixal3d-common": [
+   {
+    "dest": "/workspace/ComfyUI/models/vae/trellis_2_texture_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/vae/trellis_2_texture_vae_bf16.safetensors",
+    "label": "TRELLIS.2 texture VAE"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/trellis_2_shape_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/vae/trellis_2_shape_vae_bf16.safetensors",
+    "label": "TRELLIS.2 shape VAE"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/clip_vision/dino_v3_L_naf_fp32.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/clip_vision/dino_v3_L_naf_fp32.safetensors",
+    "label": "DINOv3 L image encoder"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/background_removal/birefnet.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/birefnet.safetensors",
+    "label": "BiRefNet background removal"
+   }
+  ],
+  "pixal3d-trellis2-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/trellis_2_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/TRELLIS.2/resolve/main/diffusion_models/trellis_2_int8_convrot.safetensors",
+    "label": "TRELLIS.2 (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/pixal3d_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/diffusion_models/pixal3d_int8_convrot.safetensors",
+    "label": "Pixal3D (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "label": "MoGe-2 ViT-L normal"
+   }
+  ],
+  "pixal3d-trellis2-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/viking_wolf_rune_axe.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png",
+    "label": "Pixal3D sample object"
+   }
+  ],
+  "pixal3d-multiview-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/pixal3d_multiview_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/diffusion_models/pixal3d_multiview_int8_convrot.safetensors",
+    "label": "Pixal3D multiview (int8 convrot)"
+   }
+  ],
+  "pixal3d-multiview-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/character_turnaround_4view_sheet.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/character_turnaround_4view_sheet.png",
+    "label": "Pixal3D sample four-view sheet"
+   }
+  ],
+  "hunyuan3d-2.0-mv-turbo-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/hunyuan3d-dit-v2-mv-turbo_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/hunyuan3D_2.0_repackaged/resolve/main/split_files/hunyuan3d-dit-v2-mv-turbo_fp16.safetensors",
+    "label": "Hunyuan3D 2.0 multiview turbo"
+   }
+  ],
+  "hunyuan3d-2.0-mv-turbo-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/3d_hunyuan3d_multiview_to_model_turbo_front_view.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d_multiview_to_model_turbo_front_view.png",
+    "label": "Hunyuan3D multiview sample, front view"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/3d_hunyuan3d_multiview_to_model_turbo_left_view.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d_multiview_to_model_turbo_left_view.png",
+    "label": "Hunyuan3D multiview sample, left view"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/3d_hunyuan3d_multiview_to_model_turbo_right_view.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d_multiview_to_model_turbo_right_view.png",
+    "label": "Hunyuan3D multiview sample, right view"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/3d_hunyuan3d_multiview_to_model_turbo_back_view.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d_multiview_to_model_turbo_back_view.png",
+    "label": "Hunyuan3D multiview sample, back view"
+   }
+  ],
+  "frame-interpolation-film-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/frame_interpolation/film_net_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/frame_interpolation/resolve/main/frame_interpolation/film_net_fp16.safetensors",
+    "label": "FILM frame interpolation"
+   }
+  ],
+  "frame-interpolation-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/white_armored_warrior.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/white_armored_warrior.mp4",
+    "label": "Frame interpolation sample clip"
+   }
+  ],
+  "seedvr2-3b-int8": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/seedvr2_3b_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SeedVR2/resolve/main/diffusion_models/seedvr2_3b_int8_convrot.safetensors",
+    "label": "SeedVR2 3B (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/seedvr2_ema_vae_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SeedVR2/resolve/main/vae/seedvr2_ema_vae_fp16.safetensors",
+    "label": "SeedVR2 VAE"
+   }
+  ],
+  "seedvr2-video-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/grainy_perfume_shot_crf32.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/grainy_perfume_shot_crf32.mp4",
+    "label": "SeedVR2 sample clip"
    }
   ]
  }

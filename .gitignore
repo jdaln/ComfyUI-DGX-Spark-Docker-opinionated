@@ -25,3 +25,6 @@ TODO.txt
 __pycache__/
 
 .claude/.cc-writes/
+
+# private notes, not part of the repo
+list.md

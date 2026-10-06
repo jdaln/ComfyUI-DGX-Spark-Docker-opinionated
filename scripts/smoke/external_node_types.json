@@ -56,6 +56,16 @@
     "GetImageSizeAndCount": "ComfyUI-KJNodes",
     "MuScriptorLoadModel": "ComfyUI-muscriptor",
     "MuScriptorTranscribe": "ComfyUI-muscriptor",
-    "MuScriptorSaveMIDI": "ComfyUI-muscriptor"
+    "MuScriptorSaveMIDI": "ComfyUI-muscriptor",
+    "DialogueScript": "ComfyUI-DGX-Spark-Templates",
+    "JoinDialogue": "ComfyUI-DGX-Spark-Templates",
+    "TimestampsToSubtitles": "ComfyUI-DGX-Spark-Templates",
+    "BurnInSubtitles": "ComfyUI-DGX-Spark-Templates",
+    "SaveSubtitles": "ComfyUI-DGX-Spark-Templates",
+    "WhisperSpeechToText": "ComfyUI-DGX-Spark-Templates",
+    "ChatterboxSpeech": "ComfyUI-DGX-Spark-Templates",
+    "AILab_Qwen3TTSVoiceDesign": "ComfyUI-QwenTTS",
+    "Qwen3ASRTranscriber": "ComfyUI-Qwen3-ASR",
+    "Qwen3ForcedAlignerConfig": "ComfyUI-Qwen3-ASR"
   }
 }

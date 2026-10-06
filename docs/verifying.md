@@ -7,6 +7,7 @@ output. The harness lives in [`scripts/smoke/`](../scripts/smoke).
 | Script | Runs | Needs models | Checks |
 | --- | --- | --- | --- |
 | `validate_manifest.py` | host, offline | no | manifest structure, dangling symlink targets, node types no installed pack provides, lane to profile mismatches, undeclared self-provisioning |
+| `plan_downloads.py [profiles...]` | throwaway container | no | what the profiles would still download, gated repos the token cannot read, and whether the disk keeps a free margin |
 | `wf_smoke.py <workflow> <timeout> [subs]` | in container | yes | converts a UI workflow to an API prompt, expanding subgraphs, queues it and waits. The only script that executes a graph |
 | `run_lanes.py [profiles...]` | in container | yes | runs every `lanes.json` entry through `wf_smoke.py` one at a time behind a memory gate, writes `/tmp/lane_report.json` |
 | `sweep.sh [profiles...]` | host | yes | runs `run_lanes.py` unattended from a detached host process, restarting the container when the memory gate stops it, then the audit and a contact sheet |
@@ -38,7 +39,7 @@ CI runs it on every push and pull request
 
 Expect a difference between CI and your machine. CI has only the tracked
 template pack in `custom_nodes/`, so it reports only what this repo owns. Once
-the container has run, that directory also holds the 31 third-party packs cloned
+the container has run, that directory also holds the 34 third-party packs cloned
 at startup, and the check audits their example workflows too. Those account for
 almost all of the output and are not yours to fix. Filter them out:
 
@@ -57,6 +58,28 @@ install. Models a template references on purpose that nothing can provision yet
 are declared in `scripts/smoke/pending_models.json` and reported as warnings.
 
 ## 2. Against the running container
+
+### Check the download first
+
+The bootstrap does not check free space, and the models usually live on the
+system disk. Before adding several profiles to `.env`, ask what they would
+fetch:
+
+```bash
+docker run --rm --entrypoint python3 --env-file .env \
+  -v "$PWD":/repo:ro -w /repo \
+  -v "$PWD/../ComfyData/models":/workspace/ComfyUI/models:ro \
+  -v "$PWD/../ComfyData/input":/workspace/ComfyUI/input:ro \
+  comfyui-dgx-spark-docker-opinionated-comfy \
+  scripts/smoke/plan_downloads.py ltx-2.5-a2v talking-characters
+```
+
+It lists every file still missing with its size, totals them per profile, names
+any gated repository the token cannot read, and exits 1 when the download would
+leave less than 40 GB free (`--min-free-gb`). It runs in a throwaway container
+with the model folders mounted read-only, so the running one is untouched.
+
+### Run the lanes
 
 `/tmp` is wiped on every container recreate, so stage the harness each time.
 

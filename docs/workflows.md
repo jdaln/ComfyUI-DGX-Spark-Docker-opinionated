@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 71 profiles. The 69 in the category tables below
+`asset-profiles.json` defines 90 profiles. The 85 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
-workflow's default settings. The remaining 2 are listed under
+workflow's default settings. The remaining 5 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 69 have an automated smoke lane. Three do not, because their
+Most of those 85 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -41,7 +41,7 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | **Ours** | Browse Templates → `ComfyUI-DGX-Spark-Templates` |
    | **Node example** | Browse Templates → the custom node's section |
 
-Krea 2, Ideogram 4, Gemma 3, MuScriptor and two LTX LoRAs are gated on Hugging Face. Accept
+Krea 2, Ideogram 4, Gemma 3, MuScriptor and six LTX LoRAs are gated on Hugging Face. Accept
 the licence on the model page and set `HF_TOKEN` in `.env`, or those profiles
 download nothing. See [models.md](models.md) for the current gated list.
 
@@ -78,10 +78,18 @@ That template loads the same files and works as well.
 | Compose from a control image (canny, depth, pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 80 s |
 | Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 275 s |
 | Same, 4-step distilled, about 7x faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 30 s |
+| Instruction edits in seconds, 4B distilled | `flux2-klein-4b-edit` | `image_flux2_klein_image_edit_4b_distilled` | Template | 11 GB | 15 s |
 
 The two Mage-Flow profiles share an 8.3 GB text encoder and a VAE, so whichever
 you add second costs 7.7 GB. ComfyUI supports Mage-Flow in core, so neither
 template installs a custom node. There is no NVFP4 build that ComfyUI can load.
+
+`flux2-klein-4b-edit` downloads Black Forest Labs' NVFP4 build of FLUX.2 Klein
+4B, 2.5 GB against 4.1 GB for fp8, and links the fp8 filename core's template
+asks for to it, the same arrangement as Qwen-Image 2.1's text encoder. ComfyUI
+reads the format from the file. The text encoder and VAE are the ones Z-Image
+and Ideogram 4 already use. Klein ranks low on public edit leaderboards; it is
+here for speed. For quality, use Qwen-Image 2.1 Edit or Mage-Flow.
 
 ### Qwen-Image 2.1, generation and editing in one model
 
@@ -129,13 +137,20 @@ Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, 14B | `wan2.2-t2v-bundled` | `video_wan2_2_14B_t2v` | Template | 37 GB | 10 min |
 | Animate a still image, 14B | `wan2.2-i2v-bundled` | `video_wan2_2_14B_i2v` | Template | 37 GB | 10 min |
-| Replace or remove things inside a video | `wan2.1-vace-bundled` | Video Inpainting (Wan2.1 VACE) | Blueprint | 41 GB | 3 min |
+| Replace or remove things inside a video | `wan2.1-vace-bundled` | Video Inpainting (Wan2.1 VACE) | Blueprint | 41 GB | 5 min |
 | Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 5 s |
+| The person in a video replaced by a character from one picture | `scail-2-int8` | `video_wan21_scail2_character_replacement_int8` | Template | 29 GB | 383 s |
+| A character picture moved by a reference video, distilled | `wan-animate-2-distilled` | `video_wan_animate2_distilled` | Template | 25 GB | 396 s |
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
 Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
 branch alone, which is why it runs in seconds; the animate checkpoint, LoRAs,
 text encoder and VAE the rest of that workflow loads come from you.
+
+`scail-2-int8` and `wan-animate-2-distilled` provision core's SCAIL-2 and Wan
+Animate 2 templates with their sample inputs, and share the UMT5 encoder and
+the Wan 2.1 VAE. In the SCAIL-2 sample the girl in the orchard becomes the
+model from the reference picture and keeps every movement.
 
 ### MiniMax H3, video with its own soundtrack
 
@@ -359,11 +374,11 @@ an hour and do not run anything else while it works.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Blueprint | 60 GB | 140 s |
-| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 135 s |
+| Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Blueprint | 60 GB | 135 s |
+| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 145 s |
 | Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 270 s |
-| Animate an image along drawn motion tracks | `ltx-2.3-iclora-motion-track-distilled` | Motion Track to Video (LTX-2.3) | Ours | 60 GB | 150 s |
-| SDR video to HDR, saved as EXR frames | `ltx-2.3-iclora-hdr-distilled` | Video SDR to HDR (LTX-2.3) | Ours | 60 GB | 200 s |
+| Animate an image along drawn motion tracks | `ltx-2.3-iclora-motion-track-distilled` | Motion Track to Video (LTX-2.3) | Ours | 60 GB | 160 s |
+| SDR video to HDR, saved as EXR frames | `ltx-2.3-iclora-hdr-distilled` | Video SDR to HDR (LTX-2.3) | Ours | 60 GB | 225 s |
 | New speech for a talking clip, lips to match | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Video Dubbing (LTX-2.3 Dub-It) | Ours | 63 GB | 463 s |
 
 Core's IC-LoRA template feeds the union-control LoRA a depth, canny or pose
@@ -395,6 +410,11 @@ here with the sample input each one was made for:
 | Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 140 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
 | Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
+| A picture that speaks a recorded line; the audio drives the video | `ltx-2.5-a2v` | Audio to Video (LTX-2.5) | Ours | 45 GB | 386 s |
+| A clip that keeps characters, props and set from one reference sheet | `ltx-2.5-ingredients` | Reference Sheet to Video (LTX-2.5 Ingredients) | Ours | 46 GB | 191 s |
+| People removed from a clip, the empty scene left behind | `ltx-2.5-clean-plate` | Remove People from Video (LTX-2.5 Clean Plate) | Ours | 45 GB | 120 s |
+| A grayscale alpha matte of a clip, hair and smoke included | `ltx-2.5-alpha-matte` | Video Alpha Matte (LTX-2.5 Alpha Gen) | Ours | 46 GB | 115 s |
+| Sound effects for a silent clip, generated to match the picture | `ltx-2.5-foley` | Add Sound to Video (LTX-2.5 Foley) | Ours | 45 GB | 80 s |
 
 LTX 2.5 conditions on Gemma 4, so it needs ComfyUI 0.35.0 or newer. Core ships
 the three templates and matching blueprints, all pointing at the int8-convrot
@@ -456,10 +476,32 @@ It decodes in tiles, with the settings core's LTX 2.5 templates use. Decoding
 the doubled video in one piece took available memory down to 16 GiB; in tiles it
 stays above 80 GiB, for 6 s more run time.
 
+Audio to Video, Reference Sheet to Video, Remove People from Video and Video
+Alpha Matte are Lightricks' own LTX-2.5 example graphs from ComfyUI-LTXVideo
+(LTX-2 Community License), changed in the same ways: the int8 transformer and
+Gemma 4 encoder instead of bf16, 31 GB less; no LTX API prompt path, which
+needs a paid key and whose encoder node expects a checkpoint name these files
+do not have; and sample inputs, so each runs as opened. The last three load
+the IC-LoRAs Lightricks has since published for 2.5, where the examples still
+pointed at 2.3 builds or at a deblur LoRA. On the `ltx-2.5-distilled` stack
+each costs only its LoRA and sample input, at most 1.3 GB. Each template's note
+names its source, its licence and every change. The LoRAs are gated; accept
+them as [models.md](models.md#gated-models) lists.
+
+Add Sound to Video takes its recipe and prompts from RuneXX's LTX-2.3 Foley
+workflow and loads Lightricks' LTX-2.3 Foley V2A LoRA. It is rebuilt on core
+nodes: the clip is encoded and frozen with a zero noise mask, the audio is
+generated in eight distilled steps, and the original frames go out with the new
+track. RuneXX runs the 2.3 dev model at 30 steps; this runs the 2.5 distilled
+model, since LTX-2.5 accepts most 2.3 LoRAs. The track is as loud as the prompt
+describes: a cloth wiping an apple in a light breeze came back near silent,
+the sample's armour and metal claws at -15 dBFS.
+
 LTX 2.5 loads a 15 GB text encoder and a 21 GB transformer. On the v0.38 core
 its lanes bottom out at 52 to 56 GiB available, about where MiniMax H3 sits at
-43 to 61 GiB. The lowest floors in the catalogue are now the BFS LTX-2.3 edits,
-at 15 to 18 GiB available; give those a quiet machine, and see
+43 to 61 GiB. The lowest floors in the catalogue are Video Dubbing's, near 20
+GiB available, and the BFS LTX-2.3 edits', 24 to 27 GiB; give those a quiet
+machine, and see
 [troubleshooting.md](troubleshooting.md#memory-stays-used-after-a-run).
 
 Weights are [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5),
@@ -476,11 +518,11 @@ every file 403s. Approval is instant, but it is not automatic.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | 255 s |
-| Anime to live action and back, on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | 216 s |
-| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 246 s |
-| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 211 s |
-| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 62 GB | 256 s |
+| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | 284 s |
+| Anime to live action and back, on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | 246 s |
+| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 230 s |
+| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 230 s |
+| Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 62 GB | 225 s |
 
 Rebuilt from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes)
 by Alisson Anjos onto the same LTX-2.3 chain as
@@ -496,8 +538,13 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Conversations between up to 4 characters, voices cloned from samples [^h] | `vibevoice-large` | Text to Speech (Multi-Character Conversation) | Ours | 18 GB | 215 s |
-| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 100 s |
+| A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 95 s |
 | Both at once: describe one voice, clone the rest, run the conversation [^h] | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
+| A voice described in words from a small model, 10 languages | `qwen3-tts-voice-design` | Text to Speech (Qwen3-TTS Voice Design) | Ours | 4.5 GB | 45 s |
+| Speech in a sampled voice, 23 languages, Finnish from a Finnish fine-tune | `chatterbox-multilingual` | Text to Speech (Chatterbox Multilingual) | Ours | 5.3 GB | 15 s |
+| Two people in a picture speak a script, subtitles included | `talking-characters` | Talking Characters with Subtitles | Ours | 55 GB | 571 s |
+| Subtitles for any video in 100 languages, Finnish included: transcript, .srt and a burned-in copy | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
+| Same with Qwen3-ASR, whose word timing covers 11 languages | `qwen3-asr-subtitles` | Subtitles from Speech (Qwen3-ASR) | Ours | 6.5 GB | 50 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
 does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
@@ -505,7 +552,57 @@ does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
 what a voice sounds like ("low, hoarse, soft Edinburgh accent") but renders one
 utterance at a time at video-model cost. The third template renders speaker 1
 with LTX-2.3 and hands that clip to VibeVoice as the clone source, with speakers
-2 to 4 on ordinary Load Audio nodes.
+2 to 4 on ordinary Load Audio nodes. Qwen3-TTS Voice Design also works from a
+description, at a fraction of LTX-2.3's size, in Chinese, English, Japanese,
+Korean, German, French, Russian, Portuguese, Spanish and Italian.
+
+Chatterbox Speech, a node of the template pack, runs Resemble AI's multilingual
+Chatterbox or Finnish-NLP's
+[Chatterbox-Finnish](https://huggingface.co/Finnish-NLP/Chatterbox-Finnish)
+fine-tune of it, picked in its `model` widget; both are MIT. Read back with
+Whisper large-v3, six Finnish sentences in three voices came out at 1.9 %
+character errors from the fine-tune and 5.4 % from the multilingual model, so
+the Finnish templates start on the fine-tune.
+
+The node uses the Chatterbox code in filliptm's ComfyUI_Fill-ChatterBox but
+samples with upstream Chatterbox's alignment check, which ends a line once the
+text has been read. That pack leaves the check out, since it needs attention
+weights that SDPA does not return, and its multilingual node then talked on
+after the text: in the same read-back test it scored 45 to 207 % word errors in
+Finnish, English and Swedish, because the added words count as errors. With
+the check the multilingual model scored 12, 0 and 4 %. The node runs the model
+on eager attention while it samples.
+
+Talking Characters with Subtitles chains the others. Qwen3-TTS designs a voice
+for each character from a description, Chatterbox Speech speaks each line of
+the script in that voice, the template pack's Dialogue Script and Join Dialogue
+nodes split the script into lines and join the clips, and the LTX-2.5 audio to
+video graph makes the picture speak the result. The subtitles come from the
+script and the clip lengths, so their text and timing are exact. The sample
+script is Finnish; Qwen3-TTS has no Finnish, so the voices are designed in
+English. Join Dialogue stops the run when a clip comes back empty or far longer
+than its line, before the video model is asked for a runaway length.
+Recordings of real voices can replace the designed ones with one switch.
+
+Subtitles from Speech comes in two builds for audio without a script. Whisper
+large-v3 transcribes and times every word in its 100 languages; in the
+[BuzzASR](https://arxiv.org/abs/2609.09554) comparison it transcribed Finnish
+with 1.89 % character errors. Qwen3-ASR transcribes 30 languages, but its
+forced aligner times only 11: Chinese, English, Cantonese, French, German,
+Italian, Japanese, Korean, Portuguese, Russian and Spanish. In both, the Word
+Timestamps to Subtitles node groups the words into lines. Burn In Subtitles
+draws with DejaVu Sans, so burned-in text covers Latin, Greek and Cyrillic;
+Chinese, Japanese and other scripts need the .srt.
+
+These add three node packs: filliptm's ComfyUI_Fill-ChatterBox (MIT), for its
+Chatterbox code, 1038lab's ComfyUI-QwenTTS (GPL-3.0) and kaushiknishchay's
+ComfyUI-Qwen3-ASR (MIT). QwenTTS and the template pack's two speech nodes
+download a missing model on first use, so read the startup log for the
+profile's downloads rather than trusting a passing lane. ComfyUI-Qwen3-ASR
+installs `qwen-asr`, which pins `accelerate` to 1.12 and adds gradio and flask
+to the venv; transformers stays at 4.57. TTS Audio Suite, OmniVoice and
+1038lab's QwenASR were left out because they need transformers 5, which
+VibeVoice-ComfyUI rules out.
 
 `ltx-2.3-tts-prompted-voice` adds no new weights. It reuses the
 `ltx-2.3-t2v-i2v-two-stage-distilled` base and reads the audio VAE out of that
@@ -646,6 +743,7 @@ separate repositories and need their own acceptance. The code is MIT.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Turn one image into a textured 3D mesh (`.glb`) | `hunyuan3d-2.1-core` | Image to Model (Hunyuan3d 2.1) | Blueprint | 7 GB | 60 s |
+| Front, side and back views to a 3D model | `hunyuan3d-2.0-mv-turbo` | `3d_hunyuan3d_multiview_to_model_turbo` | Template | 4.9 GB | 35 s |
 
 ## Utility
 
@@ -653,6 +751,8 @@ separate repositories and need their own acceptance. The code is MIT.
 | --- | --- | --- | --- | ---: | ---: |
 | Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Blueprint | 2 GB | 15 s |
 | Background removal tuned for glass, glow, camouflage, text and print designs | `lucida-background-removal` | Remove Background (Lucida) | Ours | 0.9 GB | 5 s |
+| Smoother motion by frame interpolation (FILM) | `frame-interpolation-film` | `utility_video_frame_interpolation` | Template | 0.1 GB | 111 s |
+| Video upscale and restoration, SeedVR2 3B int8 | `seedvr2-video-upscale` | `utility_seedvr2_3b_int8_upscale_video` | Template | 4.0 GB | 356 s |
 
 Lucida is a BiRefNet-HR fine-tune for the mattes the bundled
 `Remove Background (BiRefNet)` blueprint struggles with: semi-transparent
@@ -669,9 +769,9 @@ side and you pick in the loader.
 ## Provisioned, not yet hardware-verified
 
 These follow the same rules as everything above: pick the profile, start the
-stack, open the workflow. They have not had their smoke lane and provisioning
-audit run on a DGX Spark, so the Run column is blank and the disk figures come
-from Hugging Face file sizes rather than a real download.
+stack, open the workflow. None has a run on a DGX Spark that produced the
+output it should, so the Run column is blank; the note under each table says
+what is missing.
 
 Promote a row into its category table once `run_lanes.py` and `audit_refs.py`
 both pass and the output looks right. Commands in [verifying.md](verifying.md).
@@ -681,6 +781,39 @@ both pass and the output looks right. Commands in [verifying.md](verifying.md).
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Same as `vibevoice-large`, on the small model | `vibevoice-1.5b` | Text to Speech (Multi-Character Conversation) | Ours | 5 GB | — |
+
+### Talking video
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Audio-driven talking video for one or two speakers, long clips | `infinitetalk` | `video_wan2_1_infinitetalk` | Template | 30 GB | — |
+
+InfiniteTalk extends a talking clip window by window, so it covers
+conversations longer than one LTX-2.5 clip. Its lane runs end to end in 556 s,
+but core's template wants a mask drawn over each speaker in its two Painter
+nodes and ships them empty, which no lane can draw; with them empty the
+extension jumped to another scene. Draw both masks before judging it. The
+profile provisions the template's models and sample inputs; its wav2vec2
+encoder goes in `audio_encoders/`, where core's loader looks.
+
+### 3D
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | — |
+| A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | — |
+
+Both of core's Pixal3D templates end in a vertex-colour preview built with the
+Paint Mesh node, and on the DGX Spark that node crashes ComfyUI with a
+segmentation fault (found with the TRELLIS.2 template). Mute Paint Mesh, or the
+Preview 3D after it, and the rest runs: the TRELLIS.2 sample saved a 67 MB
+textured model to `output/3d/`. Neither has a smoke lane until that
+is fixed.
+
+The two Pixal3D profiles share the TRELLIS.2 VAEs, the DINOv3 encoder and
+BiRefNet, so the second costs 5.6 GB. Hunyuan3D 2.1 with PBR textures is not
+here yet: the native paint port, ComfyUI PR #15020, is still open, and the
+wrapper packs compile CUDA extensions.
 
 ### Video editing with LTX-2.3 task LoRAs
 

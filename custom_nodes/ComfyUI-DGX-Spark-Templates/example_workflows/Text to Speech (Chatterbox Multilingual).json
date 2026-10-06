@@ -1,0 +1,221 @@
+{
+  "id": "6ba83d85-6a11-5393-b4e9-1bea1a64b72d",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        380,
+        180
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "chatterbox_input_target_voice.mp3",
+        null,
+        null
+      ],
+      "title": "Voice sample (6 to 15 seconds of the voice to copy)"
+    },
+    {
+      "id": 2,
+      "type": "ChatterboxSpeech",
+      "pos": [
+        440,
+        80
+      ],
+      "size": [
+        420,
+        440
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "voice",
+          "type": "AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ChatterboxSpeech"
+      },
+      "widgets_values": [
+        "Hei ja tervetuloa! Tämä on esimerkki suomenkielisestä puheesta. Kirjoita tähän oma tekstisi.",
+        "Finnish (Finnish-NLP fine-tune)",
+        "English (en)",
+        0.5,
+        0.3,
+        0.8,
+        1.5,
+        0.05,
+        1.0,
+        0,
+        "fixed",
+        false
+      ],
+      "title": "Speech: write the text, pick the model"
+    },
+    {
+      "id": 3,
+      "type": "SaveAudio",
+      "pos": [
+        900,
+        80
+      ],
+      "size": [
+        380,
+        140
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/chatterbox"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        580
+      ],
+      "size": [
+        900,
+        460
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Text to speech in 23 languages, Finnish with its own model\n\n1. Load a clear recording of the voice to copy in **Voice sample**, 6 to 15 seconds.\n2. Write the text in the speech node.\n3. For Finnish keep `model` on the Finnish fine-tune. For another language set `model` to the multilingual model and pick the `language`.\n4. Run. The result is saved in `output/audio/`.\n\nThe Finnish model is Finnish-NLP's fine-tune of the multilingual one on 16,604 Finnish clips. On Finnish speakers it was not trained on, its authors measured 2.76 % word errors, against 28.94 % for the multilingual model it started from.\n\n`cfg_weight` sets how closely the speech follows the voice sample's pacing: 0.3 suits the Finnish model. With the multilingual model use 0.5 when the sample is in the text's language and 0 when it is not, or the voice keeps the sample's accent. `exaggeration` above 0.5 makes the delivery more expressive. Split long texts into a few sentences per run.\n\nMultilingual model languages: Arabic, Chinese, Danish, Dutch, English, Finnish, French, German, Greek, Hebrew, Hindi, Italian, Japanese, Korean, Malay, Norwegian, Polish, Portuguese, Russian, Spanish, Swahili, Swedish, Turkish."
+      ],
+      "title": "How to use"
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        960,
+        580
+      ],
+      "size": [
+        520,
+        360
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## About this workflow\n\nBuilt for this repo on Resemble AI's Chatterbox multilingual model (MIT) and Finnish-NLP's [Chatterbox-Finnish](https://huggingface.co/Finnish-NLP/Chatterbox-Finnish) (MIT). Chatterbox Speech, a node of this repo's template pack, runs both with the Chatterbox code in filliptm's [ComfyUI_Fill-ChatterBox](https://github.com/filliptm/ComfyUI_Fill-ChatterBox) (MIT). It samples with upstream Chatterbox's alignment check, which ends each line once the text has been read; that pack's own nodes leave it out, and the multilingual model then talked on after most lines.\n\nSample voice `chatterbox_input_target_voice.mp3` from Comfy's template inputs.\n\nAsset profile: `chatterbox-multilingual`."
+      ],
+      "title": "About this workflow"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Voice and text",
+      "bounding": [
+        -20,
+        0,
+        1320,
+        560
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "definitions": {
+    "subgraphs": []
+  },
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

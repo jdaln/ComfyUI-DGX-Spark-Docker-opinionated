@@ -60,3 +60,12 @@ https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy.git
 
 # MuScriptor audio to MIDI transcription; node code MIT, weights CC BY-NC 4.0
 https://github.com/jtydhr88/ComfyUI-muscriptor.git
+
+# Chatterbox model code, which the template pack's Chatterbox Speech node runs (MIT)
+https://github.com/filliptm/ComfyUI_Fill-ChatterBox.git
+
+# Qwen3-TTS: voices described in words, cloned or preset (GPL-3.0)
+https://github.com/1038lab/ComfyUI-QwenTTS.git
+
+# Qwen3-ASR speech to text with word timestamps, for subtitles (MIT)
+https://github.com/kaushiknishchay/ComfyUI-Qwen3-ASR.git

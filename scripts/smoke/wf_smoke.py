@@ -7,6 +7,9 @@ TARGET = sys.argv[1] if len(sys.argv) > 1 else "image_z_image_turbo"
 TIMEOUT = int(sys.argv[2]) if len(sys.argv) > 2 else 600
 TPL_DIR = "/workspace/venv/lib/python3*/site-packages/comfyui_workflow_templates_json/templates"
 SKIP_TYPES = {"Note", "MarkdownNote", "Reroute", "PrimitiveNode", "SetNode", "GetNode"}
+# the 3D viewer's widgets (Save3DAdvanced's viewport_state): the workflow keeps a
+# slot for them in widgets_values, and the frontend sends the viewer's state, a dict
+VIEWER_TYPES = {"LOAD_3D", "LOAD_3D_ANIMATION"}
 
 # Global substitutions should stay EMPTY: a workflow that only runs because the
 # harness swapped a model is a workflow that is broken for users. Provision the
@@ -90,12 +93,14 @@ def promoted_values(sg, wv, in_links, nodes, object_info):
     return values
 
 def expand_subgraphs(wf, object_info):
-    """Inline-expand subgraph nodes. Returns (nodes_by_id, links_list, forced_values, dangling)."""
+    """Inline-expand subgraph nodes.
+    Returns (nodes_by_id, links_list, forced_values, dangling, shared)."""
     sgs = {s["id"]: s for s in (wf.get("definitions") or {}).get("subgraphs") or []}
     nodes = {str(n["id"]): json.loads(json.dumps(n)) for n in wf["nodes"]}
     links = [list(l) for l in wf.get("links", [])]  # [id, src, sslot, dst, dslot, type]
     forced = {}  # (node_id, input_name) -> value
     dangling = []  # (src_node_id, src_slot, type) for unconsumed subgraph outputs
+    shared = []  # [(node_id, input_name), ...] fed by one subgraph input nothing outside links
 
     def expand_one(oid):
         o = nodes.pop(oid)
@@ -163,6 +168,15 @@ def expand_subgraphs(wf, object_info):
                 tin = nodes[tid].get("inputs", [])
                 if tslot < len(tin):
                     forced[(tid, tin[tslot]["name"])] = v
+        # One subgraph input feeding several inner inputs carries one value. When the
+        # outer node stores no widget values (newer frontends keep promoted values on
+        # the inner widget and list it in properties.proxyWidgets), only the inner
+        # widget has it, so the other inputs of the group get it after conversion.
+        for k, targets in in_links.items():
+            if len(targets) < 2 or k >= len(sg.get("inputs", [])) or sg["inputs"][k].get("name") in linked:
+                continue
+            shared.append([(tid, nodes[tid]["inputs"][tslot]["name"]) for tid, tslot in targets
+                           if tslot < len(nodes[tid].get("inputs", []))])
         # rewire outer outputs
         consumed = set()
         for l in links[:]:
@@ -183,10 +197,10 @@ def expand_subgraphs(wf, object_info):
         for nid in list(nodes):
             if nodes.get(nid, {}).get("type") in sgs:
                 expand_one(nid); changed = True
-    return nodes, links, forced, dangling
+    return nodes, links, forced, dangling, shared
 
 def ui_to_api(wf, object_info):
-    nodes, linklist, forced, dangling = expand_subgraphs(wf, object_info)
+    nodes, linklist, forced, dangling, shared = expand_subgraphs(wf, object_info)
     links = {l[0]: (str(l[1]), l[2], l[5] if len(l) > 5 else "*") for l in linklist}
     by_dst = {}
     for l in linklist:
@@ -271,13 +285,21 @@ def ui_to_api(wf, object_info):
                     if sel:
                         nested = list((sel["inputs"].get("required") or {}).items()) + \
                                  list((sel["inputs"].get("optional") or {}).items())
-                        for cname, _cspec in nested:
+                        for cname, cspec in nested:
+                            ctyp = cspec[0]
+                            ccfg = cspec[1] if len(cspec) > 1 and isinstance(cspec[1], dict) else {}
+                            if not (isinstance(ctyp, list) or ctyp in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO",
+                                                                        "COMFY_DYNAMICCOMBO_V3")
+                                    or ccfg.get("widget") or "default" in ccfg) or ccfg.get("forceInput"):
+                                continue  # a socket (InfiniteTalk's mode.mask_1): no stored value, link kept
                             if wi >= len(wv): break
-                            inputs[f"{name}.{cname}"] = sub(wv[wi]); wi += 1
+                            if f"{name}.{cname}" not in inputs:
+                                inputs[f"{name}.{cname}"] = sub(wv[wi])
+                            wi += 1
                             if cname in ("seed", "noise_seed") and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
                                 wi += 1
                     continue
-                is_widget = isinstance(typ, list) or typ in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO") or cfg.get("widget") or "default" in cfg
+                is_widget = isinstance(typ, list) or typ in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO") or typ in VIEWER_TYPES or cfg.get("widget") or "default" in cfg
                 if not is_widget: continue
                 if name in inputs:
                     # linked widget still consumes a slot in widgets_values
@@ -287,7 +309,7 @@ def ui_to_api(wf, object_info):
                     continue
                 if wi < len(wv):
                     v = wv[wi]; wi += 1
-                    inputs[name] = sub(v)
+                    inputs[name] = (v if isinstance(v, dict) else {}) if isinstance(typ, str) and typ in VIEWER_TYPES else sub(v)
                     if name in ("seed", "noise_seed") and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
                         wi += 1
         for (fnid, fname), v in forced.items():
@@ -316,7 +338,7 @@ def ui_to_api(wf, object_info):
                 inputs[name] = cfg["default"]
             elif isinstance(typ, list) and typ:
                 inputs[name] = typ[0]
-            elif cfg.get("socketless"):
+            elif cfg.get("socketless") or (isinstance(typ, str) and typ in VIEWER_TYPES):
                 # display-only widget the workflow stores no value for, such as
                 # ImageCompare's compare_view; the frontend still sends one
                 inputs[name] = {}
@@ -326,6 +348,17 @@ def ui_to_api(wf, object_info):
                     print(f"substituting missing input {v} -> {FALLBACK_INPUT[t]}")
                     inputs[k] = FALLBACK_INPUT[t]
         prompt[nid] = {"class_type": t, "inputs": inputs}
+    # a shared subgraph input's value, copied to the inner inputs that got none
+    # (SCAIL-2's frame math reads the window length its sampler widget holds)
+    for group in shared:
+        held = [prompt[t]["inputs"][n] for t, n in group if t in prompt and n in prompt[t]["inputs"]]
+        values = [v for v in held if not (isinstance(v, list) and len(v) == 2 and isinstance(v[0], str))]
+        if not values:
+            continue
+        for t, n in group:
+            if t in prompt and n not in prompt[t]["inputs"]:
+                prompt[t]["inputs"][n] = values[0]
+                print(f"shared subgraph input: {prompt[t]['class_type']}.{n} = {str(values[0])[:40]!r}")
     # prune dangling connection refs (muted/removed sources)
     for nid, node in prompt.items():
         for k in list(node["inputs"]):
@@ -364,18 +397,26 @@ def ui_to_api(wf, object_info):
                 stubs["IMAGE"] = ["autoload_img", 0]
                 stubs["MASK"] = ["autoload_img", 1]
         return stubs[kind]
+    def match_template(spec):
+        if spec[0] != "COMFY_MATCHTYPE_V3":
+            return None
+        cfg = spec[1] if len(spec) > 1 and isinstance(spec[1], dict) else {}
+        return (cfg.get("template") or {}).get("template_id")
     for nid, node in list(prompt.items()):
         info = object_info.get(node["class_type"]) or {}
+        declared = {**(info.get("input", {}).get("required") or {}), **(info.get("input", {}).get("optional") or {})}
         for name, spec in (info.get("input", {}).get("required") or {}).items():
             typ = spec[0]
             if name in node["inputs"] or not isinstance(typ, str):
                 continue
             if typ == "COMFY_MATCHTYPE_V3":
-                # wildcard slot: mirror a connected sibling input so the type is
-                # right by construction (e.g. a switch's other branch); only
-                # fall back to an image when nothing else is connected
+                # wildcard slot: mirror a connected input of the same template so
+                # the type is right by construction (e.g. a switch's other branch);
+                # only fall back to an image when nothing else is connected
                 sib = next((v for k2, v in node["inputs"].items()
-                            if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)), None)
+                            if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)
+                            and k2 in declared and declared[k2][0] == typ
+                            and match_template(declared[k2]) == match_template(spec)), None)
                 if sib is not None:
                     node["inputs"][name] = sib
                     print(f"mirrored sibling into wildcard {node['class_type']}.{name}")

@@ -68,6 +68,23 @@
     ["qwen-image-2.1-t2i",                          "image_qwen_image_2_1_t2i"],
     ["qwen-image-2.1-edit",                         "image_qwen_image_2_1_image_edit"],
     ["qwen-image-2.1-remove-background",            "image_qwen_image_2_1_background_removal"],
-    ["muscriptor",                                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Audio to MIDI (MuScriptor).json"]
+    ["muscriptor",                                  "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Audio to MIDI (MuScriptor).json"],
+    ["ltx-2.5-a2v",                                 "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Audio to Video (LTX-2.5).json"],
+    ["ltx-2.5-ingredients",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Reference Sheet to Video (LTX-2.5 Ingredients).json"],
+    ["ltx-2.5-clean-plate",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Remove People from Video (LTX-2.5 Clean Plate).json"],
+    ["ltx-2.5-alpha-matte",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video Alpha Matte (LTX-2.5 Alpha Gen).json"],
+    ["ltx-2.5-foley",                               "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Add Sound to Video (LTX-2.5 Foley).json"],
+    ["chatterbox-multilingual",                     "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Chatterbox Multilingual).json"],
+    ["qwen3-tts-voice-design",                      "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Qwen3-TTS Voice Design).json"],
+    ["qwen3-asr-subtitles",                         "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Subtitles from Speech (Qwen3-ASR).json"],
+    ["whisper-subtitles",                           "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Subtitles from Speech (Whisper large-v3).json"],
+    ["talking-characters",                          "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Talking Characters with Subtitles.json"],
+    ["infinitetalk",                                "video_wan2_1_infinitetalk"],
+    ["scail-2-int8",                                "video_wan21_scail2_character_replacement_int8"],
+    ["wan-animate-2-distilled",                     "video_wan_animate2_distilled"],
+    ["flux2-klein-4b-edit",                         "image_flux2_klein_image_edit_4b_distilled"],
+    ["hunyuan3d-2.0-mv-turbo",                      "3d_hunyuan3d_multiview_to_model_turbo"],
+    ["frame-interpolation-film",                    "utility_video_frame_interpolation"],
+    ["seedvr2-video-upscale",                       "utility_seedvr2_3b_int8_upscale_video"]
   ]
 }
