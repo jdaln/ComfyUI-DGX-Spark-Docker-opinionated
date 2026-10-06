@@ -334,7 +334,11 @@ def check_models_metadata(label, workflow, problems):
 
 def check_graph_integrity(label, workflow, problems):
     """Link ids referenced by nodes must exist and point at nodes that exist."""
-    for scope, nodes in iter_graph_nodes(workflow):
+    # each subgraph against its own links: two definitions can share a name
+    subgraphs = [sg for sg in (workflow.get("definitions") or {}).get("subgraphs") or [] if isinstance(sg, dict)]
+    scopes = [("", workflow.get("nodes") or [], None)]
+    scopes += [(sg.get("name") or sg.get("id") or "subgraph", sg.get("nodes") or [], sg) for sg in subgraphs]
+    for scope, nodes, subgraph in scopes:
         where = f"{label}{' -> ' + scope if scope else ''}"
         node_ids = set()
         for node in nodes:
@@ -343,14 +347,9 @@ def check_graph_integrity(label, workflow, problems):
                 fail(problems, f"{where}: duplicate node id {node_id}")
             node_ids.add(node_id)
 
-        if scope:
+        if subgraph is not None:
             # Subgraph links are dicts and reference the -10/-20 io nodes.
-            links = (workflow.get("definitions") or {}).get("subgraphs") or []
-            link_rows = []
-            for subgraph in links:
-                if (subgraph.get("name") or subgraph.get("id")) == scope:
-                    link_rows = subgraph.get("links") or []
-                    break
+            link_rows = subgraph.get("links") or []
             known = {row.get("id") for row in link_rows if isinstance(row, dict)}
             endpoints = node_ids | {-10, -20}
             for row in link_rows:
