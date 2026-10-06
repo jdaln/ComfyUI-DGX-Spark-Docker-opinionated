@@ -8,7 +8,7 @@ subtitles from the script itself, so their timing is exact and the text needs
 no speech recognition.
 
 Word Timestamps to Subtitles is for audio that has no script: it groups the
-per-word timings Qwen3-ASR's forced aligner prints into subtitle cues. Burn In
+per-word timings Whisper Speech to Text prints into subtitle cues. Burn In
 Subtitles draws cues onto video frames and Save Subtitles writes an .srt file.
 Subtitles travel between nodes as SRT text.
 
@@ -228,7 +228,7 @@ class TimestampsToSubtitles:
     RETURN_NAMES = ("subtitles",)
     FUNCTION = "group"
     CATEGORY = "audio/dialogue"
-    DESCRIPTION = "Groups per-word timings from a forced aligner into SRT subtitle cues."
+    DESCRIPTION = "Groups per-word timings from speech to text into SRT subtitle cues."
 
     def group(self, timestamps, max_characters, max_seconds, max_gap_seconds):
         words = []
@@ -237,8 +237,8 @@ class TimestampsToSubtitles:
             if match and match.group(3):
                 words.append((float(match.group(1)), float(match.group(2)), match.group(3)))
         if not words:
-            raise ValueError("No word timings found. Connect a Qwen3 Forced Aligner Config to the ASR "
-                             "node; without it the transcriber prints no timestamps.")
+            raise ValueError("No word timings found. Connect the timestamps output of Whisper Speech to Text, "
+                             "not its text output.")
         cues, text, start, end = [], "", None, None
         for w_start, w_end, word in words:
             joiner = "" if not text or (_wide(word) and _wide(text[-1])) else " "

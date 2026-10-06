@@ -2,8 +2,8 @@
 
 Whisper Speech to Text runs OpenAI's Whisper large-v3 through transformers and
 prints one `[start - end] word` line per word, the format Word Timestamps to
-Subtitles reads. Whisper times words in all of its 100 languages; Qwen3-ASR's
-forced aligner covers eleven, and Finnish is not one of them.
+Subtitles reads. Whisper times words in all of its 100 languages, Finnish
+included.
 
 Chatterbox Speech runs either Resemble AI's multilingual Chatterbox or
 Finnish-NLP's Finnish fine-tune of it. The fine-tune is run the way its model

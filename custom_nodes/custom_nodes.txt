@@ -66,6 +66,3 @@ https://github.com/filliptm/ComfyUI_Fill-ChatterBox.git
 
 # Qwen3-TTS: voices described in words, cloned or preset (GPL-3.0)
 https://github.com/1038lab/ComfyUI-QwenTTS.git
-
-# Qwen3-ASR speech to text with word timestamps, for subtitles (MIT)
-https://github.com/kaushiknishchay/ComfyUI-Qwen3-ASR.git

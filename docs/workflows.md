@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 90 profiles. The 85 in the category tables below
+`asset-profiles.json` defines 89 profiles. The 84 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining 5 are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 85 have an automated smoke lane. Three do not, because their
+Most of those 84 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -544,7 +544,6 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | Speech in a sampled voice, 23 languages, Finnish from a Finnish fine-tune | `chatterbox-multilingual` | Text to Speech (Chatterbox Multilingual) | Ours | 5.3 GB | 15 s |
 | Two people in a picture speak a script, subtitles included | `talking-characters` | Talking Characters with Subtitles | Ours | 55 GB | 571 s |
 | Subtitles for any video in 100 languages, Finnish included: transcript, .srt and a burned-in copy | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
-| Same with Qwen3-ASR, whose word timing covers 11 languages | `qwen3-asr-subtitles` | Subtitles from Speech (Qwen3-ASR) | Ours | 6.5 GB | 50 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
 does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
@@ -584,25 +583,23 @@ English. Join Dialogue stops the run when a clip comes back empty or far longer
 than its line, before the video model is asked for a runaway length.
 Recordings of real voices can replace the designed ones with one switch.
 
-Subtitles from Speech comes in two builds for audio without a script. Whisper
-large-v3 transcribes and times every word in its 100 languages; in the
+Subtitles from Speech is for audio without a script. Whisper large-v3
+transcribes and times every word in its 100 languages; in the
 [BuzzASR](https://arxiv.org/abs/2609.09554) comparison it transcribed Finnish
-with 1.89 % character errors. Qwen3-ASR transcribes 30 languages, but its
-forced aligner times only 11: Chinese, English, Cantonese, French, German,
-Italian, Japanese, Korean, Portuguese, Russian and Spanish. In both, the Word
-Timestamps to Subtitles node groups the words into lines. Burn In Subtitles
-draws with DejaVu Sans, so burned-in text covers Latin, Greek and Cyrillic;
-Chinese, Japanese and other scripts need the .srt.
+with 1.89 % character errors. The Word Timestamps to Subtitles node groups the
+words into lines. Burn In Subtitles draws with DejaVu Sans, so burned-in text
+covers Latin, Greek and Cyrillic; Chinese, Japanese and other scripts need the
+.srt.
 
-These add three node packs: filliptm's ComfyUI_Fill-ChatterBox (MIT), for its
-Chatterbox code, 1038lab's ComfyUI-QwenTTS (GPL-3.0) and kaushiknishchay's
-ComfyUI-Qwen3-ASR (MIT). QwenTTS and the template pack's two speech nodes
-download a missing model on first use, so read the startup log for the
-profile's downloads rather than trusting a passing lane. ComfyUI-Qwen3-ASR
-installs `qwen-asr`, which pins `accelerate` to 1.12 and adds gradio and flask
-to the venv; transformers stays at 4.57. TTS Audio Suite, OmniVoice and
-1038lab's QwenASR were left out because they need transformers 5, which
-VibeVoice-ComfyUI rules out.
+These add two node packs: filliptm's ComfyUI_Fill-ChatterBox (MIT), for its
+Chatterbox code, and 1038lab's ComfyUI-QwenTTS (GPL-3.0). QwenTTS and the
+template pack's two speech nodes download a missing model on first use, so read
+the startup log for the profile's downloads rather than trusting a passing lane.
+TTS Audio Suite, OmniVoice and 1038lab's QwenASR were left out because they need
+transformers 5, which VibeVoice-ComfyUI rules out. kaushiknishchay's
+ComfyUI-Qwen3-ASR was tried and dropped: through its Japanese tokenizer, nagisa,
+it loads the DyNet library, and with DyNet in the process core's Paint Mesh
+node crashes ComfyUI.
 
 `ltx-2.3-tts-prompted-voice` adds no new weights. It reuses the
 `ltx-2.3-t2v-i2v-two-stage-distilled` base and reads the audio VAE out of that
