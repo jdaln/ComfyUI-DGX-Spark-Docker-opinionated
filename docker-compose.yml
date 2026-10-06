@@ -7,6 +7,8 @@ services:
     ulimits:
       memlock: -1
       stack: 67108864
+      # no core dumps: one crash of a loaded ComfyUI writes 20 to 30 GB
+      core: 0
     ports:
       - "${COMFY_HOST_BIND:-127.0.0.1}:${COMFY_PORT:-8188}:${COMFY_PORT:-8188}"
     volumes:
