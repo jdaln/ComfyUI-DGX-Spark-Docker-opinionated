@@ -232,6 +232,50 @@ def check_catalogue(root, manifest, problems, warnings):
     return len(verified_distinct), len(pending_distinct)
 
 
+TEMPLATE_PACK = "ComfyUI-DGX-Spark-Templates"
+
+
+def check_template_categories(root, problems, warnings):
+    """The template browser lists templates under the categories in the pack's
+    template_categories.json, labelled from its locales/en/main.json. A template
+    no category names gets a pack entry of its own, and a name that matches no
+    file drops out without a word, so both are checked here."""
+    pack = os.path.join(root, "custom_nodes", TEMPLATE_PACK)
+    path = os.path.join(pack, "template_categories.json")
+    if not os.path.exists(path):
+        fail(problems, f"{os.path.relpath(path, root)} is missing")
+        return
+    with open(path, encoding="utf-8") as handle:
+        categories = json.load(handle)
+    labels = {}
+    labels_path = os.path.join(pack, "locales", "en", "main.json")
+    if os.path.exists(labels_path):
+        with open(labels_path, encoding="utf-8") as handle:
+            labels = json.load(handle).get("templateWorkflows", {}).get("category", {})
+
+    claimed = {}
+    for category, modules in categories.items():
+        if category not in labels:
+            fail(problems, f"template category '{category}' has no label in {os.path.relpath(labels_path, root)}")
+        for module, names in modules.items():
+            # Other packs are only there once the container has cloned them.
+            workflows_dir = os.path.join(root, "custom_nodes", module, "example_workflows")
+            for name in names:
+                claimed.setdefault((module, name), []).append(category)
+                if os.path.isdir(workflows_dir) and not os.path.exists(os.path.join(workflows_dir, name + ".json")):
+                    fail(problems, f"template category '{category}' lists {module}/{name}, which does not exist")
+    for (module, name), owners in claimed.items():
+        if len(owners) > 1:
+            fail(problems, f"{module}/{name} is in more than one template category: {', '.join(owners)}")
+
+    for template in sorted(glob.glob(os.path.join(pack, "example_workflows", "*.json"))):
+        label = os.path.relpath(template, root)
+        if (TEMPLATE_PACK, os.path.splitext(os.path.basename(template))[0]) not in claimed:
+            fail(problems, f"{label} is in no template category")
+        if not os.path.exists(os.path.splitext(template)[0] + ".jpg"):
+            warn(warnings, f"{label} has no .jpg thumbnail")
+
+
 def check_blueprint_templates(root, problems, warnings):
     """A template that wraps a blueprint carries a copy of it, so a ComfyUI bump
     that changes the blueprint leaves the copy stale until it is rebuilt."""
@@ -552,6 +596,7 @@ def main():
             fail(problems, f"lane '{profile}': {node_type} loads '{ref}', which the profile does not provision")
 
     catalogue_verified, catalogue_pending = check_catalogue(root, manifest, problems, warnings)
+    check_template_categories(root, problems, warnings)
     check_blueprint_templates(root, problems, warnings)
 
     print(f"{len(manifest.get('profiles', {}))} profiles, {len(manifest.get('groups', {}))} groups")

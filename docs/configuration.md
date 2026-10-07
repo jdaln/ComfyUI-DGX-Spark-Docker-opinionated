@@ -30,6 +30,7 @@ the existing container and is a common source of "my change did nothing".
 | `COMFY_NODE_BLACKLIST` | Load every custom node directory except these. | empty |
 | `COMFY_CUSTOM_NODE_MODULES_ALLOWLIST` | Gate for third-party example workflows. Any value other than `false`, `0`, `no`, `off` or empty means on. | `true` |
 | `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` | Node directories whose example workflows stay visible and get their assets downloaded. | `ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle,ComfyUI-DGX-Spark-Templates` |
+| `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_CATEGORIES` | JSON file that groups example workflows by type in the template browser. Empty lists them by node directory. | `/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/template_categories.json` |
 | `COMFY_ASSET_MANIFEST_PATH` | Path to the profile manifest inside the container. | `/workspace/asset-profiles.json` |
 | `WAN_PREPROCESS_VITPOSE_URL` | Override the download URL for `vitpose-l-wholebody.onnx`. | built in |
 | `WAN_PREPROCESS_YOLO_URL` | Override the download URL for `yolov10m.onnx`. | built in |
@@ -103,7 +104,7 @@ examples reference, costs disk.
 - `COMFY_CUSTOM_NODE_MODULES_ALLOWLIST` turns the filtering on and off. It is a
   gate, not a list.
 - `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` is the list of node directory
-  names that stay visible. The default is five packs, including this repo's own
+  names that stay visible. The default is six packs, including this repo's own
   `ComfyUI-DGX-Spark-Templates`.
 
 Narrow the set:
@@ -117,6 +118,22 @@ Hide every third-party example workflow:
 ```dotenv
 COMFY_CUSTOM_NODE_MODULES_ALLOWLIST=false
 ```
+
+The template browser lists example workflows under Extensions.
+`COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_CATEGORIES` names a JSON file that
+regroups them by type. The default, `template_categories.json` in
+`ComfyUI-DGX-Spark-Templates`, maps each category to the node directories and
+workflow names it holds; the same pack's `locales/en/main.json` gives each
+category its label. A workflow no category names stays under its node
+directory. The server reads the file on every page load, so an edit shows
+after a reload. Set it empty to list everything by node directory:
+
+```dotenv
+COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_CATEGORIES=
+```
+
+The grouping is a change in the `dgx-state` fork, not a startup patch, so
+upstream ComfyUI ignores the variable and lists workflows by node directory.
 
 Upstream ComfyUI does not read either variable. The entrypoint applies
 `patches/comfyui/custom-node-example-workflow-gating.patch` to the mounted

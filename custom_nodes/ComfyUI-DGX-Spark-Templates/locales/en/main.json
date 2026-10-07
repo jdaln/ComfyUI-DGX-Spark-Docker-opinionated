@@ -1,0 +1,14 @@
+{
+  "templateWorkflows": {
+    "category": {
+      "1-image": "Image",
+      "2-image-editing": "Image editing",
+      "3-video": "Video",
+      "4-video-editing": "Video editing",
+      "5-speech": "Speech",
+      "6-music": "Music",
+      "7-3d": "3D",
+      "8-utility": "Utility"
+    }
+  }
+}

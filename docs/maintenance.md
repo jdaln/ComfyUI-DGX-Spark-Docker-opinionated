@@ -84,7 +84,8 @@ a fork rather than upstream because the branch carries changes ahead of a
 release:
 
 - The template browser: example workflows gated by
-  `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`.
+  `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST` and grouped by type through
+  `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_CATEGORIES`.
 - Blueprint overrides for this repo's profiles, the bundled-template smoke
   harness, two fixes to the Ideogram 4 blueprint, and one to the LTX 2.0 Depth
   to Video blueprint's wiring.

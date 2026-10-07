@@ -1,0 +1,100 @@
+{
+  "1-image": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Text to Image (Ideogram v4 NVFP4)",
+      "Text to Image (Ideogram v4)",
+      "Text to Image (Krea 2 RAW)",
+      "Text to Image (Krea 2 Turbo NVFP4)",
+      "Text to Image (Krea 2 Turbo Style LoRA)",
+      "Text to Image (Qwen-Image)"
+    ]
+  },
+  "2-image-editing": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Image Edit (Mage-Flow Turbo)",
+      "Image Edit (Mage-Flow)",
+      "Image Edit (Qwen 2511)",
+      "Image Inpainting (Qwen-image)"
+    ]
+  },
+  "3-video": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Audio to Video (LTX-2.5)",
+      "Canny to Video (LTX 2.0)",
+      "Context Segments (MiniMax H3 Easy)",
+      "Context Segments Refine (MiniMax H3 Easy)",
+      "Depth to Video (ltx 2.0)",
+      "Image to Video (LTX-2.3)",
+      "Image to Video (MiniMax H3 Turbo)",
+      "Image to Video (MiniMax H3)",
+      "LTX Director 2 (LTX-2.5)",
+      "Motion Track to Video (LTX-2.3)",
+      "Multishot ShotPlan (LTX-2.3)",
+      "Pose to Video (LTX 2.0)",
+      "Reference Sheet to Video (LTX-2.5 Ingredients)",
+      "Reference to Video (MiniMax H3)",
+      "Shot Sequencer (LTX-2.5)",
+      "Talking Video (InfiniteTalk Two Speakers)",
+      "Text to Video (LTX-2.3)",
+      "Text to Video (LTX-2.5 NVFP4)",
+      "Text to Video (MiniMax H3 VDN 8-step)",
+      "Text to Video (MiniMax H3)"
+    ],
+    "ComfyUI-KJNodes": [
+      "leapfusion_hunyuuanvideo_i2v_native_testing"
+    ],
+    "ComfyUI-WanAnimatePreprocess": [
+      "WanAnimate_native_example_01"
+    ]
+  },
+  "4-video-editing": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Add Sound to Video (LTX-2.5 Foley)",
+      "Remove People from Video (LTX-2.5 Clean Plate)",
+      "Video Alpha Matte (LTX-2.5 Alpha Gen)",
+      "Video Dubbing (LTX-2.3 Dub-It)",
+      "Video Edit Anything (LTX-2.3)",
+      "Video Head Swap (LTX-2.3)",
+      "Video Inpainting (LTX-2.3 Masked)",
+      "Video Inpainting (Wan2.1 VACE)",
+      "Video Refine (MiniMax H3 Easy)",
+      "Video SDR to HDR (LTX-2.3)",
+      "Video Style Swap (LTX-2.3 Anime2Real)",
+      "Video Upscale (LTX-2.5 Latent 2x)"
+    ]
+  },
+  "5-speech": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Subtitles from Speech (Whisper large-v3)",
+      "Talking Characters with Subtitles",
+      "Text to Speech (Chatterbox Multilingual)",
+      "Text to Speech (LTX-2.3 Prompted Voice)",
+      "Text to Speech (Multi-Character Conversation)",
+      "Text to Speech (Prompted Voices to Conversation)",
+      "Text to Speech (Qwen3-TTS Voice Design)"
+    ]
+  },
+  "6-music": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Audio to MIDI (MuScriptor)",
+      "Lyrics Transcription (HeartMuLa)",
+      "Text to Audio (ACE-Step 1.5)",
+      "Text to Music (HeartMuLa 3B)",
+      "Text to Music (YuE2 Best of 8)",
+      "Text to Music (YuE2 bf16)"
+    ]
+  },
+  "7-3d": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "3D Figurine for Printing (Pixal3D)",
+      "3D Game Asset (Pixal3D)",
+      "Image to Model (Hunyuan3d 2.1)"
+    ]
+  },
+  "8-utility": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Image Depth Estimation (Lotus Depth)",
+      "Remove Background (Lucida)"
+    ]
+  }
+}

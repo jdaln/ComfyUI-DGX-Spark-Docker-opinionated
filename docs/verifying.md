@@ -203,11 +203,14 @@ companion API graph stay in the matrix as `todo` or `blocked`.
 2. Put the template JSON in
    `custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/<Display Name>.json`
    with `properties.models` on every loader node, giving `name`, `url` and
-   `directory`. A sample input no profile downloads goes in the pack's
-   `example_inputs/`, which the pack copies into `input/` at startup. To make a
-   ComfyUI blueprint open from the template browser, add it to
-   `scripts/build_blueprint_templates.py` and run that script rather than
-   editing the JSON by hand.
+   `directory`. List it under its type in the pack's `template_categories.json`,
+   which the validator checks, and put a 400 px square JPEG beside it as
+   `<Display Name>.jpg` for the template browser. The existing ones are drawn
+   with Z-Image Turbo in one flat style, the background colour set by category.
+   A sample input no profile downloads goes in the pack's `example_inputs/`,
+   which the pack copies into `input/` at startup. To make a ComfyUI blueprint
+   open from the template browser, add it to `scripts/build_blueprint_templates.py`
+   and run that script rather than editing the JSON by hand.
 3. Add a lane to `scripts/smoke/lanes.json`. Skip this only if the workflow
    genuinely needs a user-supplied file or its weights are unpublished; record
    the latter in `scripts/smoke/pending_models.json`.

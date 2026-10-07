@@ -37,8 +37,8 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | Type | Where to find it |
    | --- | --- |
    | **Template** | Workflow → Browse Templates, search the name |
-   | **Ours** | Browse Templates → `ComfyUI-DGX-Spark-Templates`. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
-   | **Node example** | Browse Templates → the custom node's section |
+   | **Ours** | Browse Templates → Extensions, under its type: Image, Image editing, Video, Video editing, Speech, Music, 3D or Utility. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
+   | **Node example** | Browse Templates → Extensions; the ones verified here are under their type, the rest under the custom node's name |
 
 Krea 2, Ideogram 4, Gemma 3, MuScriptor and six LTX LoRAs are gated on Hugging Face. Accept
 the licence on the model page and set `HF_TOKEN` in `.env`, or those profiles

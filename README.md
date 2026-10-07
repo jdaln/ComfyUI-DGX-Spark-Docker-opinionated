@@ -20,7 +20,8 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
   HeartMuLa, VibeVoice, YuE2, MuScriptor, the LTX-2.3 task LoRAs, LTX-2.5
   audio to video and IC-LoRA edits, speech with subtitles, and 3D models for
-  games and printing.
+  games and printing. The template browser lists them under Extensions by
+  type, each with a thumbnail.
 
 ## Requirements
 
