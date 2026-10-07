@@ -25,33 +25,38 @@
   "qwen-image-inpaint-lightning-4step": [
    "qwen-image-core-assets",
    "qwen-image-inpaint-controlnet",
-   "qwen-image-lightning-4step"
+   "qwen-image-lightning-4step",
+   "qwen-image-inpaint-input"
   ],
   "qwen-image-2512-t2i-lightning-4step": [
    "qwen-image-2512-core-assets",
    "qwen-image-2512-lightning-4step"
   ],
   "qwen-image-edit-2511-core": [
-   "qwen-image-edit-2511-core-assets"
+   "qwen-image-edit-2511-core-assets",
+   "qwen-image-edit-2511-inputs"
   ],
   "qwen-image-layered-core": [
    "qwen-image-layered-core-assets"
   ],
   "lotus-depth-support": [
-   "lotus-depth-support-assets"
+   "lotus-depth-support-assets",
+   "lotus-depth-input"
   ],
   "ace-step-1.5-core": [
    "ace-step-1.5-core-assets"
   ],
   "hunyuan3d-2.1-core": [
-   "hunyuan3d-2.1-core-assets"
+   "hunyuan3d-2.1-core-assets",
+   "birefnet-background-removal"
   ],
   "leapfusion-hunyuanvideo-i2v": [
    "leapfusion-hunyuanvideo-i2v-assets"
   ],
   "wan2.1-vace-bundled": [
    "wan2.1-vace-core-assets",
-   "sam3-segmentation"
+   "sam3-segmentation",
+   "wan2.1-vace-inpaint-inputs"
   ],
   "ltx-2.0-t2v-distilled": [
    "ltx-gemma3-snapshot-text-encoder",
@@ -83,24 +88,30 @@
    "ltx-2-detailer-lora"
   ],
   "ltx-2.0-iclora-all-distilled": [
-   "ltx-gemma3-snapshot-text-encoder",
-   "ltx-2-distilled-checkpoint",
-   "ltx-2-upscaler",
-   "ltx-2-iclora-all"
-  ],
-  "ltx-2.0-iclora-all-distilled-ref0.5": [
-   "ltx-gemma3-snapshot-text-encoder",
-   "ltx-2-distilled-checkpoint",
    "ltx-2-upscaler",
    "ltx-2-iclora-all",
-   "ltx-2-iclora-union-ref0.5"
+   "ltx-2.0-canny-inputs",
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-distilled-lora"
+  ],
+  "ltx-2.0-iclora-all-distilled-ref0.5": [
+   "ltx-2-upscaler",
+   "ltx-2-iclora-all",
+   "ltx-2.0-depth-inputs",
+   "ltx-gemma3-comfy-text-encoder",
+   "ltx-2-dev-checkpoint",
+   "ltx-2-distilled-lora",
+   "lotus-depth-support-assets"
   ],
   "ltx-2.0-iclora-all-bundled": [
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2-dev-checkpoint",
    "ltx-2-distilled-lora",
    "ltx-2-upscaler",
-   "ltx-2-iclora-all"
+   "ltx-2-iclora-all",
+   "sdpose-wholebody",
+   "ltx-2.0-pose-input"
   ],
   "ltx-2.3-t2v-i2v-two-stage-distilled": [
    "ltx-gemma3-comfy-text-encoder",
@@ -111,7 +122,9 @@
   "ltx-2.3-t2v-i2v-single-stage-distilled-full": [
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2.3-dev-checkpoint",
-   "ltx-2.3-distilled-lora"
+   "ltx-2.3-distilled-lora",
+   "ltx-2.3-i2v-input",
+   "ltx-2.3-upscaler"
   ],
   "ltx-2.3-iclora-union-control-distilled": [
    "ltx-gemma3-comfy-text-encoder",
@@ -453,13 +466,26 @@
   ],
   "pixal3d-trellis2": [
    "pixal3d-common",
+   "birefnet-background-removal",
    "pixal3d-trellis2-models",
    "pixal3d-trellis2-input"
   ],
   "pixal3d-multiview": [
    "pixal3d-common",
+   "birefnet-background-removal",
    "pixal3d-multiview-model",
    "pixal3d-multiview-input"
+  ],
+  "pixal3d-game-asset": [
+   "pixal3d-common",
+   "birefnet-background-removal",
+   "pixal3d-trellis2-models",
+   "pixal3d-trellis2-input"
+  ],
+  "pixal3d-figurine": [
+   "pixal3d-common",
+   "birefnet-background-removal",
+   "pixal3d-trellis2-models"
   ],
   "hunyuan3d-2.0-mv-turbo": [
    "hunyuan3d-2.0-mv-turbo-model",
@@ -1912,7 +1938,9 @@
     "dest": "/workspace/ComfyUI/models/clip_vision/dino_v3_L_naf_fp32.safetensors",
     "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/main/clip_vision/dino_v3_L_naf_fp32.safetensors",
     "label": "DINOv3 L image encoder"
-   },
+   }
+  ],
+  "birefnet-background-removal": [
    {
     "dest": "/workspace/ComfyUI/models/background_removal/birefnet.safetensors",
     "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/main/background_removal/birefnet.safetensors",
@@ -2017,6 +2045,89 @@
     "dest": "/workspace/ComfyUI/input/grainy_perfume_shot_crf32.mp4",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/grainy_perfume_shot_crf32.mp4",
     "label": "SeedVR2 sample clip"
+   }
+  ],
+  "qwen-image-edit-2511-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/leather_sofa.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/leather_sofa.png",
+    "label": "Qwen 2511 sample sofa"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/texture_fur.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/texture_fur.png",
+    "label": "Qwen 2511 sample fur texture"
+   }
+  ],
+  "qwen-image-inpaint-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/image_qwen_image_instantx_inpainting_controlnet_input_image.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/image_qwen_image_instantx_inpainting_controlnet_input_image.png",
+    "label": "Qwen inpainting sample with its mask"
+   }
+  ],
+  "wan2.1-vace-inpaint-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/video_wan_vace_inpainting_input_video.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/video_wan_vace_inpainting_input_video.mp4",
+    "label": "VACE inpainting sample video"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
+    "label": "VACE inpainting reference dog"
+   }
+  ],
+  "ltx-2.0-canny-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/squirrel_in_flower_garden.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/squirrel_in_flower_garden.mp4",
+    "label": "LTX 2.0 canny sample video"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/ltx_2_canny_1st_frame.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/ltx_2_canny_1st_frame.png",
+    "label": "LTX 2.0 canny sample first frame"
+   }
+  ],
+  "ltx-2.0-depth-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/minimalist_sky_view_lounge.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/minimalist_sky_view_lounge.mp4",
+    "label": "LTX 2.0 depth sample video"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/minimalist_sky_view_lounge.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/minimalist_sky_view_lounge.png",
+    "label": "LTX 2.0 depth sample first frame"
+   }
+  ],
+  "ltx-2.0-pose-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/dancer_field_pose.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/dancer_field_pose.mp4",
+    "label": "LTX 2.0 pose sample video"
+   }
+  ],
+  "sdpose-wholebody": [
+   {
+    "dest": "/workspace/ComfyUI/models/checkpoints/sdpose_wholebody_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SDPose/resolve/main/checkpoints/sdpose_wholebody_fp16.safetensors",
+    "label": "SDPose whole-body keypoints"
+   }
+  ],
+  "ltx-2.3-i2v-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/egyptian_queen.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/egyptian_queen.png",
+    "label": "LTX-2.3 image to video sample"
+   }
+  ],
+  "lotus-depth-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/image_lotus_depth_v1_1_input_image.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/image_lotus_depth_v1_1_input_image.png",
+    "label": "Lotus depth sample"
    }
   ]
  }

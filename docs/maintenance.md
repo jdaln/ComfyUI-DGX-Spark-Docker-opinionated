@@ -78,15 +78,22 @@ lands and the pack is pulled.
 
 ## ComfyUI submodule
 
-The submodule tracks `jdaln/ComfyUI` branch `dgx-state`, currently at `c2683d2`:
-upstream master as of 2026-10-03 (v0.38.0 plus 32 commits) with the DGX commits
-rebased on top. It is a fork rather than upstream because the branch carries
-changes ahead of a release.
+The submodule tracks `jdaln/ComfyUI` branch `dgx-state`: upstream master as of
+2026-10-03 (v0.38.0 plus 32 commits) with the DGX commits rebased on top. It is
+a fork rather than upstream because the branch carries changes ahead of a
+release:
 
-One of them is an upstream fix that is not merged yet:
-[PR #14804](https://github.com/Comfy-Org/ComfyUI/pull/14804), which lets
-`LTXVAudioVAEEncode` run under `--bf16-vae`. At the next rebase, drop it if
-upstream has merged it or fixed the bug another way.
+- The template browser: example workflows gated by
+  `COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST`.
+- Blueprint overrides for this repo's profiles, the bundled-template smoke
+  harness, two fixes to the Ideogram 4 blueprint, and one to the LTX 2.0 Depth
+  to Video blueprint's wiring.
+- [PR #14804](https://github.com/Comfy-Org/ComfyUI/pull/14804), an upstream fix
+  that is not merged yet, which lets `LTXVAudioVAEEncode` run under
+  `--bf16-vae`. At the next rebase, drop it if upstream has merged it or fixed
+  the bug another way.
+- Float casts in the texture bake and the GLB export, so the Pixal3D templates
+  run under `--bf16-vae`. Upstream has no fix for either yet.
 
 ```bash
 cd ComfyUI
@@ -100,6 +107,9 @@ After a bump:
 
 1. `python3 scripts/smoke/validate_manifest.py`. It harvests every node id the
    pinned checkout registers, so a node that moved or was renamed shows up here.
+   It also fails when a blueprint changed under one of the templates that wrap
+   it; rebuild them with `python3 scripts/build_blueprint_templates.py` and
+   re-run their lanes.
 2. `docker compose build --no-cache && docker compose up -d`, then read the log
    for patches that no longer apply, for custom nodes that fail to import, and
    for the `cpu-purge:` line described under [PyTorch pin](#pytorch-pin).

@@ -23,7 +23,7 @@ Prefer profiles. Use them for anything you want to be able to reproduce or test.
 
 ## Asset profiles
 
-A profile is a named set of file groups in `asset-profiles.json`. There are 89.
+A profile is a named set of file groups in `asset-profiles.json`. There are 91.
 Each entry is a direct download, a symlink to a file another group provides, or
 a whole Hugging Face repo snapshot. Groups are shared, so two profiles that use
 the same text encoder download it once.
@@ -59,8 +59,11 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 45
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 60
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
+The 13 that wrap a ComfyUI blueprint are the exception: they carry no download
+links, so their models come only with their profiles, as they did when the
+blueprint was the only copy.
 A bare Hugging Face repo link anywhere in a template file is enough for the
 resolver to match a loader's filename against that repo.
 

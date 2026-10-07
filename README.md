@@ -14,12 +14,13 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   than compiling them on every machine.
 - **33 custom node packs**, cloned at startup from
   [`custom_nodes/custom_nodes.txt`](custom_nodes/custom_nodes.txt).
-- **89 asset profiles.** Name one in `.env` and the container downloads every
+- **91 asset profiles.** Name one in `.env` and the container downloads every
   model that workflow needs before it starts.
-- **45 bundled templates**, for models ComfyUI ships no template for and for
+- **60 bundled templates**, for models ComfyUI ships no template for and for
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
   HeartMuLa, VibeVoice, YuE2, MuScriptor, the LTX-2.3 task LoRAs, LTX-2.5
-  audio to video and IC-LoRA edits, and speech with subtitles.
+  audio to video and IC-LoRA edits, speech with subtitles, and 3D models for
+  games and printing.
 
 ## Requirements
 
@@ -150,12 +151,12 @@ from
 | `entrypoint.sh` | runs on every start: venv, deps, custom nodes, patches, asset bootstrap |
 | `.env.example` | template for `.env` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions |
-| `asset-profiles.json` | the 89 profiles and the files each one downloads |
+| `asset-profiles.json` | the 91 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |
 | `patches/` | startup patches applied to ComfyUI and to cloned node packs |
 | `custom_nodes/custom_nodes.txt` | the list of node repositories to clone |
-| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 45 templates this repo bundles |
+| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 60 templates this repo bundles |
 | `DGX-Spark-WheelsBuilder/` | builds and exports the aarch64 wheels the image consumes |
 | `models-cutter/` | splits a monolithic `.safetensors` into ComfyUI's expected files |
 | `ComfyUI/` | submodule, `jdaln/ComfyUI` branch `dgx-state` |

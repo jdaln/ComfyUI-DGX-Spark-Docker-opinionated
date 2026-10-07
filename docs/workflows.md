@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 89 profiles. The 88 in the category tables below
+`asset-profiles.json` defines 91 profiles. The 90 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 88 have an automated smoke lane. Three do not, because their
+Most of those 90 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -37,8 +37,7 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | Type | Where to find it |
    | --- | --- |
    | **Template** | Workflow → Browse Templates, search the name |
-   | **Blueprint** | the node search box; they are subgraph blueprints |
-   | **Ours** | Browse Templates → `ComfyUI-DGX-Spark-Templates` |
+   | **Ours** | Browse Templates → `ComfyUI-DGX-Spark-Templates`. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
    | **Node example** | Browse Templates → the custom node's section |
 
 Krea 2, Ideogram 4, Gemma 3, MuScriptor and six LTX LoRAs are gated on Hugging Face. Accept
@@ -56,9 +55,9 @@ download nothing. See [models.md](models.md) for the current gated list.
 | Same, NVFP4 build; smaller and faster on Blackwell | `krea-2-turbo-nvfp4` | Text to Image (Krea 2 Turbo NVFP4) | Ours | 12 GB | 25 s |
 | Krea 2 with nine style LoRAs (ink wash, retro anime, watercolour) | `krea-2-turbo-styleloras` | Text to Image (Krea 2 Turbo Style LoRA) | Ours | 21 GB | 35 s |
 | Krea 2 base model, full 52-step sampling; best for LoRA training and variety | `krea-2-raw` | Text to Image (Krea 2 RAW) | Ours | 17 GB | 90 s |
-| Qwen-Image, 8-step Lightning LoRA | `qwen-image-t2i-lightning-8step` | Text to Image (Qwen-Image) | Blueprint | 30 GB | 115 s |
+| Qwen-Image, 8-step Lightning LoRA | `qwen-image-t2i-lightning-8step` | Text to Image (Qwen-Image) | Ours | 30 GB | 105 s |
 | Qwen-Image 2512, 4-step Lightning LoRA | `qwen-image-2512-t2i-lightning-4step` | `image_qwen_Image_2512` | Template | 30 GB | 230 s |
-| Ideogram 4; strongest text rendering in images | `ideogram-4` | Text to Image (Ideogram v4) | Blueprint | 27 GB | 50 s |
+| Ideogram 4; strongest text rendering in images | `ideogram-4` | Text to Image (Ideogram v4) | Ours | 27 GB | 60 s |
 | Same, NVFP4 build | `ideogram-4-nvfp4` | Text to Image (Ideogram v4 NVFP4) | Ours | 20 GB | 70 s |
 
 Upstream ships the Ideogram blueprint with an empty prompt, and Ideogram answers
@@ -72,8 +71,8 @@ That template loads the same files and works as well.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Instruction-driven edits ("make it night", object swaps) | `qwen-image-edit-2511-core` | Image Edit (Qwen 2511) | Blueprint | 47 GB | 275 s |
-| Inpainting and outpainting with a mask | `qwen-image-inpaint-lightning-4step` | Image Inpainting (Qwen-image) | Blueprint | 34 GB | 30 s |
+| Instruction-driven edits ("make it night", object swaps) | `qwen-image-edit-2511-core` | Image Edit (Qwen 2511) | Ours | 47 GB | 375 s |
+| Inpainting and outpainting with a mask | `qwen-image-inpaint-lightning-4step` | Image Inpainting (Qwen-image) | Ours | 34 GB | 30 s |
 | Split an image into editable layers | `qwen-image-layered-core` | `image_qwen_image_layered` | Template | 47 GB | 65 s |
 | Compose from a control image (canny, depth, pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 80 s |
 | Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 275 s |
@@ -137,7 +136,7 @@ Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, 14B | `wan2.2-t2v-bundled` | `video_wan2_2_14B_t2v` | Template | 37 GB | 10 min |
 | Animate a still image, 14B | `wan2.2-i2v-bundled` | `video_wan2_2_14B_i2v` | Template | 37 GB | 10 min |
-| Replace or remove things inside a video | `wan2.1-vace-bundled` | Video Inpainting (Wan2.1 VACE) | Blueprint | 41 GB | 5 min |
+| Replace or remove things inside a video | `wan2.1-vace-bundled` | Video Inpainting (Wan2.1 VACE) | Ours | 41 GB | 265 s |
 | Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 5 s |
 | The person in a video replaced by a character from one picture | `scail-2-int8` | `video_wan21_scail2_character_replacement_int8` | Template | 29 GB | 383 s |
 | A character picture moved by a reference video, distilled | `wan-animate-2-distilled` | `video_wan_animate2_distilled` | Template | 25 GB | 396 s |
@@ -377,16 +376,27 @@ an hour and do not run anything else while it works.
 | Text to video, full dev checkpoint | `ltx-2.0-t2v-full` | `video_ltx2_t2v` | Template | 71 GB | 165 s |
 | Image to video, full dev checkpoint | `ltx-2.0-i2v-full` | `video_ltx2_i2v` | Template | 72 GB | 165 s |
 | Refine an existing video (detailer LoRA) | `ltx-2.0-v2v-detailer` | `video_ltx2_i2v_lora` | Template | 74 GB | 6 min |
-| Video guided by canny edges | `ltx-2.0-iclora-all-distilled` | Canny to Video (LTX 2.0) | Blueprint | 66 GB | 6 min |
-| Video guided by a depth map | `ltx-2.0-iclora-all-distilled-ref0.5` | Depth to Video (ltx 2.0) | Blueprint | 66 GB | 5 min |
-| Video guided by a pose sequence | `ltx-2.0-iclora-all-bundled` | Pose to Video (LTX 2.0) | Blueprint | 59 GB | 135 s |
+| Video guided by canny edges | `ltx-2.0-iclora-all-distilled` | Canny to Video (LTX 2.0) | Ours | 59 GB | 255 s |
+| Video guided by a depth map | `ltx-2.0-iclora-all-distilled-ref0.5` | Depth to Video (ltx 2.0) | Ours | 61 GB | 275 s |
+| Video guided by a pose sequence | `ltx-2.0-iclora-all-bundled` | Pose to Video (LTX 2.0) | Ours | 61 GB | 300 s |
+
+The three control templates take a source video and a first frame. Canny and
+Pose draw their control from the video first, edges with core's Canny node and
+poses with SDPose, whose 1.8 GB model the pose profile downloads; Depth
+estimates depth inside its blueprint with Lotus. Upstream's Depth to Video
+blueprint started its first sampling stage from the depth map instead of the
+first frame, which turned the clip into a grey clay render, and passed its
+height setting to the audio VAE loader; the `dgx-state` fork fixes both. The
+Canny and Depth profiles download the dev checkpoint, Gemma encoder and
+distilled LoRA those blueprints load, and no longer the distilled checkpoint,
+second Gemma encoder and union LoRA nothing in them used.
 
 ### LTX 2.3, newest generation, 22B
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Blueprint | 60 GB | 135 s |
-| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Blueprint | 59 GB | 145 s |
+| Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Ours | 60 GB | 135 s |
+| Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Ours | 60 GB | 150 s |
 | Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 270 s |
 | Animate an image along drawn motion tracks | `ltx-2.3-iclora-motion-track-distilled` | Motion Track to Video (LTX-2.3) | Ours | 60 GB | 160 s |
 | SDR video to HDR, saved as EXR frames | `ltx-2.3-iclora-hdr-distilled` | Video SDR to HDR (LTX-2.3) | Ours | 60 GB | 225 s |
@@ -621,7 +631,7 @@ checkpoint.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Text to music and song, with lyrics and style tags | `ace-step-1.5-core` | Text to Audio (ACE-Step 1.5) | Blueprint | 14 GB | 50 s |
+| Text to music and song, with lyrics and style tags | `ace-step-1.5-core` | Text to Audio (ACE-Step 1.5) | Ours | 14 GB | 40 s |
 | Full songs with lyrics and style tags, up to 5 minutes | `heartmula-oss-3b` | Text to Music (HeartMuLa 3B) | Ours | 21 GB | 145 s |
 | Transcribe sung lyrics out of a track [^h] | `heartmula-transcribe` | Lyrics Transcription (HeartMuLa) | Ours | 3 GB | 10 s |
 
@@ -751,12 +761,14 @@ separate repositories and need their own acceptance. The code is MIT.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Turn one image into a textured 3D mesh (`.glb`) | `hunyuan3d-2.1-core` | Image to Model (Hunyuan3d 2.1) | Blueprint | 7 GB | 60 s |
-| Front, side and back views to a 3D model | `hunyuan3d-2.0-mv-turbo` | `3d_hunyuan3d_multiview_to_model_turbo` | Template | 4.9 GB | 35 s |
+| Turn one image into an untextured 3D shape (`.glb`) | `hunyuan3d-2.1-core` | Image to Model (Hunyuan3d 2.1) | Ours | 7.3 GB | 50 s |
+| Front, side and back views to an untextured 3D shape | `hunyuan3d-2.0-mv-turbo` | `3d_hunyuan3d_multiview_to_model_turbo` | Template | 4.9 GB | 35 s |
 | One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | 155 s |
 | A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | 270 s |
+| A game-ready model of about 30,000 triangles with PBR maps | `pixal3d-game-asset` | 3D Game Asset (Pixal3D) | Ours | 15 GB | 140 s |
+| A figurine as one solid piece for 3D printing | `pixal3d-figurine` | 3D Figurine for Printing (Pixal3D) | Ours | 15 GB | 205 s |
 
-Both Pixal3D templates save a model of about 700,000 triangles with PBR
+Core's two Pixal3D templates save a model of about 700,000 triangles with PBR
 textures, about 65 MB, to `output/3d/`. The weights are Comfy-Org's repackaged
 files in [Comfy-Org/Pixal3D](https://huggingface.co/Comfy-Org/Pixal3D), made
 from TencentARC's [Pixal3D](https://github.com/TencentARC/Pixal3D) (MIT). The
@@ -768,6 +780,25 @@ upstream ComfyUI stops at the texture bake and again at the GLB export with
 `Got unsupported ScalarType BFloat16`. See
 [3D export fails on bf16](troubleshooting.md#3d-export-fails-on-bf16).
 
+3D Game Asset and 3D Figurine for Printing are core's TRELLIS.2 template with a
+different finish, on the same weights. Each has its own profile so its lane
+runs on its own. The game asset reduces the mesh to about 30,000 triangles with
+2048 px textures; the normal map is baked from the full-detail mesh, so the
+surface detail survives, and the sample axe comes out at 16 MB. The figurine
+version drops the inner shell that core's remesh leaves inside the model, which
+a slicer would print as a second wall, so the result is one piece. It is not
+fully watertight: about one edge in a thousand still has a gap, mostly at thin
+parts such as a blade, and slicers flag these as errors that most can repair.
+ComfyUI writes `.glb` only; convert to STL in Blender or open the file in a
+slicer that reads glTF. Its sample picture, a knight figurine, ships with the
+template pack.
+
+Image to Model (Hunyuan3d 2.1) is ComfyUI's blueprint of that name with a
+picture loader, background removal and a save around it, so it can be opened
+from the template browser as well as found in the node search. Without the
+background removal, Hunyuan3D models the picture's backdrop as a wall behind
+the object; the profile includes BiRefNet for that, 0.4 GB.
+
 Hunyuan3D 2.1 with PBR textures is not here yet: the native paint port, ComfyUI
 PR #15020, is still open, and the wrapper packs compile CUDA extensions.
 
@@ -775,7 +806,7 @@ PR #15020, is still open, and the wrapper packs compile CUDA extensions.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Blueprint | 2 GB | 15 s |
+| Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Ours | 2 GB | 5 s |
 | Background removal tuned for glass, glow, camouflage, text and print designs | `lucida-background-removal` | Remove Background (Lucida) | Ours | 0.9 GB | 5 s |
 | Smoother motion by frame interpolation (FILM) | `frame-interpolation-film` | `utility_video_frame_interpolation` | Template | 0.1 GB | 111 s |
 | Video upscale and restoration, SeedVR2 3B int8 | `seedvr2-video-upscale` | `utility_seedvr2_3b_int8_upscale_video` | Template | 4.0 GB | 356 s |

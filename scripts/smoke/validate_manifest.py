@@ -19,6 +19,7 @@ Exit status is non-zero when anything fails. It is a static check: it cannot tel
 you that a graph produces a good image, only that it can be provisioned and opened.
 """
 import glob
+import importlib.util
 import json
 import os
 import re
@@ -229,6 +230,20 @@ def check_catalogue(root, manifest, problems, warnings):
                            f"the category tables hold {len(verified_distinct)}")
 
     return len(verified_distinct), len(pending_distinct)
+
+
+def check_blueprint_templates(root, problems, warnings):
+    """A template that wraps a blueprint carries a copy of it, so a ComfyUI bump
+    that changes the blueprint leaves the copy stale until it is rebuilt."""
+    if not os.path.isdir(os.path.join(root, "ComfyUI", "blueprints")):
+        warn(warnings, "ComfyUI/blueprints is missing, so the blueprint templates were not checked")
+        return
+    path = os.path.join(root, "scripts", "build_blueprint_templates.py")
+    spec = importlib.util.spec_from_file_location("build_blueprint_templates", path)
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    for name in builder.stale():
+        fail(problems, f"{name}.json no longer matches its blueprint; run python3 scripts/build_blueprint_templates.py")
 
 
 def profile_files(manifest, profile):
@@ -537,6 +552,7 @@ def main():
             fail(problems, f"lane '{profile}': {node_type} loads '{ref}', which the profile does not provision")
 
     catalogue_verified, catalogue_pending = check_catalogue(root, manifest, problems, warnings)
+    check_blueprint_templates(root, problems, warnings)
 
     print(f"{len(manifest.get('profiles', {}))} profiles, {len(manifest.get('groups', {}))} groups")
     print(f"{len(templates)} bundled templates checked")
