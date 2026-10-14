@@ -18,7 +18,8 @@ Chatterbox or Finnish-NLP's Finnish fine-tune of it.
 quick draft pass and a slow render pass. `text_nodes` turns a dropdown value
 into table cells and pipe-separated lines into lists. `character_nodes` keeps a
 picture and a voice sample together as a named character in input/cast/.
-`page_nodes` lays out Markdown as printable A4 pages and a PDF.
+`page_nodes` lays out Markdown and pictures as printable A4 pages and a PDF,
+which the browser extension in `web/` downloads when the node finishes.
 `speech_text_nodes` cuts text into sentences and writes out numbers in Finnish
 words for speech. `language_model_nodes` runs chat models that core's Generate
 Text does not, such as the Finnish-trained Poro 2, through transformers.
@@ -41,4 +42,6 @@ NODE_CLASS_MAPPINGS = {name: node for module in _MODULES for name, node in modul
 NODE_DISPLAY_NAME_MAPPINGS = {name: title for module in _MODULES
                               for name, title in module.NODE_DISPLAY_NAME_MAPPINGS.items()}
 
-__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
+WEB_DIRECTORY = "./web"
+
+__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]

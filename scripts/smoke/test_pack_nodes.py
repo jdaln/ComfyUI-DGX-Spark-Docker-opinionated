@@ -223,7 +223,7 @@ class Pages(unittest.TestCase):
         self.assertEqual(result[0].size, (2480, 3508))
         images, pdf = pages.save_pages(result, "pages/test", grey=True)
         self.assertEqual(len(images), len(result))
-        with open(os.path.join(WORK, "output", pdf), "rb") as handle:
+        with open(os.path.join(WORK, "output", pdf["subfolder"], pdf["filename"]), "rb") as handle:
             data = handle.read()
         self.assertTrue(data.startswith(b"%PDF-1.4"))
         start = int(re.search(rb"startxref\n(\d+)", data).group(1))
@@ -257,6 +257,31 @@ class Characters(unittest.TestCase):
             with self.assertRaises(ValueError):
                 nodes.character_path(bad, ".png")
         self.assertIsInstance(nodes.LoadCharacter.VALIDATE_INPUTS("Nobody"), str)
+
+
+class PicturePages(unittest.TestCase):
+    def test_layouts(self):
+        from PIL import Image, ImageDraw
+        pages = load("page_nodes")
+        pictures = []
+        for i in range(20):
+            picture = Image.new("RGB", (256, 256), (246, 246, 244))
+            ImageDraw.Draw(picture).ellipse((60, 80, 196, 180), fill=(200, 10 * i, 40))
+            pictures.append(picture)
+        labels, seconds = [f"sana {i + 1}" for i in range(20)], [""] * 20
+        cut = pages.cutout(pictures[0])
+        self.assertEqual(cut.getpixel((0, 0)), (255, 255, 255))
+        self.assertLess(cut.width, 200)
+        result, grid = pages.picture_pages(pictures, labels, seconds, "dictionary", "Keittiössä")
+        self.assertEqual((grid, len(result), result[0].size), ((4, 5), 1, (2480, 3508)))
+        self.assertEqual([pages.auto_grid(n) for n in (15, 16, 24, 25)], [(3, 5), (4, 4), (4, 6), (5, 5)])
+        fronts_and_backs, _ = pages.picture_pages(pictures[:12], labels[:12], seconds[:12], "flashcards")
+        self.assertEqual(len(fronts_and_backs), 2)
+        for layout in pages.LAYOUTS:
+            result, _ = pages.picture_pages(pictures[:9], labels[:9], ["käännös"] * 9, layout, "Otsikko",
+                                            bingo_grid=3, seed=3)
+            self.assertTrue(result and all(page.size == (2480, 3508) for page in result), layout)
+            result[0].convert("L").resize((620, 877)).save(os.path.join(WORK, f"layout_{layout}.png"))
 
 
 if __name__ == "__main__":
