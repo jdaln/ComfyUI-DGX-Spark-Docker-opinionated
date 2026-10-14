@@ -67,6 +67,23 @@ rm -rf venv/* pip_cache/*
 docker compose up -d
 ```
 
+## Apps repository
+
+`apps/` is gitignored so that it can hold a separate repository of ComfyUI
+apps. `docker-compose.override.yml.example` mounts its `workflows/` folder into
+the container:
+
+```bash
+git clone <your apps repo> apps   # or: mkdir -p apps/workflows
+cp docker-compose.override.yml.example docker-compose.override.yml
+docker compose up -d
+```
+
+`docker compose` merges `docker-compose.override.yml` into the main file on its
+own, and the override is gitignored too. The folder shows up as `apps` in
+ComfyUI's workflow browser, and apps saved there land in that repository. Its
+models still come from the profiles in `.env`.
+
 ## Custom nodes
 
 The list of repositories to clone lives in

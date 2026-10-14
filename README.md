@@ -151,6 +151,7 @@ from
 | `docker-compose.yml` | service definition, volumes, GPU reservation, healthcheck |
 | `entrypoint.sh` | runs on every start: venv, deps, custom nodes, patches, asset bootstrap |
 | `.env.example` | template for `.env` |
+| `docker-compose.override.yml.example` | optional mount for an apps repository in `apps/` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions |
 | `asset-profiles.json` | the 91 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |

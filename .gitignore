@@ -28,3 +28,8 @@ __pycache__/
 
 # private notes, not part of the repo
 list.md
+
+# apps repository and the local compose override that mounts it,
+# see docker-compose.override.yml.example
+apps/
+docker-compose.override.yml

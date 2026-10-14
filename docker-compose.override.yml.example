@@ -1,0 +1,18 @@
+# Mounts an apps repository into ComfyUI's workflow folder.
+#
+# Copy to docker-compose.override.yml, which docker compose merges into
+# docker-compose.yml on every `docker compose up`. The copy and ./apps are both
+# gitignored, so ./apps can be a separate git repository of its own.
+#
+# ./apps/workflows shows up in ComfyUI's workflow browser as the apps folder.
+# Whatever is saved there from the UI lands in that repository, and the Apps
+# sidebar lists every *.app.json in it. Mount the workflows/ subfolder rather
+# than the repository root: ComfyUI lists every file it finds, so a README next
+# to the apps would show up as a workflow.
+#
+# Create ./apps/workflows before the first start. If it is missing, Docker
+# creates it owned by root and ComfyUI cannot save into it.
+services:
+  comfy:
+    volumes:
+      - ./apps/workflows:/workspace/ComfyUI/user/default/workflows/apps
