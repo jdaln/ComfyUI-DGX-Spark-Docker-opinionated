@@ -75,6 +75,7 @@
     "SplitSentences": "ComfyUI-DGX-Spark-Templates",
     "FinnishNumbersToWords": "ComfyUI-DGX-Spark-Templates",
     "TransformersTextGenerate": "ComfyUI-DGX-Spark-Templates",
-    "PicturePage": "ComfyUI-DGX-Spark-Templates"
+    "PicturePage": "ComfyUI-DGX-Spark-Templates",
+    "JoinWithPauses": "ComfyUI-DGX-Spark-Templates"
   }
 }

@@ -259,6 +259,54 @@ class Characters(unittest.TestCase):
         self.assertIsInstance(nodes.LoadCharacter.VALIDATE_INPUTS("Nobody"), str)
 
 
+class Dialogue(unittest.TestCase):
+    RATE = 24000
+
+    def clip(self, seconds):
+        import torch
+        return {"waveform": torch.full((1, 1, round(seconds * self.RATE)), 0.1), "sample_rate": self.RATE}
+
+    def test_join_with_pauses(self):
+        nodes = load("dialogue_nodes")
+        audio, lines = [self.clip(1.0), self.clip(2.0)], ["Hei.", "Mitä kuuluu?"]
+
+        def join(mode, gap, twice=False):
+            return nodes.JoinWithPauses().join([mode], [gap], [1.5], [twice], [0.3], [0.6], [True], audio, lines)
+
+        _, srt, seconds = join("listen and repeat", 0.6)
+        self.assertAlmostEqual(seconds, 0.3 + 1 + 1.5 + 2 + 3 + 0.6, places=3)
+        self.assertEqual([round(start, 3) for start, _, _ in nodes.parse_srt(srt)], [0.3, 2.8])
+        _, srt, seconds = join("dictation", 0.6)
+        self.assertAlmostEqual(seconds, 0.3 + (1 + 0.6 + 1 + 1.5) + (2 + 0.6 + 2 + 3) + 0.6, places=3)
+        self.assertEqual([text for _, _, text in nodes.parse_srt(srt)],
+                         ["Hei.", "Hei.", "Mitä kuuluu?", "Mitä kuuluu?"])
+        _, _, seconds = join("answer gap", 6.0)
+        self.assertAlmostEqual(seconds, 0.3 + 1 + 6 + 2 + 6 + 0.6, places=3)
+        _, _, seconds = join("fixed gap", 0.5)
+        self.assertAlmostEqual(seconds, 0.3 + 1 + 0.5 + 2 + 0.6, places=3)
+        with self.assertRaisesRegex(RuntimeError, "kept talking"):
+            nodes.JoinWithPauses().join(["fixed gap"], [0.5], [1.5], [False], [0.3], [0.6], [True], [self.clip(9.0)],
+                                        ["Hei."])
+
+    def test_level_voices(self):
+        import torch
+        nodes = load("dialogue_nodes")
+        time = torch.linspace(0, 1, self.RATE)
+        loud = {"waveform": (0.9 * torch.sin(2000 * time)).reshape(1, 1, -1), "sample_rate": self.RATE}
+        quiet = {"waveform": (0.05 * torch.sin(1500 * time)).reshape(1, 1, -1), "sample_rate": self.RATE}
+        audio, srt, _ = nodes.JoinDialogue().join([loud, quiet], ["Hei.", "Moi."], ["A", "B"], [0.4], [0.3], [0.6],
+                                                  [False])
+        wave = audio["waveform"][0, 0]
+        cues = [(round(s * self.RATE), round(e * self.RATE)) for s, e, _ in nodes.parse_srt(srt)]
+        levels = [float(wave[s:e].pow(2).mean().sqrt()) for s, e in cues]
+        self.assertAlmostEqual(levels[0], levels[1], delta=0.01)
+        self.assertLess(float(wave.abs().max()), 0.9)
+        audio, _, _ = nodes.JoinDialogue().join([loud, quiet], ["Hei.", "Moi."], ["A", "B"], [0.4], [0.3], [0.6],
+                                                [False], [False])
+        self.assertAlmostEqual(float(audio["waveform"].abs().max()), 0.9, places=3)
+
+
+
 class PicturePages(unittest.TestCase):
     def test_layouts(self):
         from PIL import Image, ImageDraw

@@ -7,6 +7,9 @@ puts the clips back together with a pause between them and writes the
 subtitles from the script itself, so their timing is exact and the text needs
 no speech recognition.
 
+Join With Pauses does the same for listening exercises: a pause to repeat
+each line, dictation with every line read twice, or time to answer.
+
 Word Timestamps to Subtitles is for audio that has no script: it groups the
 per-word timings Whisper Speech to Text prints into subtitle cues. Burn In
 Subtitles draws cues onto video frames and Save Subtitles writes an .srt file.
@@ -31,6 +34,7 @@ _NAMED_LINE = re.compile(r"^\s*([^:\n]{1,40}?)\s*:\s*(.+?)\s*$")
 _WORD_STAMP = re.compile(r"^\s*\[\s*([0-9.]+)\s*-\s*([0-9.]+)\s*\]\s*(.*?)\s*$")
 _SRT_TIME = re.compile(r"(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)")
 _FONTS = ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+LEVEL_TOOLTIP = "Plays every line at the same loudness, whatever the volume of each voice sample."
 
 
 def _wide(token):
@@ -153,41 +157,28 @@ class JoinDialogue:
                 "lines": ("STRING", {"forceInput": True}),
                 "speakers": ("STRING", {"forceInput": True}),
             },
+            "optional": {
+                "level_voices": ("BOOLEAN", {"default": True, "tooltip": LEVEL_TOOLTIP}),
+            },
         }
 
     RETURN_TYPES = ("AUDIO", "STRING", "FLOAT")
     RETURN_NAMES = ("audio", "subtitles", "seconds")
     FUNCTION = "join"
     CATEGORY = "audio/dialogue"
-    DESCRIPTION = ("Joins one clip per line into a single track with pauses between them and "
-                   "writes SRT subtitles timed to the clips.")
+    DESCRIPTION = ("Joins one clip per line into a single track with pauses between them, every line at the "
+                   "same loudness, and writes SRT subtitles timed to the clips.")
 
-    def join(self, audio, lines, speakers, pause_seconds, lead_in_seconds, tail_seconds, names_in_subtitles):
+    def join(self, audio, lines, speakers, pause_seconds, lead_in_seconds, tail_seconds, names_in_subtitles,
+             level_voices=None):
         pause, lead_in, tail = pause_seconds[0], lead_in_seconds[0], tail_seconds[0]
         with_names = names_in_subtitles[0]
         if len(audio) != len(lines):
             raise ValueError(f"Got {len(audio)} clips for {len(lines)} lines; connect the lines output of "
                              "Dialogue Script to the text to speech node and its audio here.")
-        rate = max(clip["sample_rate"] for clip in audio)
-        waves = []
-        for i, clip in enumerate(audio):
-            wave = clip["waveform"][0].float().cpu()
-            if wave.shape[-1] < 0.1 * clip["sample_rate"]:
-                raise RuntimeError(f"Line {i + 1} came back empty ({lines[i][:60]!r}). The text to speech "
-                                   "node failed on it. Chatterbox multilingual returns silence instead of an "
-                                   "error; connect a Preview Any to its message output to read why.")
-            # a model that misses its stop token talks on for up to 40 s, and the video would follow
-            length = wave.shape[-1] / clip["sample_rate"]
-            weight = sum(3 if _wide(ch) else 1 for ch in lines[i])
-            if length > 2.0 + 0.2 * weight:
-                raise RuntimeError(f"Line {i + 1} came back {length:.1f} s long for {len(lines[i])} characters "
-                                   f"({lines[i][:60]!r}): the speech model kept talking after the line. Run "
-                                   "again with another seed, or raise cfg_weight.")
-            if clip["sample_rate"] != rate:
-                wave = torchaudio.functional.resample(wave, clip["sample_rate"], rate)
-            waves.append(wave)
-        channels = max(w.shape[0] for w in waves)
-        waves = [w.expand(channels, -1) if w.shape[0] == 1 else w for w in waves]
+        waves, rate, channels = _clips(audio, lines, lines)
+        if level_voices is None or level_voices[0]:
+            waves = level(waves, rate)
 
         def silence(seconds):
             return torch.zeros(channels, int(round(seconds * rate)))
@@ -206,6 +197,138 @@ class JoinDialogue:
         joined = torch.cat(pieces, dim=-1)
         seconds = joined.shape[-1] / rate
         return ({"waveform": joined.unsqueeze(0), "sample_rate": rate}, format_srt(cues), seconds)
+
+
+def _clips(audio, lines, spoken):
+    """The clips as waveforms at one sample rate and channel count, after checking each against its line.
+
+    spoken is the text that was read for each line, which can be longer than the line itself when numbers were
+    written out for speech; the length check uses it."""
+    rate = max(clip["sample_rate"] for clip in audio)
+    waves = []
+    for i, clip in enumerate(audio):
+        wave = clip["waveform"][0].float().cpu()
+        if wave.shape[-1] < 0.1 * clip["sample_rate"]:
+            raise RuntimeError(f"Line {i + 1} came back empty ({lines[i][:60]!r}). The text to speech "
+                               "node failed on it. Chatterbox multilingual returns silence instead of an "
+                               "error; connect a Preview Any to its message output to read why.")
+        # a model that misses its stop token talks on for up to 40 s, and the video would follow
+        length = wave.shape[-1] / clip["sample_rate"]
+        weight = sum(3 if _wide(ch) else 1 for ch in spoken[i])
+        if length > 2.0 + 0.2 * weight:
+            raise RuntimeError(f"Line {i + 1} came back {length:.1f} s long for {len(spoken[i])} characters "
+                               f"({lines[i][:60]!r}): the speech model kept talking after the line. Run "
+                               "again with another seed, or raise cfg_weight.")
+        if clip["sample_rate"] != rate:
+            wave = torchaudio.functional.resample(wave, clip["sample_rate"], rate)
+        waves.append(wave)
+    channels = max(w.shape[0] for w in waves)
+    return [w.expand(channels, -1) if w.shape[0] == 1 else w for w in waves], rate, channels
+
+
+def level(waves, rate, target_db=-20.0):
+    """Each clip scaled to the same speech level, its peaks kept below -1 dBFS.
+
+    The level is the mean power of the clip's 50 ms frames that are within 30 dB of its loudest frame, so
+    pauses inside a line do not count. Voice samples recorded at different volumes then give lines that
+    play equally loud."""
+    frame = max(1, int(0.05 * rate))
+    out = []
+    for wave in waves:
+        mono = wave.mean(0)
+        frames = mono.shape[-1] // frame
+        if not frames:
+            out.append(wave)
+            continue
+        power = mono[:frames * frame].reshape(frames, frame).pow(2).mean(1)
+        if float(power.max()) <= 0.0:
+            out.append(wave)
+            continue
+        active = power[power >= power.max() * 1e-3]
+        gain = 10 ** ((target_db - 10 * float(torch.log10(active.mean()))) / 20)
+        gain = min(gain, 0.89 / float(wave.abs().max()))
+        out.append(wave * gain)
+    return out
+
+
+PAUSE_MODES = ("fixed gap", "listen and repeat", "dictation", "answer gap")
+
+
+class JoinWithPauses:
+    INPUT_IS_LIST = True
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "mode": (list(PAUSE_MODES), {"tooltip": "fixed gap: the same pause after every line. listen and "
+                                                        "repeat: a pause as long as the line times repeat_factor, "
+                                                        "for saying it after the speaker. dictation: every line "
+                                                        "twice, then a pause for writing. answer gap: gap_seconds "
+                                                        "of silence after every line, for answering."}),
+                "gap_seconds": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 60.0, "step": 0.1,
+                                          "tooltip": "The pause in fixed gap and answer gap, and the pause "
+                                                     "between the two readings when a line is read twice."}),
+                "repeat_factor": ("FLOAT", {"default": 1.5, "min": 0.5, "max": 6.0, "step": 0.1,
+                                            "tooltip": "Listen and repeat, dictation: pause length as a multiple "
+                                                       "of the line's length."}),
+                "read_twice": ("BOOLEAN", {"default": False,
+                                           "tooltip": "Listen and repeat: read every line twice. Dictation always "
+                                                      "does."}),
+                "lead_in_seconds": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 10.0, "step": 0.05}),
+                "tail_seconds": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 30.0, "step": 0.05}),
+                "level_voices": ("BOOLEAN", {"default": True, "tooltip": LEVEL_TOOLTIP}),
+                # socket-only inputs after the widgets: workflows store widget values by position
+                "audio": ("AUDIO", {"tooltip": "One clip per line, in order."}),
+                "lines": ("STRING", {"forceInput": True, "tooltip": "The text of each line, for the subtitles."}),
+            },
+            "optional": {
+                "spoken_lines": ("STRING", {"forceInput": True,
+                                            "tooltip": "What was actually read for each line, when it differs from "
+                                                       "the line, such as numbers written out in words."}),
+            },
+        }
+
+    RETURN_TYPES = ("AUDIO", "STRING", "FLOAT")
+    RETURN_NAMES = ("audio", "subtitles", "seconds")
+    FUNCTION = "join"
+    CATEGORY = "audio/dialogue"
+    DESCRIPTION = ("Joins one clip per line into one track with pauses for listening exercises: a fixed gap, "
+                   "listen and repeat, dictation or a gap for answering. Writes SRT subtitles timed to the clips.")
+
+    def join(self, mode, gap_seconds, repeat_factor, read_twice, lead_in_seconds, tail_seconds, level_voices, audio,
+             lines, spoken_lines=None):
+        mode, gap, factor, twice = mode[0], gap_seconds[0], repeat_factor[0], read_twice[0] or mode[0] == "dictation"
+        if len(audio) != len(lines):
+            raise ValueError(f"Got {len(audio)} clips for {len(lines)} lines.")
+        waves, rate, channels = _clips(audio, lines, spoken_lines or lines)
+        if level_voices[0]:
+            waves = level(waves, rate)
+
+        def silence(seconds):
+            return torch.zeros(channels, int(round(seconds * rate)))
+
+        pieces, cues, clock = [silence(lead_in_seconds[0])], [], lead_in_seconds[0]
+        for i, wave in enumerate(waves):
+            length = wave.shape[-1] / rate
+            readings = 2 if twice and mode in ("listen and repeat", "dictation") else 1
+            for reading in range(readings):
+                cues.append((clock, clock + length, lines[i]))
+                pieces.append(wave)
+                clock += length
+                if reading + 1 < readings:
+                    pause = gap if mode == "dictation" else factor * length
+                elif mode in ("listen and repeat", "dictation"):
+                    pause = factor * length
+                elif i + 1 < len(waves) or mode == "answer gap":
+                    pause = gap
+                else:
+                    pause = 0.0
+                pieces.append(silence(pause))
+                clock += pause
+        pieces.append(silence(tail_seconds[0]))
+        joined = torch.cat(pieces, dim=-1)
+        return ({"waveform": joined.unsqueeze(0), "sample_rate": rate}, format_srt(cues), joined.shape[-1] / rate)
 
 
 class TimestampsToSubtitles:
@@ -371,6 +494,7 @@ class SaveSubtitles:
 NODE_CLASS_MAPPINGS = {
     "DialogueScript": DialogueScript,
     "JoinDialogue": JoinDialogue,
+    "JoinWithPauses": JoinWithPauses,
     "TimestampsToSubtitles": TimestampsToSubtitles,
     "BurnInSubtitles": BurnInSubtitles,
     "SaveSubtitles": SaveSubtitles,
@@ -379,6 +503,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "DialogueScript": "Dialogue Script",
     "JoinDialogue": "Join Dialogue",
+    "JoinWithPauses": "Join With Pauses",
     "TimestampsToSubtitles": "Word Timestamps to Subtitles",
     "BurnInSubtitles": "Burn In Subtitles",
     "SaveSubtitles": "Save Subtitles",
