@@ -64,6 +64,8 @@
     "SaveSubtitles": "ComfyUI-DGX-Spark-Templates",
     "WhisperSpeechToText": "ComfyUI-DGX-Spark-Templates",
     "ChatterboxSpeech": "ComfyUI-DGX-Spark-Templates",
-    "AILab_Qwen3TTSVoiceDesign": "ComfyUI-QwenTTS"
+    "AILab_Qwen3TTSVoiceDesign": "ComfyUI-QwenTTS",
+    "DraftGate": "ComfyUI-DGX-Spark-Templates",
+    "RenderGate": "ComfyUI-DGX-Spark-Templates"
   }
 }
