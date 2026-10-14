@@ -305,6 +305,83 @@ class Dialogue(unittest.TestCase):
                                                 [False], [False])
         self.assertAlmostEqual(float(audio["waveform"].abs().max()), 0.9, places=3)
 
+    def track(self, spans, total):
+        import torch
+        wave = torch.zeros(1, round(total * self.RATE))
+        for start, end in spans:
+            wave[:, round(start * self.RATE):round(end * self.RATE)] = 0.5
+        srt = load("dialogue_nodes").format_srt([(s, e, f"repliikki {i + 1}") for i, (s, e) in enumerate(spans)])
+        return {"waveform": wave.unsqueeze(0), "sample_rate": self.RATE}, srt
+
+    def plan(self, shots, runs, spans, total, speakers=None, pictures=(), max_shot=15.0):
+        nodes = load("dialogue_nodes")
+        audio, srt = self.track(spans, total)
+        return nodes.SegmentsFromSubtitles().plan(
+            [shots], [runs], ["{picture} {speaker}: {line}"], ["{picture} listens"], ["Finnish"], [0.25], [0.25],
+            [2.0], [max_shot], [audio], [srt], speakers, *[[p] for p in pictures])
+
+    def check_shots(self, out, first_grid, later_grid):
+        """Every shot on H3's frame grid, starting and ending in silence; the track and the shots agree."""
+        nodes = load("dialogue_nodes")
+        track, srt, segment_seconds, prompt, seconds, count, clips, lengths, prompts, _ = out
+        frames = [round(length * 24) for length in lengths]
+        self.assertEqual([round(float(s) * 24) for s in segment_seconds.split(",")], frames)
+        self.assertEqual(frames[0] % 17, first_grid)
+        self.assertTrue(all(f % 17 == later_grid for f in frames[1:]), frames)
+        per_frame = self.RATE // 24
+        wave = track["waveform"][0, 0]
+        self.assertEqual(wave.shape[-1], sum(frames) * per_frame)
+        self.assertAlmostEqual(seconds, sum(frames) / 24, places=6)
+        quiet = round(0.25 * self.RATE) - 1
+        for k, (f, clip) in enumerate(zip(frames, clips)):
+            samples = clip["waveform"][0, 0]
+            self.assertEqual(samples.shape[-1], f * per_frame)
+            if k:  # the first shot starts with the track's own lead-in
+                self.assertEqual(float(samples[:quiet].abs().max()), 0.0)
+            self.assertEqual(float(samples[-quiet:].abs().max()), 0.0)
+        ms = self.RATE // 1000 + 1  # SRT keeps milliseconds
+        for start, end, _ in nodes.parse_srt(srt):
+            first, last = round(start * self.RATE), round(end * self.RATE)
+            self.assertEqual(float(wave[first + ms]), 0.5)
+            self.assertEqual(float(wave[first - ms]), 0.0)
+            self.assertEqual(float(wave[last - ms]), 0.5)
+            self.assertEqual(float(wave[last + ms]), 0.0)
+        self.assertEqual(prompt.split("\n---\n"), prompts)
+        self.assertEqual(count, len(frames))
+        return frames, nodes.parse_srt(srt), prompts
+
+    def test_turns_one_run_per_shot(self):
+        import torch
+        aino, mikko = torch.full((1, 8, 8, 3), 0.2), torch.full((1, 8, 8, 3), 0.8)
+        spans = [(0.3, 3.1), (3.5, 6.0), (6.4, 8.2), (8.3, 9.0)]
+        out = self.plan("turns", "one run per shot", spans, 9.6, ["Aino", "Mikko", "Aino", "Aino"], (aino, mikko))
+        frames, cues, prompts = self.check_shots(out, 5, 5)
+        self.assertEqual(len(frames), 3)  # Aino's last two lines are one turn
+        self.assertEqual(prompts[1], "<Picture 2> Mikko: repliikki 2")
+        self.assertEqual(prompts[2], "<Picture 1> Aino: repliikki 3 repliikki 4")
+        self.assertEqual([round(float(p.mean()), 3) for p in out[-1]], [0.2, 0.8, 0.2])
+        for (start, end, _), (s, e) in zip(cues, spans):
+            self.assertAlmostEqual(end - start, e - s, places=3)
+        self.assertAlmostEqual(cues[3][0] - cues[2][1], 0.1, places=3)  # a pause inside a turn is kept as it is
+        split = self.plan("turns", "one run per shot", spans, 9.6, ["Aino", "Mikko", "Aino", "Aino"], (aino, mikko),
+                          max_shot=1.5)
+        self.assertEqual(split[5], 4)
+        with self.assertRaisesRegex(ValueError, "picture_2"):
+            self.plan("turns", "one run per shot", spans, 9.6, ["Aino", "Mikko", "Aino", "Aino"], (aino,))
+
+    def test_short_pause_is_lengthened(self):
+        spans = [(0.3, 2.0), (2.1, 4.0)]
+        frames, cues, _ = self.check_shots(self.plan("turns", "one run per shot", spans, 4.5, ["A", "B"]), 5, 5)
+        self.assertGreaterEqual(cues[1][0] - cues[0][1], 0.5 - 1e-3)
+
+    def test_speak_and_listen_context_segments(self):
+        spans = [(0.2, 2.0), (8.0, 9.5)]
+        out = self.plan("speak and listen", "context segments", spans, 15.5, ["Aino", "Aino"])
+        frames, cues, prompts = self.check_shots(out, 5, 0)
+        self.assertEqual(prompts, ["<Picture 1> Aino: repliikki 1", "<Picture 1> listens",
+                                   "<Picture 1> Aino: repliikki 2", "<Picture 1> listens"])
+        self.assertGreaterEqual(cues[1][0] - cues[0][1], 6.0 - 1e-3)  # the answer time is never shortened
+        self.assertGreaterEqual(sum(frames) / 24, 15.5 - 1e-3)
 
 
 class PicturePages(unittest.TestCase):

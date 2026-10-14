@@ -10,10 +10,10 @@ interface here rather than pulling the pack in. See that module for detail.
 `seed_nodes` holds the Seed List node the YuE2 best-of-8 template uses to turn
 one run into eight takes. `dialogue_nodes` splits a script into one speech clip
 per line, joins the clips back, with pauses for listening exercises if wanted,
-and writes, burns in and saves subtitles, for the dialogue and subtitle
-templates. `speech_nodes` adds Whisper large-v3 speech to text with word
-timings, and Chatterbox Speech, which runs the multilingual Chatterbox or
-Finnish-NLP's Finnish fine-tune of it.
+plans MiniMax H3 shots for the joined track, and writes, burns in and saves
+subtitles, for the dialogue and subtitle templates. `speech_nodes` adds Whisper
+large-v3 speech to text with word timings, and Chatterbox Speech, which runs the
+multilingual Chatterbox or Finnish-NLP's Finnish fine-tune of it.
 
 `draft_nodes` holds Draft Gate and Render Gate, which split a workflow into a
 quick draft pass and a slow render pass. `text_nodes` turns a dropdown value

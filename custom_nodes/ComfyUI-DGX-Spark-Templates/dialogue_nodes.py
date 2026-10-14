@@ -10,6 +10,11 @@ no speech recognition.
 Join With Pauses does the same for listening exercises: a pause to repeat
 each line, dictation with every line read twice, or time to answer.
 
+Segments from Subtitles plans MiniMax H3 Easy video for such a track. H3 makes
+only certain frame counts, so it lengthens pauses until every cut falls in a
+pause and every shot has one of those counts; the video then stays in sync
+with the speech for its whole length.
+
 Word Timestamps to Subtitles is for audio that has no script: it groups the
 per-word timings Whisper Speech to Text prints into subtitle cues. Burn In
 Subtitles draws cues onto video frames and Save Subtitles writes an .srt file.
@@ -331,6 +336,226 @@ class JoinWithPauses:
         return ({"waveform": joined.unsqueeze(0), "sample_rate": rate}, format_srt(cues), joined.shape[-1] / rate)
 
 
+H3_FPS = 24
+SHOT_MODES = ("turns", "speak and listen")
+RUN_MODES = ("one run per shot", "context segments")
+SPEAK_PROMPT = ("integrated_multimodal_description: [Shot 1] Live-action, natural light. A medium close-up of "
+                "{picture}. The person (S1) looks at the camera and says in a calm, even voice: <d>[{language}] "
+                "{line}</d> The face stays relaxed, with small natural mouth movements and few expressions. The "
+                "head and shoulders stay almost still, with no hand gestures.\n\n"
+                "overall_soundscape: Quiet room tone.\n\nnon_diegetic_music: N/A")
+LISTEN_PROMPT = ("integrated_multimodal_description: [Shot 1] Live-action, natural light. A medium close-up of "
+                 "{picture}. The person listens quietly with the mouth closed, looking at the camera, breathing "
+                 "calmly and blinking now and then. The face stays still and relaxed.\n\n"
+                 "overall_soundscape: Quiet room tone.\n\nnon_diegetic_music: N/A")
+
+
+class SegmentsFromSubtitles:
+    INPUT_IS_LIST = True
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "shots": (list(SHOT_MODES), {"tooltip": "turns: one shot per speaker turn, showing whoever speaks. "
+                                                        "speak and listen: a speaking shot for each line and a "
+                                                        "listening shot for each long pause, for a character who "
+                                                        "waits for an answer."}),
+                "runs": (list(RUN_MODES), {"tooltip": "one run per shot: each shot is its own MiniMax H3 Easy run, "
+                                                      "joined with cuts; needed when shots show different people. "
+                                                      "context segments: one Context Segments run, a continuous "
+                                                      "take of one person."}),
+                "speak_prompt": ("STRING", {"multiline": True, "default": SPEAK_PROMPT,
+                                            "tooltip": "Prompt of a speaking shot. {picture} becomes the speaker's "
+                                                       "<Picture N> tag, {line} the words, {speaker} the name and "
+                                                       "{language} the language."}),
+                "listen_prompt": ("STRING", {"multiline": True, "default": LISTEN_PROMPT,
+                                             "tooltip": "Prompt of a listening shot, with the same placeholders."}),
+                "language": ("STRING", {"default": "Finnish", "tooltip": "Fills {language} in the prompts."}),
+                "lead_seconds": ("FLOAT", {"default": 0.25, "min": 0.0, "max": 2.0, "step": 0.05,
+                                           "tooltip": "Silence kept at the start of a shot before its first word."}),
+                "trail_seconds": ("FLOAT", {"default": 0.25, "min": 0.0, "max": 2.0, "step": 0.05,
+                                            "tooltip": "Silence kept after a shot's last word before the cut."}),
+                "listen_min_seconds": ("FLOAT", {"default": 2.0, "min": 1.0, "max": 30.0, "step": 0.1,
+                                                 "tooltip": "speak and listen: a pause at least this long gets its "
+                                                            "own listening shot."}),
+                "max_shot_seconds": ("FLOAT", {"default": 15.0, "min": 3.0, "max": 30.0, "step": 0.5,
+                                               "tooltip": "A speaker turn longer than this is split between two "
+                                                          "lines."}),
+                # socket-only inputs after the widgets: workflows store widget values by position
+                "audio": ("AUDIO", {"tooltip": "The whole track, from Join Dialogue or Join With Pauses."}),
+                "subtitles": ("STRING", {"forceInput": True, "tooltip": "The track's SRT subtitles."}),
+            },
+            "optional": {
+                "speakers": ("STRING", {"forceInput": True,
+                                        "tooltip": "Who says each line, as Dialogue Script lists them. Speakers "
+                                                   "take <Picture 1>, <Picture 2> and so on in the order they "
+                                                   "first speak."}),
+                "picture_1": ("IMAGE", {"tooltip": "The first speaker, for the shot_picture output."}),
+                "picture_2": ("IMAGE",),
+                "picture_3": ("IMAGE",),
+                "picture_4": ("IMAGE",),
+            },
+        }
+
+    RETURN_TYPES = ("AUDIO", "STRING", "STRING", "STRING", "FLOAT", "INT", "AUDIO", "FLOAT", "STRING", "IMAGE")
+    RETURN_NAMES = ("audio", "subtitles", "segment_seconds", "prompt", "seconds", "count",
+                    "shot_audio", "shot_seconds", "shot_prompt", "shot_picture")
+    OUTPUT_IS_LIST = (False, False, False, False, False, False, True, True, True, True)
+    FUNCTION = "plan"
+    CATEGORY = "audio/dialogue"
+    DESCRIPTION = ("Plans MiniMax H3 Easy shots from a speech track and its subtitles. Lengthens pauses where "
+                   "needed so that every cut falls in a pause and every shot has a frame count H3 makes exactly; "
+                   "the video then stays in sync with the speech. Outputs the adjusted track and subtitles, the "
+                   "Context Segments lengths and prompts, and per shot lists for one run per shot.")
+
+    def plan(self, shots, runs, speak_prompt, listen_prompt, language, lead_seconds, trail_seconds,
+             listen_min_seconds, max_shot_seconds, audio, subtitles, speakers=None,
+             picture_1=None, picture_2=None, picture_3=None, picture_4=None):
+        track = audio[0]
+        wave = track["waveform"][0].float().cpu()
+        rate = track["sample_rate"]
+        cues = parse_srt(subtitles[0])
+        speakers = speakers or []
+        if speakers and len(speakers) != len(cues):
+            raise ValueError(f"Got {len(speakers)} speakers for {len(cues)} subtitle lines.")
+        plan, inserts = plan_shots(cues, wave.shape[-1], rate, speakers, shots[0], runs[0], lead_seconds[0],
+                                   trail_seconds[0], listen_min_seconds[0], max_shot_seconds[0])
+        out = insert_silence(wave, inserts)
+        frames = sum(shot["frames"] for shot in plan)
+        out = _fit_length(out, round(frames * rate / H3_FPS))
+
+        def moved(seconds, end=False):
+            # silence inserted where a cue ends goes after it, where a cue starts before it
+            sample = round(seconds * rate)
+            return (sample + sum(count for at, count in inserts if at < sample or (at == sample and not end))) / rate
+
+        new_cues = [(moved(start), moved(stop, end=True), text) for start, stop, text in cues]
+        order = list(dict.fromkeys(speakers))
+        pictures = [picture_1, picture_2, picture_3, picture_4]
+        prompts, clips, lengths, shot_pictures, clock = [], [], [], [], 0
+        for shot in plan:
+            name = shot["speaker"]
+            number = order.index(name) + 1 if name in order else 1
+            template = speak_prompt[0] if shot["kind"] == "speak" else listen_prompt[0]
+            line = " ".join(cues[i][2].replace("\n", " ") for i in shot["lines"]) if shot["kind"] == "speak" else ""
+            prompts.append(template.replace("{picture}", f"<Picture {number}>").replace("{line}", line)
+                           .replace("{speaker}", name or "").replace("{language}", language[0]))
+            first, last = round(clock * rate / H3_FPS), round((clock + shot["frames"]) * rate / H3_FPS)
+            clips.append({"waveform": out[:, first:last].unsqueeze(0), "sample_rate": rate})
+            lengths.append(shot["frames"] / H3_FPS)
+            clock += shot["frames"]
+            if any(p is not None for p in pictures):
+                if number > 4 or pictures[number - 1] is None:
+                    raise ValueError(f"No picture is connected for {name or 'speaker ' + str(number)}; connect "
+                                     f"picture_{number}.")
+                shot_pictures.append(pictures[number - 1][0])
+        print(f"[segments] {len(plan)} shots, {frames} frames: "
+              + ", ".join(f"{s['kind']} {s['frames']}" for s in plan)
+              + f"; {sum(c for _, c in inserts) / rate:.2f} s of silence added")
+        return ({"waveform": out.unsqueeze(0), "sample_rate": rate}, format_srt(new_cues),
+                ",".join(f"{length:.4f}" for length in lengths), "\n---\n".join(prompts), frames / H3_FPS,
+                len(plan), clips, lengths, prompts, shot_pictures)
+
+
+def _fit_length(wave, samples):
+    if wave.shape[-1] >= samples:
+        return wave[:, :samples]
+    return torch.cat([wave, torch.zeros(wave.shape[0], samples - wave.shape[-1])], dim=-1)
+
+
+def insert_silence(wave, inserts):
+    """wave with count zero samples inserted before sample index at, for each (at, count)."""
+    pieces, done = [], 0
+    for at, count in sorted(inserts):
+        pieces += [wave[:, done:at], torch.zeros(wave.shape[0], count)]
+        done = at
+    pieces.append(wave[:, done:])
+    return torch.cat(pieces, dim=-1)
+
+
+def plan_shots(cues, samples, rate, speakers, shots, runs, lead, trail, listen_min, max_shot, fps=H3_FPS):
+    """Groups the lines into shots and gives each shot a frame count MiniMax H3 makes exactly.
+
+    H3 makes 17k+5 frames for a shot that starts a run and 17k frames for a later Context Segment. Cuts go
+    in pauses, at least lead seconds before the next line and trail seconds after the last one. When no
+    allowed frame count puts a cut there, the pause is lengthened. Returns the shots as dicts (kind,
+    speaker, lines, frames) and the silence to insert, as (sample index, sample count) pairs."""
+    if not cues:
+        raise ValueError("The subtitles have no cues.")
+    starts = [min(round(start * rate), samples) for start, _, _ in cues]
+    ends = [min(max(round(end * rate), starts[i]), samples) for i, (_, end, _) in enumerate(cues)]
+    lead, trail = round(lead * rate), round(trail * rate)
+    block = round(17 * rate / fps)
+
+    def speaker(i):
+        return speakers[i] if i < len(speakers) else ""
+
+    groups = []
+    for i in range(len(cues)):
+        last = groups[-1] if groups else None
+        if (last and last["kind"] == "speak" and speaker(last["lines"][-1]) == speaker(i)
+                and ends[i] - starts[last["lines"][0]] <= max_shot * rate):
+            last["lines"].append(i)
+        else:
+            groups.append({"kind": "speak", "speaker": speaker(i), "lines": [i]})
+        pause = (starts[i + 1] if i + 1 < len(cues) else samples) - ends[i]
+        if shots == "speak and listen" and pause >= max(listen_min * rate, lead + trail + 2 * block):
+            groups.append({"kind": "listen", "speaker": speaker(i), "lines": [i]})
+
+    def next_speech(k):
+        later = [g for g in groups[k + 1:] if g["kind"] == "speak"]
+        return starts[later[0]["lines"][0]] if later else samples
+
+    inserts, shift, clock, cut = [], 0, 0, 0
+    for k, group in enumerate(groups):
+        following = groups[k + 1] if k + 1 < len(groups) else None
+        speech = next_speech(k)
+        quiet_from = ends[group["lines"][-1]] if group["kind"] == "speak" else cut
+        if following is None:
+            low = high = prefer = samples
+        elif group["kind"] == "speak" and following["kind"] == "speak":
+            low, high = ends[group["lines"][-1]] + trail, speech - lead
+            prefer = (low + high) // 2
+        elif group["kind"] == "speak":
+            # cut soon after the line, leaving the listening shot at least one block
+            low, high = ends[group["lines"][-1]] + trail, speech - lead - block
+            prefer = low
+        else:
+            low, high = cut, speech - lead
+            prefer = high
+        base = 5 if k == 0 or runs == "one run per shot" else 17
+
+        def source(frames):
+            """Where a cut after this many frames falls on the input track."""
+            return round((clock + frames) * rate / fps) - shift
+
+        frames = base
+        while source(frames) < low:
+            frames += 17
+        fitting = []
+        while source(frames) <= high:
+            fitting.append(frames)
+            frames += 17
+        if fitting:
+            frames = min(fitting, key=lambda f: abs(source(f) - prefer))
+        else:
+            frames = base
+            while source(frames) < low:
+                frames += 17
+            # lengthen the pause so the next line starts lead after the cut; the silence goes inside the pause
+            added = source(frames) - high
+            inserts.append((min(max(high, quiet_from), speech), added))
+            shift += added
+        if frames > 30 * fps:
+            raise ValueError(f"Shot {k + 1} would be {frames / fps:.1f} s long; H3 makes at most 30 s. Split "
+                             "the long line or lower max_shot_seconds.")
+        cut = source(frames)
+        clock += frames
+        group["frames"] = frames
+    return groups, inserts
+
+
 class TimestampsToSubtitles:
     @classmethod
     def INPUT_TYPES(cls):
@@ -495,6 +720,7 @@ NODE_CLASS_MAPPINGS = {
     "DialogueScript": DialogueScript,
     "JoinDialogue": JoinDialogue,
     "JoinWithPauses": JoinWithPauses,
+    "SegmentsFromSubtitles": SegmentsFromSubtitles,
     "TimestampsToSubtitles": TimestampsToSubtitles,
     "BurnInSubtitles": BurnInSubtitles,
     "SaveSubtitles": SaveSubtitles,
@@ -504,6 +730,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "DialogueScript": "Dialogue Script",
     "JoinDialogue": "Join Dialogue",
     "JoinWithPauses": "Join With Pauses",
+    "SegmentsFromSubtitles": "Segments from Subtitles",
     "TimestampsToSubtitles": "Word Timestamps to Subtitles",
     "BurnInSubtitles": "Burn In Subtitles",
     "SaveSubtitles": "Save Subtitles",
