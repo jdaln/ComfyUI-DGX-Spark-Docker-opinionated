@@ -67,6 +67,31 @@ def load(name):
     return importlib.import_module(f"pack.{name}")
 
 
+class TextNodes(unittest.TestCase):
+    def test_lookup_types_and_fallback(self):
+        text = load("text_nodes")
+        table = "# style | suffix | lora | strength\nWatercolour | soft watercolour | krea2_softwatercolor.safetensors " \
+                "| 0.8\n* | flat illustration | krea2_softwatercolor.safetensors | 0\nCount | 20"
+        out = text.TableLookup().lookup(table, "watercolour")
+        self.assertEqual(out[:3], ("soft watercolour", "krea2_softwatercolor.safetensors", 0.8))
+        self.assertEqual(text.TableLookup().lookup(table, "photo")[2], 0)
+        self.assertEqual(text.TableLookup().lookup(table, "count")[0], 20)
+        with self.assertRaisesRegex(ValueError, "no row"):
+            text.TableLookup().lookup("a | 1", "b")
+
+    def test_split_columns(self):
+        text = load("text_nodes")
+        draft = "# Kodin esineet\n1. sohva | a sofa | soffa\n\n| tuoli | a chair |\n|---|---|\n# note\n3) pöytä | a table"
+        title, rows, first, second, third, _, _, count = text.SplitColumns().split(2, True, True, draft)
+        self.assertEqual(title, "Kodin esineet")
+        self.assertEqual(first, ["sohva", "tuoli", "pöytä"])
+        self.assertEqual(second, ["a sofa", "a chair", "a table"])
+        self.assertEqual(third, ["soffa", "", ""])
+        self.assertEqual(count, 3)
+        with self.assertRaisesRegex(ValueError, "Line 2"):
+            text.SplitColumns().split(2, True, True, "# T\nsohva | sofa\ntuoli")
+        with self.assertRaisesRegex(ValueError, "Expected 4 rows"):
+            text.SplitColumns().split(1, True, True, "a\nb", expected_rows=4)
 
 
 class Gates(unittest.TestCase):

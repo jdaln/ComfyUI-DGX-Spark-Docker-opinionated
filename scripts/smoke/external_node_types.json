@@ -66,6 +66,8 @@
     "ChatterboxSpeech": "ComfyUI-DGX-Spark-Templates",
     "AILab_Qwen3TTSVoiceDesign": "ComfyUI-QwenTTS",
     "DraftGate": "ComfyUI-DGX-Spark-Templates",
-    "RenderGate": "ComfyUI-DGX-Spark-Templates"
+    "RenderGate": "ComfyUI-DGX-Spark-Templates",
+    "TableLookup": "ComfyUI-DGX-Spark-Templates",
+    "SplitColumns": "ComfyUI-DGX-Spark-Templates"
   }
 }

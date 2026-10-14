@@ -15,7 +15,8 @@ to text with word timings, and Chatterbox Speech, which runs the multilingual
 Chatterbox or Finnish-NLP's Finnish fine-tune of it.
 
 `draft_nodes` holds Draft Gate and Render Gate, which split a workflow into a
-quick draft pass and a slow render pass.
+quick draft pass and a slow render pass. `text_nodes` turns a dropdown value
+into table cells and pipe-separated lines into lists.
 
 `cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
 to the system once the queue has been idle for a minute. `example_inputs` copies
@@ -23,12 +24,13 @@ sample files that ship with the pack, the InfiniteTalk speaker masks, into the
 input folder when they are missing.
 """
 
-from . import (cpu_memory, dialogue_nodes, draft_nodes, example_inputs, memory_nodes, seed_nodes, speech_nodes)
+from . import (cpu_memory, dialogue_nodes, draft_nodes, example_inputs, memory_nodes, seed_nodes, speech_nodes,
+               text_nodes)
 
 cpu_memory.start()
 example_inputs.install()
 
-_MODULES = (memory_nodes, seed_nodes, dialogue_nodes, speech_nodes, draft_nodes)
+_MODULES = (memory_nodes, seed_nodes, dialogue_nodes, speech_nodes, draft_nodes, text_nodes)
 NODE_CLASS_MAPPINGS = {name: node for module in _MODULES for name, node in module.NODE_CLASS_MAPPINGS.items()}
 NODE_DISPLAY_NAME_MAPPINGS = {name: title for module in _MODULES
                               for name, title in module.NODE_DISPLAY_NAME_MAPPINGS.items()}
