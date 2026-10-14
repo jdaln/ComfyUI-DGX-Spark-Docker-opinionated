@@ -1,0 +1,505 @@
+{
+ "id": "52b766b4-2d33-4f7a-8633-e2b08163afff",
+ "revision": 0,
+ "last_node_id": 6,
+ "last_link_id": 6,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "CLIPLoader",
+   "pos": [
+    1128,
+    30
+   ],
+   "size": [
+    270,
+    106
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "clip_name",
+     "name": "clip_name",
+     "type": "COMBO",
+     "widget": {
+      "name": "clip_name"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "type",
+     "name": "type",
+     "type": "COMBO",
+     "widget": {
+      "name": "type"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "device",
+     "name": "device",
+     "shape": 7,
+     "type": "COMBO",
+     "widget": {
+      "name": "device"
+     },
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "CLIP",
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      4
+     ]
+    }
+   ],
+   "title": "Gemma 4 12B",
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "CLIPLoader",
+    "models": [
+     {
+      "name": "gemma4_12b_int8_convrot.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/gemma-4/resolve/main/text_encoders/gemma4_12b_int8_convrot.safetensors",
+      "directory": "text_encoders"
+     }
+    ]
+   },
+   "widgets_values": [
+    "gemma4_12b_int8_convrot.safetensors",
+    "stable_diffusion",
+    "default"
+   ],
+   "widgets_values_named": {
+    "clip_name": "gemma4_12b_int8_convrot.safetensors",
+    "type": "stable_diffusion",
+    "device": "default"
+   }
+  },
+  {
+   "id": 2,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    1128,
+    190
+   ],
+   "size": [
+    400,
+    200
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "value",
+     "name": "value",
+     "type": "STRING",
+     "widget": {
+      "name": "value"
+     },
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "STRING",
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      5
+     ]
+    }
+   ],
+   "title": "System prompt",
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "You are a helpful assistant. Answer clearly and briefly."
+   ],
+   "widgets_values_named": {
+    "value": "You are a helpful assistant. Answer clearly and briefly."
+   }
+  },
+  {
+   "id": 3,
+   "type": "TextGenerate",
+   "pos": [
+    1128,
+    444
+   ],
+   "size": [
+    400,
+    456
+   ],
+   "flags": {},
+   "order": 4,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "clip",
+     "name": "clip",
+     "type": "CLIP",
+     "link": 4
+    },
+    {
+     "localized_name": "image",
+     "name": "image",
+     "shape": 7,
+     "type": "IMAGE",
+     "link": null
+    },
+    {
+     "localized_name": "video",
+     "name": "video",
+     "shape": 7,
+     "type": "IMAGE",
+     "link": null
+    },
+    {
+     "localized_name": "audio",
+     "name": "audio",
+     "shape": 7,
+     "type": "AUDIO",
+     "link": null
+    },
+    {
+     "localized_name": "system_prompt",
+     "name": "system_prompt",
+     "shape": 7,
+     "type": "STRING",
+     "link": 5
+    },
+    {
+     "localized_name": "prompt",
+     "name": "prompt",
+     "type": "STRING",
+     "widget": {
+      "name": "prompt"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "max_length",
+     "name": "max_length",
+     "type": "INT",
+     "widget": {
+      "name": "max_length"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "Sampling Mode",
+     "name": "sampling_mode",
+     "type": "COMFY_DYNAMICCOMBO_V3",
+     "widget": {
+      "name": "sampling_mode"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "temperature",
+     "name": "sampling_mode.temperature",
+     "type": "FLOAT",
+     "widget": {
+      "name": "sampling_mode.temperature"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "top_k",
+     "name": "sampling_mode.top_k",
+     "type": "INT",
+     "widget": {
+      "name": "sampling_mode.top_k"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "top_p",
+     "name": "sampling_mode.top_p",
+     "type": "FLOAT",
+     "widget": {
+      "name": "sampling_mode.top_p"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "min_p",
+     "name": "sampling_mode.min_p",
+     "type": "FLOAT",
+     "widget": {
+      "name": "sampling_mode.min_p"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "repetition_penalty",
+     "name": "sampling_mode.repetition_penalty",
+     "type": "FLOAT",
+     "widget": {
+      "name": "sampling_mode.repetition_penalty"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "seed",
+     "name": "sampling_mode.seed",
+     "type": "INT",
+     "widget": {
+      "name": "sampling_mode.seed"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "presence_penalty",
+     "name": "sampling_mode.presence_penalty",
+     "shape": 7,
+     "type": "FLOAT",
+     "widget": {
+      "name": "sampling_mode.presence_penalty"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "thinking",
+     "name": "thinking",
+     "shape": 7,
+     "type": "BOOLEAN",
+     "widget": {
+      "name": "thinking"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "use_default_template",
+     "name": "use_default_template",
+     "shape": 7,
+     "type": "BOOLEAN",
+     "widget": {
+      "name": "use_default_template"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "mtp",
+     "name": "mtp",
+     "shape": 7,
+     "type": "COMBO",
+     "widget": {
+      "name": "mtp"
+     },
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "generated_text",
+     "name": "generated_text",
+     "type": "STRING",
+     "links": [
+      6
+     ]
+    },
+    {
+     "localized_name": "thinking",
+     "name": "thinking",
+     "type": "STRING",
+     "links": null
+    }
+   ],
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "TextGenerate"
+   },
+   "widgets_values": [
+    "Write a short, friendly email inviting the team to a picnic on Friday afternoon.",
+    1024,
+    "on",
+    0.7,
+    64,
+    0.95,
+    0.05,
+    1.05,
+    0,
+    0,
+    false,
+    true,
+    "auto"
+   ],
+   "widgets_values_named": {
+    "prompt": "Write a short, friendly email inviting the team to a picnic on Friday afternoon.",
+    "max_length": 1024,
+    "sampling_mode": "on",
+    "sampling_mode.temperature": 0.7,
+    "sampling_mode.top_k": 64,
+    "sampling_mode.top_p": 0.95,
+    "sampling_mode.min_p": 0.05,
+    "sampling_mode.repetition_penalty": 1.05,
+    "sampling_mode.seed": 0,
+    "sampling_mode.presence_penalty": 0,
+    "thinking": false,
+    "use_default_template": true,
+    "mtp": "auto"
+   }
+  },
+  {
+   "id": 4,
+   "type": "PreviewAny",
+   "pos": [
+    1128,
+    954
+   ],
+   "size": [
+    210,
+    122
+   ],
+   "flags": {},
+   "order": 5,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "source",
+     "name": "source",
+     "type": "*",
+     "link": 6
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "STRING",
+     "name": "STRING",
+     "type": "STRING",
+     "links": null
+    }
+   ],
+   "title": "Text",
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "PreviewAny"
+   },
+   "widgets_values": [],
+   "widgets_values_named": {}
+  },
+  {
+   "id": 5,
+   "type": "MarkdownNote",
+   "pos": [
+    0,
+    40
+   ],
+   "size": [
+    520,
+    322
+   ],
+   "flags": {},
+   "order": 2,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "title": "How to use",
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "## Text from Gemma 4 12B\n\n1. Write the request in **prompt**, and the assistant's role and rules in **System prompt**.\n2. Run. The answer appears in **Text**.\n\nTurn **thinking** on for harder questions: the model reasons first, which takes several times longer.\nTo ask about a picture, add a **Load Image** node and connect it to the **image** input; **video** and\n**audio** inputs work the same way. Lower the temperature for lists and tables, raise it for creative text.\nAbout 17 tokens a second on the DGX Spark; the first run loads the model, about 10 seconds."
+   ],
+   "widgets_values_named": {
+    "text": "## Text from Gemma 4 12B\n\n1. Write the request in **prompt**, and the assistant's role and rules in **System prompt**.\n2. Run. The answer appears in **Text**.\n\nTurn **thinking** on for harder questions: the model reasons first, which takes several times longer.\nTo ask about a picture, add a **Load Image** node and connect it to the **image** input; **video** and\n**audio** inputs work the same way. Lower the temperature for lists and tables, raise it for creative text.\nAbout 17 tokens a second on the DGX Spark; the first run loads the model, about 10 seconds."
+   },
+   "color": "#432",
+   "bgcolor": "#653"
+  },
+  {
+   "id": 6,
+   "type": "MarkdownNote",
+   "pos": [
+    0,
+    432
+   ],
+   "size": [
+    520,
+    286
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "title": "About this workflow",
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "## About this workflow\n\nCore ComfyUI's Generate Text with Google's Gemma 4 12B instruct (Apache-2.0), in Comfy-Org's int8 build.\nIt reads text, pictures, video and audio and writes in many languages. Its Finnish has grammar mistakes;\nfor Finnish, see *Text Generation (Poro 2 8B)*.\n\nAsset profile: `gemma-4-12b`."
+   ],
+   "widgets_values_named": {
+    "text": "## About this workflow\n\nCore ComfyUI's Generate Text with Google's Gemma 4 12B instruct (Apache-2.0), in Comfy-Org's int8 build.\nIt reads text, pictures, video and audio and writes in many languages. Its Finnish has grammar mistakes;\nfor Finnish, see *Text Generation (Poro 2 8B)*.\n\nAsset profile: `gemma-4-12b`."
+   },
+   "color": "#432",
+   "bgcolor": "#653"
+  }
+ ],
+ "links": [
+  [
+   4,
+   1,
+   0,
+   3,
+   0,
+   "CLIP"
+  ],
+  [
+   5,
+   2,
+   0,
+   3,
+   4,
+   "STRING"
+  ],
+  [
+   6,
+   3,
+   0,
+   4,
+   0,
+   "STRING"
+  ]
+ ],
+ "groups": [
+  {
+   "id": 1,
+   "title": "Text model",
+   "bounding": [
+    600,
+    0,
+    448,
+    1170
+   ],
+   "color": "#3f789e",
+   "flags": {}
+  }
+ ],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.9,
+   "offset": [
+    416,
+    110
+   ]
+  }
+ },
+ "version": 0.4
+}

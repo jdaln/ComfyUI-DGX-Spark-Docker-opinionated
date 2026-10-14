@@ -8,7 +8,8 @@
       "5-speech": "Speech",
       "6-music": "Music",
       "7-3d": "3D",
-      "8-utility": "Utility"
+      "8-utility": "Utility",
+      "9-text": "Text"
     }
   }
 }

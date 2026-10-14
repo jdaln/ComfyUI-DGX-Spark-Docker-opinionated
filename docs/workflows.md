@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 91 profiles. The 90 in the category tables below
+`asset-profiles.json` defines 93 profiles. The 92 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 90 have an automated smoke lane. Three do not, because their
+Most of those 92 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -37,7 +37,7 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | Type | Where to find it |
    | --- | --- |
    | **Template** | Workflow → Browse Templates, search the name |
-   | **Ours** | Browse Templates → Extensions, under its type: Image, Image editing, Video, Video editing, Speech, Music, 3D or Utility. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
+   | **Ours** | Browse Templates → Extensions, under its type: Image, Image editing, Video, Video editing, Speech, Music, 3D, Utility or Text. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
    | **Node example** | Browse Templates → Extensions; the ones verified here are under their type, the rest under the custom node's name |
 
 Krea 2, Ideogram 4, Gemma 3, MuScriptor and six LTX LoRAs are gated on Hugging Face. Accept
@@ -801,6 +801,29 @@ the object; the profile includes BiRefNet for that, 0.4 GB.
 
 Hunyuan3D 2.1 with PBR textures is not here yet: the native paint port, ComfyUI
 PR #15020, is still open, and the wrapper packs compile CUDA extensions.
+
+## Text
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text from a prompt in many languages, also about a picture, video or audio | `gemma-4-12b` | Text Generation (Gemma 4 12B) | Ours | 12 GB | 15 s |
+| Finnish text without the grammar slips of multilingual models | `poro-2-8b` | Text Generation (Poro 2 8B) | Ours | 16 GB | 126 s |
+
+Core ComfyUI's Generate Text runs Gemma 4 itself. Google's 12B instruct model
+(Apache-2.0), in Comfy-Org's int8 build, writes about 17 tokens a second here
+and reads pictures, video and audio as well as text. It is not the Gemma 4 file
+LTX-2.5 uses as its text encoder: that one is fine-tuned for LTX, and as a chat
+model it returns letter salad.
+
+In Finnish, Gemma 4 12B made grammar mistakes in every text it wrote
+("kurkkukipuon", "Olemaan hyväksi"). LumiOpen's Poro 2 8B Instruct, Llama 3.1
+8B trained further on Finnish and English (Llama 3.3 Community Licence), wrote
+the same dialogue and word list in correct Finnish when it was asked in
+Finnish; asked in English, its Finnish is poor. Core cannot run it, so the
+template pack's Generate Text (Transformers) node runs it through transformers
+from a model folder in `models/LLM/`. It loads in about 1.5 minutes and writes
+7 to 9 tokens a second. Both models wrote wrong grammar tables, so check any
+rule they state.
 
 ## Utility
 

@@ -90,6 +90,8 @@
     ["frame-interpolation-film",                    "utility_video_frame_interpolation"],
     ["seedvr2-video-upscale",                       "utility_seedvr2_3b_int8_upscale_video"],
     ["vibevoice-1.5b",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Multi-Character Conversation).json",
-      {"VibeVoice-Large": "VibeVoice-1.5B"}]
+      {"VibeVoice-Large": "VibeVoice-1.5B"}],
+    ["gemma-4-12b",                                 "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text Generation (Gemma 4 12B).json"],
+    ["poro-2-8b",                                   "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text Generation (Poro 2 8B).json"]
   ]
 }

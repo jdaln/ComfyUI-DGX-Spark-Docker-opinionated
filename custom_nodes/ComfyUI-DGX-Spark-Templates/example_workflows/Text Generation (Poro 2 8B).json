@@ -1,0 +1,338 @@
+{
+ "id": "d4dcfa7b-6b6a-4c47-bda2-d38beaa3be96",
+ "revision": 0,
+ "last_node_id": 5,
+ "last_link_id": 4,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    1128,
+    30
+   ],
+   "size": [
+    400,
+    200
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "value",
+     "name": "value",
+     "type": "STRING",
+     "widget": {
+      "name": "value"
+     },
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "STRING",
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      3
+     ]
+    }
+   ],
+   "title": "System prompt",
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "Olet avulias assistentti. Vastaat selkeällä ja virheettömällä suomen kielellä."
+   ],
+   "widgets_values_named": {
+    "value": "Olet avulias assistentti. Vastaat selkeällä ja virheettömällä suomen kielellä."
+   }
+  },
+  {
+   "id": 2,
+   "type": "TransformersTextGenerate",
+   "pos": [
+    1128,
+    284
+   ],
+   "size": [
+    400,
+    304
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "system_prompt",
+     "name": "system_prompt",
+     "shape": 7,
+     "type": "STRING",
+     "link": 3
+    },
+    {
+     "localized_name": "model",
+     "name": "model",
+     "type": "COMBO",
+     "widget": {
+      "name": "model"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "prompt",
+     "name": "prompt",
+     "type": "STRING",
+     "widget": {
+      "name": "prompt"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "max_new_tokens",
+     "name": "max_new_tokens",
+     "type": "INT",
+     "widget": {
+      "name": "max_new_tokens"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "temperature",
+     "name": "temperature",
+     "type": "FLOAT",
+     "widget": {
+      "name": "temperature"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "top_p",
+     "name": "top_p",
+     "type": "FLOAT",
+     "widget": {
+      "name": "top_p"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "top_k",
+     "name": "top_k",
+     "type": "INT",
+     "widget": {
+      "name": "top_k"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "repetition_penalty",
+     "name": "repetition_penalty",
+     "type": "FLOAT",
+     "widget": {
+      "name": "repetition_penalty"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "seed",
+     "name": "seed",
+     "type": "INT",
+     "widget": {
+      "name": "seed"
+     },
+     "link": null
+    },
+    {
+     "localized_name": "keep_model_loaded",
+     "name": "keep_model_loaded",
+     "type": "BOOLEAN",
+     "widget": {
+      "name": "keep_model_loaded"
+     },
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "text",
+     "name": "text",
+     "type": "STRING",
+     "links": [
+      4
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "TransformersTextGenerate"
+   },
+   "widgets_values": [
+    "Llama-Poro-2-8B-Instruct",
+    "Kirjoita lyhyt ja ystävällinen sähköposti, jossa kutsut työkaverit piknikille perjantai-iltapäivänä.",
+    512,
+    0.7,
+    0.95,
+    64,
+    1.05,
+    0,
+    "randomize",
+    false
+   ],
+   "widgets_values_named": {
+    "model": "Llama-Poro-2-8B-Instruct",
+    "prompt": "Kirjoita lyhyt ja ystävällinen sähköposti, jossa kutsut työkaverit piknikille perjantai-iltapäivänä.",
+    "max_new_tokens": 512,
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "top_k": 64,
+    "repetition_penalty": 1.05,
+    "seed": 0,
+    "control_after_generate": "randomize",
+    "keep_model_loaded": false
+   }
+  },
+  {
+   "id": 3,
+   "type": "PreviewAny",
+   "pos": [
+    1128,
+    642
+   ],
+   "size": [
+    210,
+    122
+   ],
+   "flags": {},
+   "order": 4,
+   "mode": 0,
+   "inputs": [
+    {
+     "localized_name": "source",
+     "name": "source",
+     "type": "*",
+     "link": 4
+    }
+   ],
+   "outputs": [
+    {
+     "localized_name": "STRING",
+     "name": "STRING",
+     "type": "STRING",
+     "links": null
+    }
+   ],
+   "title": "Text",
+   "properties": {
+    "cnr_id": "comfy-core",
+    "ver": "0.38.0",
+    "Node name for S&R": "PreviewAny"
+   },
+   "widgets_values": [],
+   "widgets_values_named": {}
+  },
+  {
+   "id": 4,
+   "type": "MarkdownNote",
+   "pos": [
+    0,
+    40
+   ],
+   "size": [
+    520,
+    322
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "title": "How to use",
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "## Finnish text from Poro 2 8B\n\n1. Write the request in **prompt**, in Finnish, and the assistant's role in **System prompt**.\n2. Run. The answer appears in **Text**.\n\nWrite the prompts in Finnish: Poro's Finnish is clearly worse when it is asked in English. It knows\nFinnish and English only; for other languages use *Text Generation (Gemma 4 12B)*. Turn\n**keep_model_loaded** on when running several prompts in a row: loading takes about 1.5 minutes, writing\nabout 8 tokens a second."
+   ],
+   "widgets_values_named": {
+    "text": "## Finnish text from Poro 2 8B\n\n1. Write the request in **prompt**, in Finnish, and the assistant's role in **System prompt**.\n2. Run. The answer appears in **Text**.\n\nWrite the prompts in Finnish: Poro's Finnish is clearly worse when it is asked in English. It knows\nFinnish and English only; for other languages use *Text Generation (Gemma 4 12B)*. Turn\n**keep_model_loaded** on when running several prompts in a row: loading takes about 1.5 minutes, writing\nabout 8 tokens a second."
+   },
+   "color": "#432",
+   "bgcolor": "#653"
+  },
+  {
+   "id": 5,
+   "type": "MarkdownNote",
+   "pos": [
+    0,
+    432
+   ],
+   "size": [
+    520,
+    304
+   ],
+   "flags": {},
+   "order": 2,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "title": "About this workflow",
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "## About this workflow\n\nLumiOpen's Poro 2 8B Instruct, Llama 3.1 8B trained further on Finnish and English (Llama 3.3 Community\nLicence), run through transformers by the template pack's Generate Text (Transformers) node. The model is\na folder in `models/LLM/`. In tests it wrote correct Finnish where Gemma 4 12B made mistakes in every\ntext.\n\nAsset profile: `poro-2-8b`."
+   ],
+   "widgets_values_named": {
+    "text": "## About this workflow\n\nLumiOpen's Poro 2 8B Instruct, Llama 3.1 8B trained further on Finnish and English (Llama 3.3 Community\nLicence), run through transformers by the template pack's Generate Text (Transformers) node. The model is\na folder in `models/LLM/`. In tests it wrote correct Finnish where Gemma 4 12B made mistakes in every\ntext.\n\nAsset profile: `poro-2-8b`."
+   },
+   "color": "#432",
+   "bgcolor": "#653"
+  }
+ ],
+ "links": [
+  [
+   3,
+   1,
+   0,
+   2,
+   0,
+   "STRING"
+  ],
+  [
+   4,
+   2,
+   0,
+   3,
+   0,
+   "STRING"
+  ]
+ ],
+ "groups": [
+  {
+   "id": 1,
+   "title": "Text model",
+   "bounding": [
+    600,
+    0,
+    448,
+    858
+   ],
+   "color": "#3f789e",
+   "flags": {}
+  }
+ ],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.9,
+   "offset": [
+    416,
+    110
+   ]
+  }
+ },
+ "version": 0.4
+}

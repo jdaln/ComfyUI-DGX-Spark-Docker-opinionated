@@ -498,6 +498,12 @@
   "seedvr2-video-upscale": [
    "seedvr2-3b-int8",
    "seedvr2-video-input"
+  ],
+  "gemma-4-12b": [
+   "gemma-4-12b-model"
+  ],
+  "poro-2-8b": [
+   "poro-2-8b-model"
   ]
  },
  "selection_metadata": {
@@ -2128,6 +2134,21 @@
     "dest": "/workspace/ComfyUI/input/image_lotus_depth_v1_1_input_image.png",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/image_lotus_depth_v1_1_input_image.png",
     "label": "Lotus depth sample"
+   }
+  ],
+  "gemma-4-12b-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/gemma4_12b_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/gemma-4/resolve/main/text_encoders/gemma4_12b_int8_convrot.safetensors",
+    "label": "Gemma 4 12B instruct, int8 (Comfy-Org)"
+   }
+  ],
+  "poro-2-8b-model": [
+   {
+    "type": "hf_snapshot",
+    "dest": "/workspace/ComfyUI/models/LLM/Llama-Poro-2-8B-Instruct",
+    "repo_id": "LumiOpen/Llama-Poro-2-8B-Instruct",
+    "label": "Poro 2 8B Instruct, Finnish and English chat model (LumiOpen)"
    }
   ]
  }

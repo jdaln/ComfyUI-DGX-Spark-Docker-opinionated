@@ -96,5 +96,11 @@
       "Image Depth Estimation (Lotus Depth)",
       "Remove Background (Lucida)"
     ]
+  },
+  "9-text": {
+    "ComfyUI-DGX-Spark-Templates": [
+      "Text Generation (Gemma 4 12B)",
+      "Text Generation (Poro 2 8B)"
+    ]
   }
 }
