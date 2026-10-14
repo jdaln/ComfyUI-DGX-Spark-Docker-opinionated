@@ -70,6 +70,7 @@
     "TableLookup": "ComfyUI-DGX-Spark-Templates",
     "SplitColumns": "ComfyUI-DGX-Spark-Templates",
     "LoadCharacter": "ComfyUI-DGX-Spark-Templates",
-    "SaveCharacter": "ComfyUI-DGX-Spark-Templates"
+    "SaveCharacter": "ComfyUI-DGX-Spark-Templates",
+    "MarkdownToPages": "ComfyUI-DGX-Spark-Templates"
   }
 }

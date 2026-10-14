@@ -122,6 +122,65 @@ class Gates(unittest.TestCase):
         self.assertEqual(gate.gate(True, 80.0, value="done"), ("done",))
 
 
+SAMPLE = """# Omistaminen ja ainesanat
+
+Taulukossa on **tärkeimmät** muodot. Hinta 2,50 €, klo 9.30, Åbo.
+
+- ensimmäinen kohta
+- toinen kohta, joka on niin pitkä, että se jatkuu toiselle riville ja näyttää, miten rivitys toimii luettelossa
+1. numeroitu
+
+| # | Grammar point | Form / rule | ✓ Example | ✗ Common mistake |
+| --- | --- | --- | --- | --- |
+{rows}
+
+---
+
+مرحبا بكم في الصف. هذه جملة طويلة باللغة العربية لاختبار الالتفاف من اليمين إلى اليسار.
+
+<!-- page -->
+
+## Persian
+
+سلام دوست من، امروز درباره خانه صحبت می‌کنیم.
+"""
+
+
+class Pages(unittest.TestCase):
+    def test_parse(self):
+        pages = load("page_nodes")
+        kinds = [kind for kind, _ in pages.parse(SAMPLE.format(rows="| 1 | Omistaminen | minulla on | ✓ a | ✗ b |"))]
+        self.assertEqual(kinds, ["h1", "p", "list", "table", "cut", "p", "page", "h2", "p"])
+        blocks = pages.parse("- a\n## H\n| x | y |\n|---|---|\n| 1 | 2 \\| 3 |")
+        self.assertEqual(blocks[0], ("list", [["•", "a"]]))
+        self.assertEqual(blocks[2], ("table", (["x", "y"], [["1", "2 \\| 3"]])))
+        self.assertTrue(pages.is_rtl("مرحبا 12"))
+        self.assertFalse(pages.is_rtl("12 Hei مرحبا"))
+
+    def test_layout_and_pdf(self):
+        pages = load("page_nodes")
+        row = "| {n} | Ainesana objektina | partitiivi, kun määrä ei ole rajattu | ✓ Juon **kahvia**. | ✗ Juon kahvi. |"
+        text = SAMPLE.format(rows="\n".join(row.format(n=n) for n in range(1, 31)))
+        sheet = pages.Sheet(body_points=11)
+        sheet.markdown(text, rows_per_page=12)
+        result = sheet.finish()
+        self.assertGreaterEqual(len(result), 4)  # 30 rows at 12 a page, then the forced page break
+        self.assertEqual(result[0].size, (2480, 3508))
+        images, pdf = pages.save_pages(result, "pages/test", grey=True)
+        self.assertEqual(len(images), len(result))
+        with open(os.path.join(WORK, "output", pdf), "rb") as handle:
+            data = handle.read()
+        self.assertTrue(data.startswith(b"%PDF-1.4"))
+        start = int(re.search(rb"startxref\n(\d+)", data).group(1))
+        offsets = [int(o) for o in re.findall(rb"(\d{10}) 00000 n", data[start:])]
+        for number, offset in enumerate(offsets, 1):
+            self.assertTrue(data[offset:].startswith(b"%d 0 obj" % number))
+        self.assertEqual(data.count(b"/Type /Page "), len(result))
+        large = pages.Sheet(landscape=True, body_points=16)
+        large.markdown("# Iso teksti\n\nLapsille sopiva koko.")
+        self.assertEqual(large.finish()[0].size, (3508, 2480))
+
+
 class Characters(unittest.TestCase):
     def test_save_and_load(self):
         import torch
