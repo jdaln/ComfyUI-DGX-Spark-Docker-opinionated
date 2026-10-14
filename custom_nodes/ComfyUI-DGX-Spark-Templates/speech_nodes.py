@@ -33,6 +33,8 @@ import comfy.model_management
 import comfy.utils
 import folder_paths
 
+from .speech_text_nodes import language_code
+
 WHISPER_REPO = "openai/whisper-large-v3"
 WHISPER_DIR = os.path.join(folder_paths.models_dir, "stt", "whisper", "whisper-large-v3")
 WHISPER_FILES = ("config.json", "generation_config.json", "preprocessor_config.json", "model.safetensors",
@@ -345,6 +347,14 @@ class ChatterboxSpeech:
                 "seed": ("INT", {"default": 0, "min": 0, "max": 0xFFFFFFFF, "control_after_generate": True}),
                 "keep_model_loaded": ("BOOLEAN", {"default": False}),
             },
+            "optional": {
+                "speech_language": ("STRING", {"forceInput": True,
+                                               "tooltip": "When connected, overrides model and language: Finnish "
+                                                          "uses the Finnish fine-tune, any other language the "
+                                                          "multilingual model. Outside Finnish and English, "
+                                                          "cfg_weight is 0, so a voice sample in English brings no "
+                                                          "English accent."}),
+            },
         }
 
     RETURN_TYPES = ("AUDIO",)
@@ -357,14 +367,21 @@ class ChatterboxSpeech:
                    "speaks each one with its own voice sample.")
 
     def speak(self, voice, text, model, language, exaggeration, cfg_weight, temperature, repetition_penalty, min_p,
-              top_p, seed, keep_model_loaded):
+              top_p, seed, keep_model_loaded, speech_language=None):
         if len(voice) not in (1, len(text)):
             raise ValueError(f"Got {len(voice)} voice samples for {len(text)} lines.")
-        settings = dict(exaggeration=exaggeration[0], cfg_weight=cfg_weight[0], temperature=temperature[0],
+        finnish, code, cfg = model[0] == FINNISH, language[0].rsplit("(", 1)[1].rstrip(")"), cfg_weight[0]
+        if speech_language:
+            code = language_code(speech_language[0])
+            if not any(name.endswith(f"({code})") for name in LANGUAGES):
+                raise ValueError(f"Chatterbox does not speak {speech_language[0]!r}. It speaks {', '.join(LANGUAGES)}.")
+            finnish = code == "fi"
+            if code not in ("fi", "en"):
+                cfg = 0.0
+        settings = dict(exaggeration=exaggeration[0], cfg_weight=cfg, temperature=temperature[0],
                         repetition_penalty=repetition_penalty[0], min_p=min_p[0], top_p=top_p[0], seed=seed[0])
         try:
-            clips = self._speak_all(voice, text, model[0] == FINNISH, language[0].rsplit("(", 1)[1].rstrip(")"),
-                                    **settings)
+            clips = self._speak_all(voice, text, finnish, code, **settings)
         finally:
             if not keep_model_loaded[0]:
                 _unload("chatterbox")
