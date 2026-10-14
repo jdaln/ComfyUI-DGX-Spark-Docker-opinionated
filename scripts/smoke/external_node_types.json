@@ -68,6 +68,8 @@
     "DraftGate": "ComfyUI-DGX-Spark-Templates",
     "RenderGate": "ComfyUI-DGX-Spark-Templates",
     "TableLookup": "ComfyUI-DGX-Spark-Templates",
-    "SplitColumns": "ComfyUI-DGX-Spark-Templates"
+    "SplitColumns": "ComfyUI-DGX-Spark-Templates",
+    "LoadCharacter": "ComfyUI-DGX-Spark-Templates",
+    "SaveCharacter": "ComfyUI-DGX-Spark-Templates"
   }
 }

@@ -120,6 +120,31 @@ class Gates(unittest.TestCase):
         FREE["bytes"] = 100 * 2**30
         self.assertEqual(gate.check_lazy_status(True, 80.0), ["value"])
         self.assertEqual(gate.gate(True, 80.0, value="done"), ("done",))
+
+
+class Characters(unittest.TestCase):
+    def test_save_and_load(self):
+        import torch
+        nodes = load("character_nodes")
+        picture = torch.rand(1, 64, 48, 3)
+        voice = {"waveform": torch.sin(torch.linspace(0, 2000, 24000)).reshape(1, 1, -1) * 0.5, "sample_rate": 24000}
+        nodes.SaveCharacter().save("Rouva  Virtanen", False, picture, voice)
+        self.assertIn("Rouva Virtanen", nodes.characters())
+        self.assertIs(nodes.LoadCharacter.VALIDATE_INPUTS("Rouva Virtanen"), True)
+        loaded, sound, name = nodes.LoadCharacter().load("Rouva Virtanen")
+        self.assertEqual(tuple(loaded.shape), (1, 64, 48, 3))
+        self.assertEqual(sound["sample_rate"], 24000)
+        self.assertAlmostEqual(sound["waveform"].shape[-1] / 24000, 1.0, places=2)
+        self.assertEqual(name, "Rouva Virtanen")
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            nodes.SaveCharacter().save("Rouva Virtanen", False, picture, voice)
+        nodes.SaveCharacter().save("Rouva Virtanen", True, picture, voice)
+        for bad in ("../x", "a/b", ".hidden", "", "x" * 61):
+            with self.assertRaises(ValueError):
+                nodes.character_path(bad, ".png")
+        self.assertIsInstance(nodes.LoadCharacter.VALIDATE_INPUTS("Nobody"), str)
+
+
 if __name__ == "__main__":
     shutil.rmtree(WORK, ignore_errors=True)
     os.makedirs(os.path.join(WORK, "input"))
