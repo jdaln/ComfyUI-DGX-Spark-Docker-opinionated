@@ -20,7 +20,8 @@ into table cells and pipe-separated lines into lists. `character_nodes` keeps a
 picture and a voice sample together as a named character in input/cast/.
 `page_nodes` lays out Markdown as printable A4 pages and a PDF.
 `speech_text_nodes` cuts text into sentences and writes out numbers in Finnish
-words for speech.
+words for speech. `language_model_nodes` runs chat models that core's Generate
+Text does not, such as the Finnish-trained Poro 2, through transformers.
 
 `cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
 to the system once the queue has been idle for a minute. `example_inputs` copies
@@ -28,14 +29,14 @@ sample files that ship with the pack, the InfiniteTalk speaker masks, into the
 input folder when they are missing.
 """
 
-from . import (character_nodes, cpu_memory, dialogue_nodes, draft_nodes, example_inputs, memory_nodes, page_nodes,
-               seed_nodes, speech_nodes, speech_text_nodes, text_nodes)
+from . import (character_nodes, cpu_memory, dialogue_nodes, draft_nodes, example_inputs, language_model_nodes,
+               memory_nodes, page_nodes, seed_nodes, speech_nodes, speech_text_nodes, text_nodes)
 
 cpu_memory.start()
 example_inputs.install()
 
 _MODULES = (memory_nodes, seed_nodes, dialogue_nodes, speech_nodes, draft_nodes, text_nodes, character_nodes,
-            page_nodes, speech_text_nodes)
+            page_nodes, speech_text_nodes, language_model_nodes)
 NODE_CLASS_MAPPINGS = {name: node for module in _MODULES for name, node in module.NODE_CLASS_MAPPINGS.items()}
 NODE_DISPLAY_NAME_MAPPINGS = {name: title for module in _MODULES
                               for name, title in module.NODE_DISPLAY_NAME_MAPPINGS.items()}

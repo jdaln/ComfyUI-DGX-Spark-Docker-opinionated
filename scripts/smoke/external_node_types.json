@@ -73,6 +73,7 @@
     "SaveCharacter": "ComfyUI-DGX-Spark-Templates",
     "MarkdownToPages": "ComfyUI-DGX-Spark-Templates",
     "SplitSentences": "ComfyUI-DGX-Spark-Templates",
-    "FinnishNumbersToWords": "ComfyUI-DGX-Spark-Templates"
+    "FinnishNumbersToWords": "ComfyUI-DGX-Spark-Templates",
+    "TransformersTextGenerate": "ComfyUI-DGX-Spark-Templates"
   }
 }
