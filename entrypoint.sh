@@ -346,6 +346,27 @@ elif [ "${DISABLE_ALL_CUSTOM_NODES:-true}" = "true" ]; then
     COMFY_ARGS+=(--disable-all-custom-nodes)
 fi
 
+# Ultralytics, which two node packs depend on, reports usage unless its settings
+# file says otherwise; unlike the libraries docker-compose.yml switches off by
+# environment variable, it has no variable for this.
+python - <<'PY' || echo "WARNING: could not switch off Ultralytics usage reporting"
+import json, os
+path = os.path.join(os.environ.get("YOLO_CONFIG_DIR", ""), "Ultralytics", "settings.json")
+if os.path.exists(path):
+    with open(path) as handle:
+        settings = json.load(handle)
+    if settings.get("sync", True):
+        settings["sync"] = False
+        with open(path, "w") as handle:
+            json.dump(settings, handle, indent=2)
+else:
+    try:
+        from ultralytics.utils import SETTINGS
+    except ImportError:
+        raise SystemExit(0)
+    SETTINGS.update(sync=False)
+PY
+
 # Reclaim the cached model after an idle spell. ComfyUI holds the last model
 # resident, which on a Spark is host memory everything else needs. Backgrounded
 # here so it dies with the container.

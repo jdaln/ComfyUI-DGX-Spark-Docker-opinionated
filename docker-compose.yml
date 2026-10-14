@@ -44,6 +44,13 @@ services:
       PIP_CACHE_DIR: /workspace/pip_cache
       PIP_CONSTRAINT: /workspace/constraints.txt
       YOLO_CONFIG_DIR: /workspace/cache/ultralytics
+      # Usage reporting off: the Hugging Face libraries, Gradio's analytics and
+      # Albumentations' update check. Ultralytics has no variable for it;
+      # entrypoint.sh switches it off in its settings file.
+      DO_NOT_TRACK: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      GRADIO_ANALYTICS_ENABLED: "False"
+      NO_ALBUMENTATIONS_UPDATE: "1"
       COMFY_ASSET_PROFILES: ${COMFY_ASSET_PROFILES:-}
       COMFY_CUSTOM_NODE_MODULES_ALLOWLIST: ${COMFY_CUSTOM_NODE_MODULES_ALLOWLIST:-true}
       COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST: ${COMFY_CUSTOM_NODE_EXAMPLE_WORKFLOWS_ALLOWLIST:-ComfyUI-WanVideoWrapper,ComfyUI-KJNodes,ComfyUI-WanAnimatePreprocess,ComfyUI-qwenmultiangle,ComfyUI-DGX-Spark-Templates,ComfyUI-MiniMaxH3-Easy}

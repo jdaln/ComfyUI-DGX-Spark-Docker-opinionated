@@ -39,6 +39,22 @@ the existing container and is a common source of "my change did nothing".
 `UPDATE_DEPS` updates the code inside the container. It does not update this
 repo; pull that yourself with `git pull`.
 
+### Usage reporting
+
+Nothing in the stack reports usage. `docker-compose.yml` sets these for every
+instance, not through `.env`:
+
+| Variable | Switches off |
+| --- | --- |
+| `DO_NOT_TRACK=1`, `HF_HUB_DISABLE_TELEMETRY=1` | telemetry of huggingface_hub, transformers and diffusers |
+| `GRADIO_ANALYTICS_ENABLED=False` | Gradio's analytics; a speech recognition pack imports Gradio |
+| `NO_ALBUMENTATIONS_UPDATE=1` | Albumentations' version check against PyPI at import |
+
+Ultralytics, which ComfyUI-AdvancedLivePortrait and ComfyUI-RMBG need, has no
+variable for this: `entrypoint.sh` sets `sync` to `false` in its settings file
+in `./ultralytics_cache` on every start. The ComfyUI frontend contacts only the
+local server; its analytics code runs only in Comfy's cloud service.
+
 ## Volumes
 
 | Container path | Host path | What it holds |
