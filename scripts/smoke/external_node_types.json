@@ -71,6 +71,8 @@
     "SplitColumns": "ComfyUI-DGX-Spark-Templates",
     "LoadCharacter": "ComfyUI-DGX-Spark-Templates",
     "SaveCharacter": "ComfyUI-DGX-Spark-Templates",
-    "MarkdownToPages": "ComfyUI-DGX-Spark-Templates"
+    "MarkdownToPages": "ComfyUI-DGX-Spark-Templates",
+    "SplitSentences": "ComfyUI-DGX-Spark-Templates",
+    "FinnishNumbersToWords": "ComfyUI-DGX-Spark-Templates"
   }
 }

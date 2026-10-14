@@ -122,6 +122,61 @@ class Gates(unittest.TestCase):
         self.assertEqual(gate.gate(True, 80.0, value="done"), ("done",))
 
 
+class SpeechText(unittest.TestCase):
+    def test_numbers(self):
+        text = load("speech_text_nodes")
+        self.assertEqual(text.cardinal(2026), "kaksituhatta kaksikymmentäkuusi")
+        self.assertEqual(text.cardinal(25, "iness"), "kahdessakymmenessäviidessä")
+        self.assertEqual(text.cardinal(19, "part"), "yhdeksäätoista")
+        self.assertEqual(text.cardinal(1000, "gen"), "tuhannen")
+        self.assertEqual(text.ordinal(3, "iness"), "kolmannessa")
+        self.assertEqual(text.ordinal(22), "kahdeskymmeneskahdes")
+        self.assertEqual(text.ordinal(1000, "gen"), "tuhannennen")
+        self.assertEqual(text.ordinal(2, "illat"), "toiseen")
+
+    def test_speak_finnish(self):
+        text = load("speech_text_nodes")
+        cases = {
+            "Bussi lähtee klo 9.30.": "Bussi lähtee kello yhdeksän kolmekymmentä.",
+            "Kahvi maksaa 2,50 €.": "Kahvi maksaa kaksi euroa viisikymmentä senttiä.",
+            "Tänään on 14.10.2026.": "Tänään on neljästoista lokakuuta kaksituhatta kaksikymmentäkuusi.",
+            "Hän asuu 3. kerroksessa.": "Hän asuu kolmannessa kerroksessa.",
+            "Ostin 12 omenaa ja 1,5 litraa maitoa.": "Ostin kaksitoista omenaa ja puolitoista litraa maitoa.",
+            "Soita numeroon 040 123 4567.":
+                "Soita numeroon nolla neljä nolla, yksi kaksi kolme, neljä viisi kuusi seitsemän.",
+            "Juna on myöhässä n. 20 min.": "Juna on myöhässä noin kaksikymmentä minuuttia.",
+            "Avoinna ma–pe 8–16.": "Avoinna maanantaista perjantaihin kahdeksasta kuuteentoista.",
+            "Vuonna 1984 asuin 2 vuotta Turussa.":
+                "Vuonna tuhat yhdeksänsataa kahdeksankymmentäneljä asuin kaksi vuotta Turussa.",
+            "Esim. kahvi, tee jne. ovat hyviä.": "Esimerkiksi kahvi, tee ja niin edelleen ovat hyviä.",
+            "Annoin 2 euron kolikon.": "Annoin kahden euron kolikon.",
+            "Asun Kauppakatu 5:ssä.": "Asun Kauppakatu viidessä.",
+            "Tule 4. päivänä.": "Tule neljäntenä päivänä.",
+            "Toisesta kerroksesta 3. kerrokseen.": "Toisesta kerroksesta kolmanteen kerrokseen.",
+            "Hän oli 3. ikkunan vieressä.": "Hän oli kolmannen ikkunan vieressä.",
+            "N. 300 ihmistä tuli.": "Noin kolmesataa ihmistä tuli.",
+            "Lämpötila on -5 °C.": "Lämpötila on miinus viisi astetta.",
+            "Klo 8.00–16.00 auki.": "Kello kahdeksasta kuuteentoista auki.",
+        }
+        for written, spoken in cases.items():
+            self.assertEqual(text.speak_finnish(written), spoken)
+        node = text.FinnishNumbersToWords()
+        self.assertEqual(node.convert("Kello 3", "English (en)"), ("Kello 3",))
+
+    def test_split_sentences(self):
+        text = load("speech_text_nodes")
+        story = ('Bussi lähtee klo 9.30. Esim. kahvi maksaa 2,50 €. Hän asuu 3. kerroksessa, joka on korkealla! '
+                 'Mitä kuuluu? "Hyvää," sanoi hän. Tri Virtanen tuli.\n\nToinen kappale, jossa on pilkku.')
+        self.assertEqual(text.split_sentences(story, "fi"), [
+            "Bussi lähtee klo 9.30.", "Esim. kahvi maksaa 2,50 €.", "Hän asuu 3. kerroksessa, joka on korkealla!",
+            "Mitä kuuluu?", '"Hyvää," sanoi hän.', "Tri Virtanen tuli.", "Toinen kappale, jossa on pilkku."])
+        chunks = text.split_sentences("Tämä on lause, jossa on pilkku, ja vielä yksi pilkku.", "fi", dictation=True)
+        self.assertEqual(chunks, ["Tämä on lause,", "jossa on pilkku,", "ja vielä yksi pilkku."])
+        long = " ".join(["sana"] * 120) + "."
+        self.assertTrue(all(len(piece) <= 300 for piece in text.split_sentences(long, "fi")))
+        self.assertEqual(text.language_code("Finnish (fi)"), "fi")
+
+
 SAMPLE = """# Omistaminen ja ainesanat
 
 Taulukossa on **tärkeimmät** muodot. Hinta 2,50 €, klo 9.30, Åbo.
