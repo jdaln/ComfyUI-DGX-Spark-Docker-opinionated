@@ -7,8 +7,6 @@ no GPU. They need the container's Python for torch, Pillow and av:
 
     docker cp scripts/smoke/test_pack_nodes.py comfyui:/tmp/
     docker exec comfyui python3 /tmp/test_pack_nodes.py
-
-Rendered pages are left in /tmp/pack_node_tests/ to look at.
 """
 import importlib
 import os
@@ -22,7 +20,6 @@ import unittest
 COMFY = "/workspace/ComfyUI"
 PACK = os.path.join(COMFY, "custom_nodes", "ComfyUI-DGX-Spark-Templates")
 WORK = "/tmp/pack_node_tests"
-FREE = {"bytes": 100 * 2**30}
 
 
 def stub_comfy():
@@ -52,75 +49,14 @@ def stub_comfy():
 
     module("folder_paths", get_input_directory=lambda: os.path.join(WORK, "input"),
            get_output_directory=lambda: os.path.join(WORK, "output"), get_save_image_path=save_image_path)
-    comfy = module("comfy")
-    comfy.model_management = module("comfy.model_management", current_loaded_models=[])
-    comfy.system_memory = module("comfy.system_memory", virtual_memory_available=lambda: FREE["bytes"])
     extras = module("comfy_extras")
     extras.nodes_audio = module("comfy_extras.nodes_audio", load=load)
-    module("server", PromptServer=None)
-    sys.path.insert(0, COMFY)  # comfy_execution.graph_utils imports nothing else
     pack = module("pack")
     pack.__path__ = [PACK]
 
 
 def load(name):
     return importlib.import_module(f"pack.{name}")
-
-
-class TextNodes(unittest.TestCase):
-    def test_lookup_types_and_fallback(self):
-        text = load("text_nodes")
-        table = "# style | suffix | lora | strength\nWatercolour | soft watercolour | krea2_softwatercolor.safetensors " \
-                "| 0.8\n* | flat illustration | krea2_softwatercolor.safetensors | 0\nCount | 20"
-        out = text.TableLookup().lookup(table, "watercolour")
-        self.assertEqual(out[:3], ("soft watercolour", "krea2_softwatercolor.safetensors", 0.8))
-        self.assertEqual(text.TableLookup().lookup(table, "photo")[2], 0)
-        self.assertEqual(text.TableLookup().lookup(table, "count")[0], 20)
-        with self.assertRaisesRegex(ValueError, "no row"):
-            text.TableLookup().lookup("a | 1", "b")
-
-    def test_split_columns(self):
-        text = load("text_nodes")
-        draft = "# Kodin esineet\n1. sohva | a sofa | soffa\n\n| tuoli | a chair |\n|---|---|\n# note\n3) pöytä | a table"
-        title, rows, first, second, third, _, _, count = text.SplitColumns().split(2, True, True, draft)
-        self.assertEqual(title, "Kodin esineet")
-        self.assertEqual(first, ["sohva", "tuoli", "pöytä"])
-        self.assertEqual(second, ["a sofa", "a chair", "a table"])
-        self.assertEqual(third, ["soffa", "", ""])
-        self.assertEqual(count, 3)
-        with self.assertRaisesRegex(ValueError, "Line 2"):
-            text.SplitColumns().split(2, True, True, "# T\nsohva | sofa\ntuoli")
-        with self.assertRaisesRegex(ValueError, "Expected 4 rows"):
-            text.SplitColumns().split(1, True, True, "a\nb", expected_rows=4)
-
-
-class Gates(unittest.TestCase):
-    def test_draft_gate(self):
-        gate = load("draft_nodes").DraftGate()
-        blocker = sys.modules["comfy_execution.graph_utils"].ExecutionBlocker
-        self.assertEqual(gate.check_lazy_status("", False), ["draft"])
-        self.assertEqual(gate.check_lazy_status("Korjattu.", True), [])
-        self.assertEqual(gate.check_lazy_status("  ", True), ["draft"])
-        preview, text = gate.pick("", False, draft="Luonnos.")
-        self.assertEqual(preview, "Luonnos.")
-        self.assertIsInstance(text, blocker)
-        self.assertEqual(gate.pick("Korjattu.", True), ("Korjattu.", "Korjattu."))
-        self.assertEqual(gate.pick("", True, draft="Luonnos."), ("Luonnos.", "Luonnos."))
-
-    def test_render_gate(self):
-        gate = load("draft_nodes").RenderGate()
-        blocker = sys.modules["comfy_execution.graph_utils"].ExecutionBlocker
-        self.assertEqual(gate.check_lazy_status(False, 80.0), [])
-        self.assertIsInstance(gate.gate(False, 80.0)[0], blocker)
-        FREE["bytes"] = 40 * 2**30
-        with self.assertRaisesRegex(RuntimeError, "Only 40 GiB"):
-            gate.check_lazy_status(True, 80.0)
-        self.assertEqual(gate.check_lazy_status(True, 80.0, value="done"), ["value"])
-        self.assertEqual(gate.check_lazy_status(True, 0.0), ["value"])
-        FREE["bytes"] = 100 * 2**30
-        self.assertEqual(gate.check_lazy_status(True, 80.0), ["value"])
-        self.assertEqual(gate.gate(True, 80.0, value="done"), ("done",))
-
 
 
 class SpeechText(unittest.TestCase):
@@ -181,66 +117,6 @@ class SpeechText(unittest.TestCase):
         text = load("speech_text_nodes")
         self.assertAlmostEqual(text.longest_speech_seconds("Puhun suomea."), 2.0 + 0.2 * 13)
         self.assertAlmostEqual(text.longest_speech_seconds("你好"), 2.0 + 0.2 * 6)
-
-
-SAMPLE = """# Omistaminen ja ainesanat
-
-Taulukossa on **tärkeimmät** muodot. Hinta 2,50 €, klo 9.30, Åbo.
-
-- ensimmäinen kohta
-- toinen kohta, joka on niin pitkä, että se jatkuu toiselle riville ja näyttää, miten rivitys toimii luettelossa
-1. numeroitu
-
-| # | Grammar point | Form / rule | ✓ Example | ✗ Common mistake |
-| --- | --- | --- | --- | --- |
-{rows}
-
----
-
-مرحبا بكم في الصف. هذه جملة طويلة باللغة العربية لاختبار الالتفاف من اليمين إلى اليسار.
-
-<!-- page -->
-
-## Persian
-
-سلام دوست من، امروز درباره خانه صحبت می‌کنیم.
-"""
-
-
-class Pages(unittest.TestCase):
-    def test_parse(self):
-        pages = load("page_nodes")
-        kinds = [kind for kind, _ in pages.parse(SAMPLE.format(rows="| 1 | Omistaminen | minulla on | ✓ a | ✗ b |"))]
-        self.assertEqual(kinds, ["h1", "p", "list", "table", "cut", "p", "page", "h2", "p"])
-        blocks = pages.parse("- a\n## H\n| x | y |\n|---|---|\n| 1 | 2 \\| 3 |")
-        self.assertEqual(blocks[0], ("list", [["•", "a"]]))
-        self.assertEqual(blocks[2], ("table", (["x", "y"], [["1", "2 \\| 3"]])))
-        self.assertTrue(pages.is_rtl("مرحبا 12"))
-        self.assertFalse(pages.is_rtl("12 Hei مرحبا"))
-
-    def test_layout_and_pdf(self):
-        pages = load("page_nodes")
-        row = "| {n} | Ainesana objektina | partitiivi, kun määrä ei ole rajattu | ✓ Juon **kahvia**. | ✗ Juon kahvi. |"
-        text = SAMPLE.format(rows="\n".join(row.format(n=n) for n in range(1, 31)))
-        sheet = pages.Sheet(body_points=11)
-        sheet.markdown(text, rows_per_page=12)
-        result = sheet.finish()
-        self.assertGreaterEqual(len(result), 4)  # 30 rows at 12 a page, then the forced page break
-        self.assertEqual(result[0].size, (2480, 3508))
-        images, pdf = pages.save_pages(result, "pages/test", grey=True)
-        self.assertEqual(len(images), len(result))
-        with open(os.path.join(WORK, "output", pdf["subfolder"], pdf["filename"]), "rb") as handle:
-            data = handle.read()
-        self.assertTrue(data.startswith(b"%PDF-1.4"))
-        start = int(re.search(rb"startxref\n(\d+)", data).group(1))
-        offsets = [int(o) for o in re.findall(rb"(\d{10}) 00000 n", data[start:])]
-        for number, offset in enumerate(offsets, 1):
-            self.assertTrue(data[offset:].startswith(b"%d 0 obj" % number))
-        self.assertEqual(data.count(b"/Type /Page "), len(result))
-        large = pages.Sheet(landscape=True, body_points=16)
-        large.markdown("# Iso teksti\n\nLapsille sopiva koko.")
-        self.assertEqual(large.finish()[0].size, (3508, 2480))
-
 
 
 class Characters(unittest.TestCase):
@@ -401,31 +277,6 @@ class Dialogue(unittest.TestCase):
                                    "<Picture 1> Aino: repliikki 2", "<Picture 1> listens"])
         self.assertGreaterEqual(cues[1][0] - cues[0][1], 6.0 - 1e-3)  # the answer time is never shortened
         self.assertGreaterEqual(sum(frames) / 24, 15.5 - 1e-3)
-
-
-class PicturePages(unittest.TestCase):
-    def test_layouts(self):
-        from PIL import Image, ImageDraw
-        pages = load("page_nodes")
-        pictures = []
-        for i in range(20):
-            picture = Image.new("RGB", (256, 256), (246, 246, 244))
-            ImageDraw.Draw(picture).ellipse((60, 80, 196, 180), fill=(200, 10 * i, 40))
-            pictures.append(picture)
-        labels, seconds = [f"sana {i + 1}" for i in range(20)], [""] * 20
-        cut = pages.cutout(pictures[0])
-        self.assertEqual(cut.getpixel((0, 0)), (255, 255, 255))
-        self.assertLess(cut.width, 200)
-        result, grid = pages.picture_pages(pictures, labels, seconds, "dictionary", "Keittiössä")
-        self.assertEqual((grid, len(result), result[0].size), ((4, 5), 1, (2480, 3508)))
-        self.assertEqual([pages.auto_grid(n) for n in (15, 16, 24, 25)], [(3, 5), (4, 4), (4, 6), (5, 5)])
-        fronts_and_backs, _ = pages.picture_pages(pictures[:12], labels[:12], seconds[:12], "flashcards")
-        self.assertEqual(len(fronts_and_backs), 2)
-        for layout in pages.LAYOUTS:
-            result, _ = pages.picture_pages(pictures[:9], labels[:9], ["käännös"] * 9, layout, "Otsikko",
-                                            bingo_grid=3, seed=3)
-            self.assertTrue(result and all(page.size == (2480, 3508) for page in result), layout)
-            result[0].convert("L").resize((620, 877)).save(os.path.join(WORK, f"layout_{layout}.png"))
 
 
 if __name__ == "__main__":

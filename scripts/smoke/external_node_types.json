@@ -65,17 +65,11 @@
     "WhisperSpeechToText": "ComfyUI-DGX-Spark-Templates",
     "ChatterboxSpeech": "ComfyUI-DGX-Spark-Templates",
     "AILab_Qwen3TTSVoiceDesign": "ComfyUI-QwenTTS",
-    "DraftGate": "ComfyUI-DGX-Spark-Templates",
-    "RenderGate": "ComfyUI-DGX-Spark-Templates",
-    "TableLookup": "ComfyUI-DGX-Spark-Templates",
-    "SplitColumns": "ComfyUI-DGX-Spark-Templates",
     "LoadCharacter": "ComfyUI-DGX-Spark-Templates",
     "SaveCharacter": "ComfyUI-DGX-Spark-Templates",
-    "MarkdownToPages": "ComfyUI-DGX-Spark-Templates",
     "SplitSentences": "ComfyUI-DGX-Spark-Templates",
     "FinnishNumbersToWords": "ComfyUI-DGX-Spark-Templates",
     "TransformersTextGenerate": "ComfyUI-DGX-Spark-Templates",
-    "PicturePage": "ComfyUI-DGX-Spark-Templates",
     "JoinWithPauses": "ComfyUI-DGX-Spark-Templates",
     "SegmentsFromSubtitles": "ComfyUI-DGX-Spark-Templates"
   }
