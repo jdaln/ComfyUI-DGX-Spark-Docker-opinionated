@@ -12,7 +12,8 @@ or lowercasing, and the base model's S3Gen, voice encoder and default voice.
 The model classes come from filliptm's ComfyUI_Fill-ChatterBox. Its own nodes
 sample without upstream Chatterbox's alignment check, and the multilingual
 model then talks on after the text in every language tried here, so this node
-samples itself, with that check (see _StopGuard).
+samples itself, with that check (see _StopGuard). A line that still comes back
+too long for its text is made again with the next seed, three tries at most.
 
 Both read their files from models/ and download any that are missing from
 Hugging Face on first use; the asset profiles provision them in advance.
@@ -33,7 +34,7 @@ import comfy.model_management
 import comfy.utils
 import folder_paths
 
-from .speech_text_nodes import language_code
+from .speech_text_nodes import language_code, longest_speech_seconds
 
 WHISPER_REPO = "openai/whisper-large-v3"
 WHISPER_DIR = os.path.join(folder_paths.models_dir, "stt", "whisper", "whisper-large-v3")
@@ -55,6 +56,7 @@ LANGUAGES = ("Arabic (ar)", "Chinese (zh)", "Danish (da)", "Dutch (nl)", "Englis
              "Swahili (sw)", "Swedish (sv)", "Turkish (tr)")
 SPEECH_VOCAB = 6561  # S3 speech tokens; ids at or above it are control tokens
 MAX_SPEECH_TOKENS = 1000  # 40 s at 25 tokens a second
+TRIES = 3  # seeds tried for a line that comes back too long
 
 _LOADED = {}
 
@@ -405,24 +407,31 @@ class ChatterboxSpeech:
                 if not line.strip():
                     raise ValueError(f"Line {i + 1} is empty.")
                 _write_wav(sample_path, voice[min(i, len(voice) - 1)])
-                torch.manual_seed(seed)
-                model.prepare_conditionals(sample_path, exaggeration=exaggeration)
-                if finnish:
-                    tokens = model.tokenizer.text_to_tokens(tts.punc_norm(line))
-                else:
-                    tokens = model.tokenizer.text_to_tokens(mtl.punc_norm(line), language_id=language)
-                tokens = torch.cat([tokens, tokens], dim=0).to(model.device)  # the CFG pair
-                tokens = F.pad(tokens, (1, 0), value=model.t3.hp.start_text_token)
-                tokens = F.pad(tokens, (0, 1), value=model.t3.hp.stop_text_token)
-                with torch.inference_mode():
-                    speech = _sample(model, t3_module, tokens, temperature, cfg_weight, repetition_penalty, min_p,
-                                     top_p)
-                    speech = tts.drop_invalid_tokens(speech)
-                    speech = speech[speech < SPEECH_VOCAB].to(model.device)
-                    wav, _ = model.s3gen.inference(speech_tokens=speech, ref_dict=model.conds.gen)
-                wav = wav.squeeze(0).detach().cpu().numpy()
-                if not finnish:  # the multilingual model can end on noise; ComfyUI_Fill-ChatterBox trims it
-                    wav = mtl.ChatterboxMultilingualTTS._trim_trailing_silence(model, wav)
+                # the model now and then misses its stop token and talks on: then the next seed is tried
+                for attempt in range(TRIES):
+                    torch.manual_seed(seed + attempt)
+                    model.prepare_conditionals(sample_path, exaggeration=exaggeration)
+                    if finnish:
+                        tokens = model.tokenizer.text_to_tokens(tts.punc_norm(line))
+                    else:
+                        tokens = model.tokenizer.text_to_tokens(mtl.punc_norm(line), language_id=language)
+                    tokens = torch.cat([tokens, tokens], dim=0).to(model.device)  # the CFG pair
+                    tokens = F.pad(tokens, (1, 0), value=model.t3.hp.start_text_token)
+                    tokens = F.pad(tokens, (0, 1), value=model.t3.hp.stop_text_token)
+                    with torch.inference_mode():
+                        speech = _sample(model, t3_module, tokens, temperature, cfg_weight, repetition_penalty, min_p,
+                                         top_p)
+                        speech = tts.drop_invalid_tokens(speech)
+                        speech = speech[speech < SPEECH_VOCAB].to(model.device)
+                        wav, _ = model.s3gen.inference(speech_tokens=speech, ref_dict=model.conds.gen)
+                    wav = wav.squeeze(0).detach().cpu().numpy()
+                    if not finnish:  # the multilingual model can end on noise; ComfyUI_Fill-ChatterBox trims it
+                        wav = mtl.ChatterboxMultilingualTTS._trim_trailing_silence(model, wav)
+                    seconds = len(wav) / model.sr
+                    if seconds <= longest_speech_seconds(line):
+                        break
+                    print(f"[chatterbox] line {i + 1} came back {seconds:.1f} s long for {len(line)} characters"
+                          + ("; trying the next seed" if attempt + 1 < TRIES else ""))
                 if model.watermarker is not None:
                     wav = model.watermarker.apply_watermark(wav, sample_rate=model.sr)
                 clip = torch.from_numpy(np.ascontiguousarray(wav, dtype=np.float32)).reshape(1, 1, -1)

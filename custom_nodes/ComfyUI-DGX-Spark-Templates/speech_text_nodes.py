@@ -18,6 +18,7 @@ keep the original for subtitles.
 """
 
 import re
+import unicodedata
 
 _BACK = set("aouAOU")
 ONES = ["nolla", "yksi", "kaksi", "kolme", "neljä", "viisi", "kuusi", "seitsemän", "kahdeksan", "yhdeksän"]
@@ -453,6 +454,12 @@ LANGUAGE_CODES = {
     "russian": "ru", "somali": "so", "spanish": "es", "swahili": "sw", "swedish": "sv", "thai": "th",
     "tigrinya": "ti", "turkish": "tr", "ukrainian": "uk", "vietnamese": "vi", "suomi": "fi", "svenska": "sv",
 }
+
+
+def longest_speech_seconds(text):
+    """The longest a spoken clip of text can be. A speech model that misses its stop token talks on for up to
+    40 s; a clip longer than this has done so. Full-width characters count three times."""
+    return 2.0 + 0.2 * sum(3 if unicodedata.east_asian_width(ch) in ("W", "F") else 1 for ch in text)
 
 
 def language_code(language):

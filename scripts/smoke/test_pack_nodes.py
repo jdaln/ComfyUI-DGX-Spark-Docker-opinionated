@@ -177,6 +177,11 @@ class SpeechText(unittest.TestCase):
         self.assertTrue(all(len(piece) <= 300 for piece in text.split_sentences(long, "fi")))
         self.assertEqual(text.language_code("Finnish (fi)"), "fi")
 
+    def test_longest_speech(self):
+        text = load("speech_text_nodes")
+        self.assertAlmostEqual(text.longest_speech_seconds("Puhun suomea."), 2.0 + 0.2 * 13)
+        self.assertAlmostEqual(text.longest_speech_seconds("你好"), 2.0 + 0.2 * 6)
+
 
 SAMPLE = """# Omistaminen ja ainesanat
 

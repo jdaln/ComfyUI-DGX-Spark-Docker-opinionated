@@ -35,6 +35,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 import folder_paths
 
+from .speech_text_nodes import longest_speech_seconds
+
 _NAMED_LINE = re.compile(r"^\s*([^:\n]{1,40}?)\s*:\s*(.+?)\s*$")
 _WORD_STAMP = re.compile(r"^\s*\[\s*([0-9.]+)\s*-\s*([0-9.]+)\s*\]\s*(.*?)\s*$")
 _SRT_TIME = re.compile(r"(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)")
@@ -217,13 +219,12 @@ def _clips(audio, lines, spoken):
             raise RuntimeError(f"Line {i + 1} came back empty ({lines[i][:60]!r}). The text to speech "
                                "node failed on it. Chatterbox multilingual returns silence instead of an "
                                "error; connect a Preview Any to its message output to read why.")
-        # a model that misses its stop token talks on for up to 40 s, and the video would follow
+        # a model that misses its stop token talks on, and the video would follow
         length = wave.shape[-1] / clip["sample_rate"]
-        weight = sum(3 if _wide(ch) else 1 for ch in spoken[i])
-        if length > 2.0 + 0.2 * weight:
+        if length > longest_speech_seconds(spoken[i]):
             raise RuntimeError(f"Line {i + 1} came back {length:.1f} s long for {len(spoken[i])} characters "
-                               f"({lines[i][:60]!r}): the speech model kept talking after the line. Run "
-                               "again with another seed, or raise cfg_weight.")
+                               f"({lines[i][:60]!r}): the speech model kept talking after the line. Reword "
+                               "the line, or run again with another seed.")
         if clip["sample_rate"] != rate:
             wave = torchaudio.functional.resample(wave, clip["sample_rate"], rate)
         waves.append(wave)
