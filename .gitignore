@@ -24,6 +24,9 @@ tmp/
 TODO.txt
 __pycache__/
 
+# other builds of committed wheels, written there by entrypoint.sh
+SelfBuiltWheels/from-image/
+
 .claude/.cc-writes/
 
 # private notes, not part of the repo

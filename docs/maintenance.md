@@ -50,7 +50,10 @@ instead of wheels, which triggers that fallback and adds well over half an hour
 to the build.
 
 The container also copies whatever it installed into `SelfBuiltWheels/` on the
-host, so you always have the artifacts a working container was built from.
+host, so you always have the artifacts a working container was built from. A
+wheel already there under the same name, such as a committed one, is left as it
+is; a different build of it goes to `SelfBuiltWheels/from-image/`, which git
+ignores.
 
 Rebuild after a torch bump or any major dependency change:
 

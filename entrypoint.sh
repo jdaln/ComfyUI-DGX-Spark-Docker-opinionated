@@ -160,7 +160,11 @@ if [[ " ${COMFY_CMDLINE_EXTRA:-} " == *" --use-sage-attention "* ]]; then
     fi
 fi
 
-# Backup built wheels into mounted directory (update if missing or different)
+# Back up the wheels this image installs into the mounted SelfBuiltWheels/, so the
+# artifacts a working container was built from stay on the host. A wheel of the
+# same name already there, such as a committed one, is not overwritten: another
+# build of it goes to SelfBuiltWheels/from-image/, which git ignores. A rebuilt
+# image, or a second instance on another image, then leaves tracked files alone.
 WHEELS_BACKUP_DIR="/workspace/SelfBuiltWheels"
 if ! mkdir -p "$WHEELS_BACKUP_DIR"; then
     echo "ERROR: cannot create backup dir: $WHEELS_BACKUP_DIR" >&2
@@ -170,17 +174,20 @@ sync_wheel() {
     subdir="$2"
     [ -f "$src" ] || return
     dst_dir="$WHEELS_BACKUP_DIR/$subdir"
+    dst="$dst_dir/$(basename "$src")"
+    if [ -f "$dst" ] && ! cmp -s "$src" "$dst"; then
+        dst_dir="$WHEELS_BACKUP_DIR/from-image/$subdir"
+        dst="$dst_dir/$(basename "$src")"
+    fi
+    [ -f "$dst" ] && cmp -s "$src" "$dst" && return
     if ! mkdir -p "$dst_dir"; then
         echo "ERROR: cannot create dir: $dst_dir" >&2
         return 1
     fi
-    dst="$dst_dir/$(basename "$src")"
-    if [ ! -f "$dst" ] || ! cmp -s "$src" "$dst"; then
-        echo "Backing up wheel: $(basename "$src")"
-        if ! cp -f "$src" "$dst"; then
-            echo "ERROR: cannot copy $src to $dst" >&2
-            return 1
-        fi
+    echo "Backing up wheel: ${dst#"$WHEELS_BACKUP_DIR"/}"
+    if ! cp -f "$src" "$dst"; then
+        echo "ERROR: cannot copy $src to $dst" >&2
+        return 1
     fi
 }
 for src in /opt/flash-attn/*.whl; do
