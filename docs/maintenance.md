@@ -13,6 +13,13 @@ The runtime target is set in two places and both must agree:
 also holds every custom node's dependency resolution to the same torch build.
 Change the version in both files, then rebuild the ABI-sensitive wheels below.
 
+`constraints.txt` also holds `protobuf<5`. mediapipe 0.10 (comfyui_controlnet_aux)
+needs protobuf 4 and ComfyUI-RMBG below 6, while the newest Google client
+libraries of ComfyUI_Fill-Nodes need 5.29 or later. Each node pack's
+requirements are installed on their own, so without the pin every start upgraded
+protobuf to 7 and then downgraded it again. With it pip keeps google-api-core at
+2.30.x, which accepts protobuf 4. Drop the pin once mediapipe accepts protobuf 5.
+
 A torch bump also needs a look at `cpu_memory.py` in the templates pack. It
 calls mimalloc inside `libc10.so` through the library's symbol table, which a
 new build can change. The startup log must still read `cpu-purge: mimalloc

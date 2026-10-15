@@ -152,7 +152,7 @@ from
 | `entrypoint.sh` | runs on every start: venv, deps, custom nodes, patches, asset bootstrap |
 | `.env.example` | template for `.env` |
 | `docker-compose.override.yml.example` | optional mount for an apps repository in `apps/` |
-| `constraints.txt` | the pinned torch / torchvision / torchaudio versions |
+| `constraints.txt` | the pinned torch / torchvision / torchaudio versions, and protobuf below 5 |
 | `asset-profiles.json` | the 93 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |

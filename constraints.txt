@@ -1,3 +1,7 @@
 torch==2.10.0+cu130
 torchvision==0.25.0+cu130
 torchaudio==2.10.0+cu130
+# mediapipe (comfyui_controlnet_aux) needs protobuf 4. Without this pin the Google
+# client libraries of ComfyUI_Fill-Nodes upgrade it to 7 on every start and
+# controlnet_aux's requirements downgrade it again.
+protobuf<5
