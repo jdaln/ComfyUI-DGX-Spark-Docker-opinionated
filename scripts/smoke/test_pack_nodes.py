@@ -122,6 +122,7 @@ class Gates(unittest.TestCase):
         self.assertEqual(gate.gate(True, 80.0, value="done"), ("done",))
 
 
+
 class SpeechText(unittest.TestCase):
     def test_numbers(self):
         text = load("speech_text_nodes")
@@ -234,6 +235,7 @@ class Pages(unittest.TestCase):
         large = pages.Sheet(landscape=True, body_points=16)
         large.markdown("# Iso teksti\n\nLapsille sopiva koko.")
         self.assertEqual(large.finish()[0].size, (3508, 2480))
+
 
 
 class Characters(unittest.TestCase):
@@ -368,6 +370,18 @@ class Dialogue(unittest.TestCase):
         self.assertEqual(split[5], 4)
         with self.assertRaisesRegex(ValueError, "picture_2"):
             self.plan("turns", "one run per shot", spans, 9.6, ["Aino", "Mikko", "Aino", "Aino"], (aino,))
+
+    def test_only_speakers_pictures_are_asked_for(self):
+        node = load("dialogue_nodes").SegmentsFromSubtitles()
+        args = [["turns"], ["one run per shot"], [""], [""], ["Finnish"], [0.25], [0.25], [2.0], [15.0], [None], [""]]
+        made = [object()]
+        wanted = node.check_lazy_status(*args, speakers=["A", "B", "A"], picture_1=[None], picture_2=[None],
+                                        picture_3=[None], picture_4=[None])
+        self.assertEqual(wanted, ["picture_1", "picture_2"])
+        self.assertEqual(node.check_lazy_status(*args, speakers=["A", "B"], picture_1=made, picture_2=[None]),
+                         ["picture_2"])
+        self.assertEqual(node.check_lazy_status(*args, picture_1=[None], picture_2=[None]), ["picture_1"])
+        self.assertEqual(node.check_lazy_status(*args, speakers=["A", "B"]), [])
 
     def test_short_pause_is_lengthened(self):
         spans = [(0.3, 2.0), (2.1, 4.0)]

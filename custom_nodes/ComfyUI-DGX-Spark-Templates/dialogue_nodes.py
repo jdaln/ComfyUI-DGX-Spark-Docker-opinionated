@@ -391,10 +391,11 @@ class SegmentsFromSubtitles:
                                         "tooltip": "Who says each line, as Dialogue Script lists them. Speakers "
                                                    "take <Picture 1>, <Picture 2> and so on in the order they "
                                                    "first speak."}),
-                "picture_1": ("IMAGE", {"tooltip": "The first speaker, for the shot_picture output."}),
-                "picture_2": ("IMAGE",),
-                "picture_3": ("IMAGE",),
-                "picture_4": ("IMAGE",),
+                "picture_1": ("IMAGE", {"lazy": True, "tooltip": "The first speaker, for the shot_picture output. "
+                                                                 "Only the pictures of people who speak are made."}),
+                "picture_2": ("IMAGE", {"lazy": True}),
+                "picture_3": ("IMAGE", {"lazy": True}),
+                "picture_4": ("IMAGE", {"lazy": True}),
             },
         }
 
@@ -408,6 +409,13 @@ class SegmentsFromSubtitles:
                    "needed so that every cut falls in a pause and every shot has a frame count H3 makes exactly; "
                    "the video then stays in sync with the speech. Outputs the adjusted track and subtitles, the "
                    "Context Segments lengths and prompts, and per shot lists for one run per shot.")
+
+    def check_lazy_status(self, shots, runs, speak_prompt, listen_prompt, language, lead_seconds, trail_seconds,
+                          listen_min_seconds, max_shot_seconds, audio, subtitles, speakers=None, **pictures):
+        # a connected picture not made yet arrives as [None]; ask only for those of people who speak
+        count = min(len(dict.fromkeys(speakers or [])) or 1, 4)
+        return [f"picture_{i}" for i in range(1, count + 1)
+                if pictures.get(f"picture_{i}") is not None and pictures[f"picture_{i}"][0] is None]
 
     def plan(self, shots, runs, speak_prompt, listen_prompt, language, lead_seconds, trail_seconds,
              listen_min_seconds, max_shot_seconds, audio, subtitles, speakers=None,
