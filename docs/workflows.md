@@ -355,8 +355,9 @@ else here. Run it on its own.
 | Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 685 s |
 
 Takes a video in rather than generating one, so it is not limited to H3 output;
-any clip works. Ships pointed at `bedroom.mp4` and `example.png`, both already in
-`input/`. Same weights as `minimax-h3-easy-refine`.
+any clip works. Ships pointed at `minimalist_sky_view_lounge.mp4`, which its
+profile downloads, and `example.png`, which ComfyUI ships in `input/`. Same
+weights as `minimax-h3-easy-refine`.
 
 Like that one it carries a pixel-resize branch bypassed alongside the
 latent-upscale branch, and it gets its own profile so the lane runs alone.

@@ -28,7 +28,7 @@ def sub(v):
 
 INPUT_DIR = "/workspace/ComfyUI/input"
 FALLBACK_INPUT = {"LoadImage": "example.png", "LoadImageMask": "example.png",
-                  "LoadVideo": "bedroom.mp4", "VHS_LoadVideo": "bedroom.mp4"}
+                  "LoadVideo": "minimalist_sky_view_lounge.mp4", "VHS_LoadVideo": "minimalist_sky_view_lounge.mp4"}
 # explicit widgets_values order for nodes with dynamic subwidgets
 NODE_WIDGET_MAP = {
     "Ideogram4PromptBuilderKJ": ["width", "height", "high_level_description", "background",
@@ -390,7 +390,7 @@ def ui_to_api(wf, object_info):
     def stub(kind):
         if kind not in stubs:
             if kind == "VIDEO":
-                prompt["autoload_video"] = {"class_type": "LoadVideo", "inputs": {"file": "bedroom.mp4"}}
+                prompt["autoload_video"] = {"class_type": "LoadVideo", "inputs": {"file": "minimalist_sky_view_lounge.mp4"}}
                 stubs[kind] = ["autoload_video", 0]
             else:
                 prompt["autoload_img"] = {"class_type": "LoadImage", "inputs": {"image": "example.png"}}

@@ -499,7 +499,7 @@
         "widget_ue_connectable": {}
       },
       "widgets_values": [
-        "bedroom.mp4",
+        "minimalist_sky_view_lounge.mp4",
         "image"
       ],
       "widgets_values_named": {
@@ -2208,7 +2208,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Credits\n\nAdapted from `workflow/2.MiniMax_H3_Easy_Selected_Video_Refine.json` in [ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by **nkxx188**, MIT licence. 3D latent upscaler from [LBH-123-AI/Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler).\n\nTakes an existing video in and re-renders it at higher detail, so it is not limited to H3 output. Changes here: the pruned int8 base this repo provisions, settings stored in English, `bedroom.mp4` and `example.png` as the shipped samples, and the rgthree group bypasser removed since it is canvas-only.\n\nThe pixel-resize branch ships bypassed, as upstream has it; swap it with the latent branch to compare.\n\nMiniMax H3 weights are under the MiniMax H3 Community License."
+        "## Credits\n\nAdapted from `workflow/2.MiniMax_H3_Easy_Selected_Video_Refine.json` in [ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by **nkxx188**, MIT licence. 3D latent upscaler from [LBH-123-AI/Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler).\n\nTakes an existing video in and re-renders it at higher detail, so it is not limited to H3 output. Changes here: the pruned int8 base this repo provisions, settings stored in English, `minimalist_sky_view_lounge.mp4` and `example.png` as the shipped samples, and the rgthree group bypasser removed since it is canvas-only.\n\nThe pixel-resize branch ships bypassed, as upstream has it; swap it with the latent branch to compare.\n\nMiniMax H3 weights are under the MiniMax H3 Community License."
       ],
       "color": "#432",
       "bgcolor": "#653"

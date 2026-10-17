@@ -47,8 +47,13 @@ def stub_comfy():
         wave = torch.cat(frames, dim=1)
         return (wave.float() / 32768.0 if wave.dtype == torch.int16 else wave.float()), stream.sample_rate
 
-    module("folder_paths", get_input_directory=lambda: os.path.join(WORK, "input"),
+    module("folder_paths", models_dir=os.path.join(WORK, "models"),
+           get_input_directory=lambda: os.path.join(WORK, "input"),
            get_output_directory=lambda: os.path.join(WORK, "output"), get_save_image_path=save_image_path)
+    comfy = module("comfy")
+    comfy.model_management = module("comfy.model_management", throw_exception_if_processing_interrupted=lambda: None,
+                                    get_torch_device=lambda: "cpu")
+    comfy.utils = module("comfy.utils", ProgressBar=lambda total: types.SimpleNamespace(update=lambda n: None))
     extras = module("comfy_extras")
     extras.nodes_audio = module("comfy_extras.nodes_audio", load=load)
     pack = module("pack")
@@ -117,6 +122,18 @@ class SpeechText(unittest.TestCase):
         text = load("speech_text_nodes")
         self.assertAlmostEqual(text.longest_speech_seconds("Puhun suomea."), 2.0 + 0.2 * 13)
         self.assertAlmostEqual(text.longest_speech_seconds("你好"), 2.0 + 0.2 * 6)
+
+
+class Transcripts(unittest.TestCase):
+    def test_clip_without_sound(self):
+        whisper = load("speech_nodes").WhisperSpeechToText()
+        with self.assertRaisesRegex(ValueError, "no sound track"):
+            whisper.transcribe([None], ["auto"], [True])  # what a video without a sound track gives
+
+    def test_no_speech(self):
+        cues = load("dialogue_nodes").TimestampsToSubtitles()
+        with self.assertRaisesRegex(ValueError, "No speech was found"):
+            cues.group("", 42, 6.0, 0.8)
 
 
 class Characters(unittest.TestCase):

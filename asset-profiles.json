@@ -188,21 +188,24 @@
    "ltx-2.3-dev-checkpoint",
    "ltx-2.3-distilled-lora",
    "ltx-2.3-upscaler",
-   "bfs-ltx-2.3-edit-anything-lora"
+   "bfs-ltx-2.3-edit-anything-lora",
+   "sample-video-girl-eats-apple"
   ],
   "bfs-ltx-2.3-style-swap": [
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2.3-dev-checkpoint",
    "ltx-2.3-distilled-lora",
    "ltx-2.3-upscaler",
-   "bfs-ltx-2.3-style-swap-loras"
+   "bfs-ltx-2.3-style-swap-loras",
+   "sample-video-white-armored-warrior"
   ],
   "bfs-ltx-2.3-inpaint": [
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2.3-dev-checkpoint",
    "ltx-2.3-distilled-lora",
    "ltx-2.3-upscaler",
-   "bfs-ltx-2.3-inpaint-lora"
+   "bfs-ltx-2.3-inpaint-lora",
+   "sample-video-lounge"
   ],
   "bfs-ltx-2.3-masked-ref-inpaint": [
    "ltx-gemma3-comfy-text-encoder",
@@ -210,14 +213,16 @@
    "ltx-2.3-distilled-lora",
    "ltx-2.3-upscaler",
    "bfs-ltx-2.3-inpaint-lora",
-   "bfs-ltx-2.3-masked-ref-inpaint-lora"
+   "bfs-ltx-2.3-masked-ref-inpaint-lora",
+   "sample-video-lounge"
   ],
   "bfs-ltx-2.3-head-swap": [
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2.3-dev-checkpoint",
    "ltx-2.3-distilled-lora",
    "ltx-2.3-upscaler",
-   "bfs-ltx-2.3-head-swap-lora"
+   "bfs-ltx-2.3-head-swap-lora",
+   "sample-video-girl-eats-apple"
   ],
   "bfs-ltx-2.3-multishot": [
    "ltx-gemma3-comfy-text-encoder",
@@ -300,7 +305,8 @@
    "minimax-h3-support-assets",
    "minimax-h3-fl2va-model",
    "minimax-h3-turbo-lora",
-   "minimax-h3-easy-assets"
+   "minimax-h3-easy-assets",
+   "sample-video-lounge"
   ],
   "ltx-2.5-distilled": [
    "ltx-2.5-text-encoder",
@@ -320,7 +326,8 @@
   ],
   "ltx-2.5-latent-upscale": [
    "ltx-2.5-video-vae",
-   "ltx-2.5-spatial-upscaler"
+   "ltx-2.5-spatial-upscaler",
+   "sample-video-lounge"
   ],
   "ltx-2.5-sequencer": [
    "ltx-2.5-text-encoder",
@@ -2149,6 +2156,27 @@
     "dest": "/workspace/ComfyUI/models/LLM/Llama-Poro-2-8B-Instruct",
     "repo_id": "LumiOpen/Llama-Poro-2-8B-Instruct",
     "label": "Poro 2 8B Instruct, Finnish and English chat model (LumiOpen)"
+   }
+  ],
+  "sample-video-lounge": [
+   {
+    "dest": "/workspace/ComfyUI/input/minimalist_sky_view_lounge.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/minimalist_sky_view_lounge.mp4",
+    "label": "Sample clip: a lounge with a city view"
+   }
+  ],
+  "sample-video-girl-eats-apple": [
+   {
+    "dest": "/workspace/ComfyUI/input/girl_eats_apple.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/girl_eats_apple.mp4",
+    "label": "Sample clip: a girl picking an apple"
+   }
+  ],
+  "sample-video-white-armored-warrior": [
+   {
+    "dest": "/workspace/ComfyUI/input/white_armored_warrior.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/white_armored_warrior.mp4",
+    "label": "Sample clip: a white armored warrior"
    }
   ]
  }

@@ -153,6 +153,9 @@ class WhisperSpeechToText:
         try:
             for clip in audio:
                 comfy.model_management.throw_exception_if_processing_interrupted()
+                if not clip or "waveform" not in clip:  # a video without a sound track gives no audio
+                    raise ValueError("There is no sound to write down: the video has no sound track. Use a clip "
+                                     "in which people speak.")
                 result = self._run(clip, language[0])
                 texts.append(result["text"].strip())
                 stamps.append(self._word_lines(result))
