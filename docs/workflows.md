@@ -352,7 +352,7 @@ else here. Run it on its own.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 685 s |
+| Re-render an existing video at higher detail | `minimax-h3-easy-video-refine` | Video Refine (MiniMax H3 Easy) | Ours | 49 GB | 943 s |
 
 Takes a video in rather than generating one, so it is not limited to H3 output;
 any clip works. Ships pointed at `minimalist_sky_view_lounge.mp4`, which its
@@ -362,10 +362,10 @@ weights as `minimax-h3-easy-refine`.
 Like that one it carries a pixel-resize branch bypassed alongside the
 latent-upscale branch, and it gets its own profile so the lane runs alone.
 
-The lane feeds it `bedroom.mp4`, 960x540 and 6.7 s, and gets back 1920x1088 over
-the same 6.7 s with the audio intact, so the upscale is a real 2x rather than a
-re-encode. It is the slowest thing in the catalogue at 685 s; budget a quarter of
-an hour and do not run anything else while it works.
+The lane feeds it `minimalist_sky_view_lounge.mp4`, 1280x704 and 4.8 s, and gets
+back 2560x1408 over the same 4.8 s with the audio intact, so the upscale is a real
+2x rather than a re-encode. It is the slowest thing in the catalogue at 943 s;
+budget twenty minutes and do not run anything else while it works.
 
 
 ### LTX 2.0, fast video, distilled or full quality
@@ -429,7 +429,7 @@ here with the sample input each one was made for:
 | --- | --- | --- | --- | ---: | ---: |
 | Text, image or first/last frame to video, with audio | `ltx-2.5-distilled` | `video_ltx2_5_t2v`, `_i2v`, `_flf2v` | Template | 41 GB | 100 s |
 | Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 90 s |
-| Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 140 s |
+| Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 160 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
 | Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
 | A picture that speaks a recorded line; the audio drives the video | `ltx-2.5-a2v` | Audio to Video (LTX-2.5) | Ours | 45 GB | 386 s |
@@ -540,10 +540,10 @@ every file 403s. Approval is instant, but it is not automatic.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Rewrite a clip from a plain instruction ("make it snow") | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | 284 s |
-| Anime to live action and back, on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | 246 s |
-| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 230 s |
-| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 230 s |
+| Add, remove or replace things in a clip, or restyle it, from one sentence | `bfs-ltx-2.3-edit-anything` | Video Edit Anything (LTX-2.3) | Ours | 62 GB | 250 s |
+| Anime to live action and back, on an existing clip | `bfs-ltx-2.3-style-swap` | Video Style Swap (LTX-2.3 Anime2Real) | Ours | 61 GB | 306 s |
+| Repaint a masked region of a clip | `bfs-ltx-2.3-inpaint` | Video Inpainting (LTX-2.3 Masked) | Ours | 61 GB | 255 s |
+| Same, driven by a reference image | `bfs-ltx-2.3-masked-ref-inpaint` | Video Inpainting with Reference (LTX-2.3) | Ours | 61 GB | 261 s |
 | Swap the head in a clip, keeping the performance | `bfs-ltx-2.3-head-swap` | Video Head Swap (LTX-2.3) | Ours | 62 GB | 225 s |
 
 Rebuilt from [ComfyUI-BFSNodes](https://github.com/alisson-anjos/ComfyUI-BFSNodes)
@@ -552,6 +552,14 @@ by Alisson Anjos onto the same LTX-2.3 chain as
 differ only by a 0.3–1.3 GB task LoRA. Where a task has more than one published
 capture the profile provisions both and the template loads the higher-fidelity
 one; switch on the LoRA node.
+
+Edit Anything, Style Swap and the two inpainting templates add the clip as a
+guide in both stages and crop it off after each, as BFS's own graphs do; the first
+versions pinned the clip's frames into the video and gave it back unchanged. Edit
+Anything wants its prompt in the form it was trained on (Add, Remove, Replace or
+Convert ...); weather changes such as "make it snow" do nothing. The reference
+inpainting puts its picture in a strip beside every frame with ComfyUI-BFSNodes'
+Reserved Region Frame Composer.
 
 A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 

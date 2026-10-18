@@ -4,6 +4,7 @@
     "Ideogram4PromptBuilderKJ": "ComfyUI-KJNodes",
     "Seed (rgthree)": "rgthree-comfy",
     "LTXMultishotPrompt": "ComfyUI-BFSNodes",
+    "ReservedRegionFrameComposer": "ComfyUI-BFSNodes",
     "LTXIdentityTransfer": "ComfyUI-BFSNodes",
     "HeartMuLaLoader": "ComfyUI-HeartMuLa",
     "HeartMuLaCodecLoader": "ComfyUI-HeartMuLa",

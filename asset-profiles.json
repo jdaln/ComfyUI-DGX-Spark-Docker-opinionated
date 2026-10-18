@@ -214,7 +214,8 @@
    "ltx-2.3-upscaler",
    "bfs-ltx-2.3-inpaint-lora",
    "bfs-ltx-2.3-masked-ref-inpaint-lora",
-   "sample-video-lounge"
+   "sample-video-lounge",
+   "sample-image-dog"
   ],
   "bfs-ltx-2.3-head-swap": [
    "ltx-gemma3-comfy-text-encoder",
@@ -2177,6 +2178,13 @@
     "dest": "/workspace/ComfyUI/input/white_armored_warrior.mp4",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/white_armored_warrior.mp4",
     "label": "Sample clip: a white armored warrior"
+   }
+  ],
+  "sample-image-dog": [
+   {
+    "dest": "/workspace/ComfyUI/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
+    "label": "Sample picture: a dog"
    }
   ]
  }

@@ -111,8 +111,9 @@ non-singleton dimension 2. ... LTXVImgToVideoInplace
 `samples[:, :, :t.shape[2]] = t`. It only works when the source-encoded latent
 has fewer or equal temporal frames than the target latent.
 
-Four BFS LTX-2.3 templates computed their target length from fixed `Duration` x
-`Frame Rate` primitives, decoupled from the clip actually loaded. A 3 s x 25 fps
+The BFS LTX-2.3 templates once computed their target length from fixed `Duration`
+x `Frame Rate` primitives, decoupled from the clip actually loaded; they now take
+it from the clip and add the clip as a guide instead. A 3 s x 25 fps
 target is 10 latent frames; a 200-frame clip at 30 fps encodes to 25.
 
 Fix: find the two tensors being merged, trace each back through the graph's
