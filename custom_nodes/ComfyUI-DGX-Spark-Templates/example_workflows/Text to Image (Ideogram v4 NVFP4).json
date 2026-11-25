@@ -806,6 +806,11 @@
       "name": "ideogram4_unconditional_fp8_scaled.safetensors",
       "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
       "directory": "diffusion_models"
+     },
+     {
+      "name": "ideogram4_unconditional_nvfp4_mixed.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_nvfp4_mixed.safetensors",
+      "directory": "diffusion_models"
      }
     ]
    },
@@ -881,6 +886,11 @@
      {
       "name": "ideogram4_fp8_scaled.safetensors",
       "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
+      "directory": "diffusion_models"
+     },
+     {
+      "name": "ideogram4_nvfp4_mixed.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_nvfp4_mixed.safetensors",
       "directory": "diffusion_models"
      }
     ]

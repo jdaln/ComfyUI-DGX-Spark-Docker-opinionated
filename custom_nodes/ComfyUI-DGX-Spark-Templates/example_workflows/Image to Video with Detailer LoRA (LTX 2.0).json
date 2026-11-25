@@ -392,10 +392,10 @@
         }
       },
       "widgets_values": [
-        "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nNo model links here on purpose: the profile `ltx-2.0-v2v-detailer` downloads\nthe files, so a default start does not. Delete this copy and point the lane\nback at `video_ltx2_i2v_lora` once upstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`): `ltx-2-19b-dev`, Gemma 3 12B,\n`ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`,\n`ltx-2-19b-ic-lora-detailer`.\n"
+        "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n"
       ],
       "widgets_values_named": {
-        "text": "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nNo model links here on purpose: the profile `ltx-2.0-v2v-detailer` downloads\nthe files, so a default start does not. Delete this copy and point the lane\nback at `video_ltx2_i2v_lora` once upstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`): `ltx-2-19b-dev`, Gemma 3 12B,\n`ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`,\n`ltx-2-19b-ic-lora-detailer`.\n"
+        "text": "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n"
       },
       "color": "#222",
       "bgcolor": "#000"
@@ -1416,6 +1416,13 @@
               "Node name for S&R": "LTXVAudioVAELoader",
               "cnr_id": "comfy-core",
               "ver": "0.3.68",
+              "models": [
+                {
+                  "name": "ltx-2-19b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                  "directory": "checkpoints"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1915,6 +1922,13 @@
               "Node name for S&R": "LoraLoaderModelOnly",
               "cnr_id": "comfy-core",
               "ver": "0.3.75",
+              "models": [
+                {
+                  "name": "ltx-2-19b-distilled-lora-384.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+                  "directory": "loras"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1981,6 +1995,13 @@
               "Node name for S&R": "LatentUpscaleModelLoader",
               "cnr_id": "comfy-core",
               "ver": "0.7.0",
+              "models": [
+                {
+                  "name": "ltx-2-spatial-upscaler-x2-1.0.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors",
+                  "directory": "latent_upscale_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -2055,6 +2076,18 @@
               "Node name for S&R": "LTXAVTextEncoderLoader",
               "cnr_id": "comfy-core",
               "ver": "0.7.0",
+              "models": [
+                {
+                  "name": "ltx-2-19b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                  "directory": "checkpoints"
+                },
+                {
+                  "name": "gemma_3_12B_it.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -2508,6 +2541,13 @@
               "Node name for S&R": "LoraLoaderModelOnly",
               "cnr_id": "comfy-core",
               "ver": "0.3.68",
+              "models": [
+                {
+                  "name": "ltx-2-19b-ic-lora-detailer.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors",
+                  "directory": "loras"
+                }
+              ],
               "ue_properties": {
                 "widget_ue_connectable": {},
                 "version": "7.5.1",
@@ -2580,6 +2620,13 @@
               "Node name for S&R": "LoraLoaderModelOnly",
               "cnr_id": "comfy-core",
               "ver": "0.3.68",
+              "models": [
+                {
+                  "name": "ltx-2-19b-distilled-lora-384.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+                  "directory": "loras"
+                }
+              ],
               "ue_properties": {
                 "widget_ue_connectable": {},
                 "version": "7.5.1",
@@ -3242,6 +3289,13 @@
               "Node name for S&R": "CheckpointLoaderSimple",
               "cnr_id": "comfy-core",
               "ver": "0.3.56",
+              "models": [
+                {
+                  "name": "ltx-2-19b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev.safetensors",
+                  "directory": "checkpoints"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -3538,6 +3592,13 @@
               "Node name for S&R": "LoraLoaderModelOnly",
               "cnr_id": "comfy-core",
               "ver": "0.3.68",
+              "models": [
+                {
+                  "name": "ltx-2-19b-ic-lora-detailer.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2-19b-IC-LoRA-Detailer/resolve/main/ltx-2-19b-ic-lora-detailer.safetensors",
+                  "directory": "loras"
+                }
+              ],
               "ue_properties": {
                 "widget_ue_connectable": {},
                 "version": "7.5.1",

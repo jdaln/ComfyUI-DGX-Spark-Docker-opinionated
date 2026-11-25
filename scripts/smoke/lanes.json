@@ -1,5 +1,5 @@
 {
-  "_comment": "profile -> [workflow (container path or template name), needs_input]",
+  "_comment": "profile -> [workflow (container path or template name), optional substitution map, optional timeout in seconds (default 1800)]",
   "lanes": [
     ["wananimate-preprocess",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-WanAnimatePreprocess/example_workflows/WanAnimate_native_example_01.json"],
     ["wan2.2-t2v-bundled",                          "video_wan2_2_14B_t2v"],
@@ -95,6 +95,7 @@
     ["hunyuan3d-2.0-mv-turbo",                      "3d_hunyuan3d_multiview_to_model_turbo"],
     ["frame-interpolation-film",                    "utility_video_frame_interpolation"],
     ["seedvr2-video-upscale",                       "utility_seedvr2_3b_int8_upscale_video"],
+    ["pan2-i2v",                                    "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Image to Video (PAN 2).json", {}, 3600],
     ["relayvsr-x2",                                 "utility_relayvsr_video_x2_upscale"],
     ["relayvsr-x4",                                 "utility_relayvsr_video_x4_upscale"],
     ["sam3d-body-mocap",                            "utility_sam3d_body"],

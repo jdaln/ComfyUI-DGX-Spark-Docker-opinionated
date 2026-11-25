@@ -341,6 +341,13 @@
               "Node name for S&R": "UNETLoader",
               "cnr_id": "comfy-core",
               "ver": "0.3.34",
+              "models": [
+                {
+                  "name": "lotus-depth-d-v1-1.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/lotus/resolve/main/lotus-depth-d-v1-1.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "widget_ue_connectable": {}
             },
             "widgets_values": [
@@ -769,6 +776,13 @@
               "Node name for S&R": "VAELoader",
               "cnr_id": "comfy-core",
               "ver": "0.3.34",
+              "models": [
+                {
+                  "name": "vae-ft-mse-840000-ema-pruned.safetensors",
+                  "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "widget_ue_connectable": {}
             },
             "widgets_values": [

@@ -89,15 +89,16 @@ report = {}
 for lane in lanes:
     prof, wf = lane[0], lane[1]
     lane_subs = lane[2] if len(lane) > 2 else None
+    lane_timeout = int(lane[3]) if len(lane) > 3 else 1800
     if only and prof not in only:
         continue
     print(f'=== {prof} :: {wf}', flush=True)
     free_models()
     if not wait_for_memory(prof):
         break
-    cmd = ['python3', '/tmp/wf_smoke.py', wf, '1800']
-    if lane_subs:
-        cmd.append(json.dumps(lane_subs))
+    cmd = ['python3', '/tmp/wf_smoke.py', wf, str(lane_timeout)]
+    if lane_subs or lane_timeout != 1800:
+        cmd.append(json.dumps(lane_subs or {}))
     lows, done = {}, threading.Event()
     sampler = threading.Thread(target=sample, args=(lows, done), daemon=True)
     sampler.start()

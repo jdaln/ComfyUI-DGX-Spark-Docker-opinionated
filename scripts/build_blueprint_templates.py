@@ -15,7 +15,6 @@ validate_manifest.py runs the check.
 """
 import json
 import os
-import re
 import sys
 import uuid
 
@@ -35,13 +34,8 @@ class Template:
         for sg in self.subgraphs.values():
             defined = {link["id"] for link in sg.get("links", [])}
             for node in sg["nodes"]:
-                # Without download links the bootstrap leaves these models to the
-                # profiles, as it did when the blueprint was the only copy. A
-                # Hugging Face link in a note counts as one, so notes keep the text.
-                node.get("properties", {}).pop("models", None)
-                if node["type"] in ("Note", "MarkdownNote") and node.get("widgets_values"):
-                    text = re.sub(r"\[([^\]]*)\]\(https://huggingface\.co/[^)]*\)", r"\1", node["widgets_values"][0])
-                    node["widgets_values"][0] = re.sub(r"https://huggingface\.co/(\S+)", r"\1", text)
+                # The blueprint's properties.models stay, so the template downloads
+                # its own models like every other bundled template.
                 for out in node.get("outputs") or []:
                     out["links"] = [lid for lid in out.get("links") or [] if lid in defined] or None
                 for inp in node.get("inputs") or []:

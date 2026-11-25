@@ -60,10 +60,11 @@ which is an asset profile, not a custom node directory.
 ## Templates that download without a profile
 
 `ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 68
-bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
-The 13 that wrap a ComfyUI blueprint are the exception: they carry no download
-links, so their models come only with their profiles, as they did when the
-blueprint was the only copy.
+bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
+every one declares its models in `properties.models`. On a fresh machine that is
+about 685 GB before the server starts, plus whatever the selected profiles add.
+Models from gated repositories download only after their licence is accepted;
+each such template says so in its note.
 A bare Hugging Face repo link anywhere in a template file is enough for the
 resolver to match a loader's filename against that repo.
 

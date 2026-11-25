@@ -425,6 +425,13 @@
               "Node name for S&R": "VAELoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "flux2-vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -925,6 +932,13 @@
               "Node name for S&R": "UNETLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "ideogram4_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1056,6 +1070,13 @@
               "Node name for S&R": "CLIPLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "qwen3vl_8b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1862,6 +1883,13 @@
               "Node name for S&R": "UNETLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "ideogram4_unconditional_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,

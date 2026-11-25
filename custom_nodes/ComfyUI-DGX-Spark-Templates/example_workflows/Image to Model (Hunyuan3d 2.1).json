@@ -849,7 +849,14 @@
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.59",
-              "Node name for S&R": "ImageOnlyCheckpointLoader"
+              "Node name for S&R": "ImageOnlyCheckpointLoader",
+              "models": [
+                {
+                  "name": "hunyuan_3d_v2.1.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/hunyuan3D_2.1_repackaged/resolve/main/hunyuan_3d_v2.1.safetensors",
+                  "directory": "checkpoints"
+                }
+              ]
             },
             "widgets_values": [
               "hunyuan_3d_v2.1.safetensors"

@@ -441,9 +441,8 @@ second Gemma encoder and union LoRA nothing in them used.
 
 Image to Video with Detailer LoRA is a copy of core's `video_ltx2_i2v_lora`,
 whose subgraph lost the link to its video output in template package 0.11.114.
-The copy restores it and loads the detailer LoRA. It carries no
-`properties.models`, so the 50 GB of LTX-2.0 files come only with the
-profile. Delete it once upstream fixes the template.
+The copy restores it and loads the detailer LoRA. Delete it once upstream
+fixes the template.
 
 ### LTX 2.3, newest generation, 22B
 

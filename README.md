@@ -123,7 +123,9 @@ docker logs -f comfyui
 ## First start
 
 The first run installs PyTorch and every custom node's dependencies into the
-mounted venv, then downloads the models for the profiles you selected. ComfyUI's
+mounted venv, then downloads the models of the bundled templates (about 685 GB,
+see [docs/models.md](docs/models.md#templates-that-download-without-a-profile))
+and of the profiles you selected. ComfyUI's
 HTTP server starts only after all of that finishes, so the port stays closed for
 a while and the healthcheck allows 30 minutes before it reports unhealthy. This
 is expected. Watch `docker logs -f comfyui` rather than the port.

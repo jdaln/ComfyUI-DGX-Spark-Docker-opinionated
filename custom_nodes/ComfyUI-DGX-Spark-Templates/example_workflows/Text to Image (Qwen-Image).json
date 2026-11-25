@@ -433,6 +433,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "qwen_image_vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -510,6 +517,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "CLIPLoader",
+              "models": [
+                {
+                  "name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -717,6 +731,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "qwen_image_fp8_e4m3fn.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -979,7 +1000,14 @@
                 "version": "7.7",
                 "input_ue_unconnectable": {}
               },
-              "Node name for S&R": "LoraLoaderModelOnly"
+              "Node name for S&R": "LoraLoaderModelOnly",
+              "models": [
+                {
+                  "name": "Qwen-Image-Lightning-8steps-V1.0.safetensors",
+                  "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-8steps-V1.0.safetensors",
+                  "directory": "loras"
+                }
+              ]
             },
             "widgets_values": [
               "Qwen-Image-Lightning-8steps-V1.0.safetensors",
@@ -1582,7 +1610,7 @@
               }
             },
             "widgets_values": [
-              "Try 50 steps, if you want original the qwen image's setting, but it will takes longer"
+              "Try 50 steps, if you want original the [qwen image](https://huggingface.co/Qwen/Qwen-Image)'s setting, but it will takes longer"
             ],
             "color": "#222",
             "bgcolor": "#000"
