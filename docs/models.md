@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 67
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 68
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
 The 13 that wrap a ComfyUI blueprint are the exception: they carry no download
 links, so their models come only with their profiles, as they did when the
@@ -80,25 +80,35 @@ allowlist.
 
 ## Gated models
 
-Some downloads require a Hugging Face account that has accepted the model's
-licence. Set `HF_TOKEN` in `.env` for that account. Public assets download
-without a token.
+Gated repositories need a Hugging Face account that has accepted the licence
+on the repository page, and that account's token in `.env` as `HF_TOKEN`.
+`scripts/smoke/plan_downloads.py` reports a repository the token cannot read
+as HTTP 401 or 403.
 
 | Repository | Used by | Licence to accept |
 | --- | --- | --- |
-| `google/gemma-3-12b-it-qat-q4_0-unquantized` | every `ltx-2.0-*` profile, via the Gemma 3 text encoder | Gemma |
-| `Lightricks/LTX-2.5` | `ltx-2.5-distilled`, `ltx-2.5-distilled-nvfp4` | Lightricks |
-| `Lightricks/LTX-2.3-22b-IC-LoRA-HDR` | `ltx-2.3-iclora-hdr-distilled` | Lightricks |
-| `Lightricks/LTX-2.3-22b-IC-LoRA-DubIt` | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Lightricks |
-| `Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients` | `ltx-2.5-ingredients` | Lightricks |
-| `Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate` | `ltx-2.5-clean-plate` | Lightricks |
-| `Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen` | `ltx-2.5-alpha-matte` | Lightricks |
-| `Lightricks/LTX-2.3-22b-LoRA-Foley-V2A` | `ltx-2.5-foley` | Lightricks |
-| `Comfy-Org/Krea-2` | every `krea-2-*` profile | Krea 2 Community License |
-| `Comfy-Org/Ideogram-4` | `ideogram-4`, `ideogram-4-nvfp4` | Ideogram non-commercial |
-| `Comfy-Org/flux2-dev` | `flux2-vae.safetensors` for both Ideogram profiles | FLUX dev non-commercial |
-| `black-forest-labs/flux-3-image-klein-comfy` | every `flux-3-klein-*` profile | FLUX Kommunity License |
-| `MuScriptor/muscriptor-large` | `muscriptor` | CC BY-NC 4.0 |
+| [google/gemma-3-12b-it-qat-q4_0-unquantized](https://huggingface.co/google/gemma-3-12b-it-qat-q4_0-unquantized) | every `ltx-2.0-*` profile, via the Gemma 3 text encoder | Gemma, approved by hand |
+| [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5) | every `ltx-2.5-*` profile, `talking-characters` | LTX-2.x Community License |
+| [Lightricks/LTX-2.3-22b-IC-LoRA-HDR](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR) | `ltx-2.3-iclora-hdr-distilled` | LTX-2 Community License |
+| [Lightricks/LTX-2.3-22b-IC-LoRA-DubIt](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-DubIt) | `ltx-2.3-iclora-lipdub-two-stage-distilled` | LTX-2 Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate) | `ltx-2.5-clean-plate` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) | `ltx-2.5-alpha-matte` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details) | `ltx-2.5-refine-details` (parked, see the plan) | LTX-2.x Community License |
+| [Lightricks/LTX-2.3-22b-LoRA-Foley-V2A](https://huggingface.co/Lightricks/LTX-2.3-22b-LoRA-Foley-V2A) | `ltx-2.5-foley` | LTX-2 Community License |
+| [black-forest-labs/flux-3-image-klein-comfy](https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy) | every `flux-3-klein-*` profile | FLUX Kommunity License |
+| [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large) | `muscriptor` | CC BY-NC 4.0 |
+
+Not gated, but the terms restrict use, several to non-commercial use:
+
+| Repository | Used by | Licence |
+| --- | --- | --- |
+| [Comfy-Org/Krea-2](https://huggingface.co/Comfy-Org/Krea-2) | every `krea-2-*` profile | Krea 2 Community License |
+| [Comfy-Org/Ideogram-4](https://huggingface.co/Comfy-Org/Ideogram-4) | `ideogram-4`, `ideogram-4-nvfp4` | Ideogram non-commercial |
+| [Comfy-Org/flux2-dev](https://huggingface.co/Comfy-Org/flux2-dev) | `flux2-vae.safetensors` for both Ideogram profiles | FLUX dev non-commercial |
+| [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3), [FastVideo/FastH3-Omni-NVFP4-QAD-Comfy](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD-Comfy) | every `minimax-h3-*` profile, `fasth3-omni` | MiniMax H3 Community License |
+| [Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image) | `minimax-h3-image-*` | MiniMax H3 Image Community License |
+| [Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body) | `sam3d-body-*` | SAM License |
 
 Approval is per repository. A token accepted for the Gemma repo is still denied
 for the Dub-It LoRA until that repo is accepted too.

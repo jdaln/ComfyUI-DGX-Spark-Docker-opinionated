@@ -85,7 +85,10 @@
    "ltx-gemma3-snapshot-text-encoder",
    "ltx-gemma3-comfy-text-encoder",
    "ltx-2-dev-checkpoint",
-   "ltx-2-detailer-lora"
+   "ltx-2-detailer-lora",
+   "ltx-2-distilled-lora",
+   "ltx-2-upscaler",
+   "ltx-2.0-lora-input"
   ],
   "ltx-2.0-iclora-all-distilled": [
    "ltx-2-upscaler",
@@ -2327,6 +2330,13 @@
     "dest": "/workspace/ComfyUI/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
     "label": "VACE inpainting reference dog"
+   }
+  ],
+  "ltx-2.0-lora-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/puppy_with_blue_bandana.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/puppy_with_blue_bandana.png",
+    "label": "LTX 2.0 LoRA sample picture"
    }
   ],
   "ltx-2.0-canny-inputs": [

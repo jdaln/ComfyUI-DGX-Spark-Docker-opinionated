@@ -186,6 +186,10 @@ def expand_subgraphs(wf, object_info):
                 links.remove(l)
                 if src:
                     links.append([next(_newlink), src[0], src[1], l[3], l[4], l[5]])
+                else:
+                    # the user's graph would get nothing here either; a stub must not hide it
+                    raise RuntimeError(f"subgraph {sg.get('name', o['type'])[:40]}: output {l[2]} is linked "
+                                       f"outside but nothing inside feeds it (broken template)")
         for slot, out in enumerate(o.get("outputs", [])):
             if slot not in consumed and slot in out_links:
                 src = out_links[slot]
@@ -198,6 +202,27 @@ def expand_subgraphs(wf, object_info):
             if nodes.get(nid, {}).get("type") in sgs:
                 expand_one(nid); changed = True
     return nodes, links, forced, dangling, shared
+
+def dyn_incomplete(name, spec, inputs):
+    """True when a dynamic combo's selected option lacks a required nested input (recursively)."""
+    if not spec or spec[0] != "COMFY_DYNAMICCOMBO_V3" or name not in inputs:
+        return False
+    cfg = spec[1] if len(spec) > 1 and isinstance(spec[1], dict) else {}
+    sel = next((o for o in (cfg.get("options") or []) if o.get("key") == inputs[name]), None)
+    if sel is None:
+        return True
+    for cname, cspec in ((sel.get("inputs") or {}).get("required") or {}).items():
+        full = f"{name}.{cname}"
+        ctyp = cspec[0] if cspec else None
+        ccfg = cspec[1] if len(cspec) > 1 and isinstance(cspec[1], dict) else {}
+        widget = (isinstance(ctyp, list) or ctyp in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO", "COMFY_DYNAMICCOMBO_V3")
+                  or ccfg.get("widget") or "default" in ccfg) and not ccfg.get("forceInput")
+        if not widget:
+            continue  # a socket: no stored value, fed by a link
+        if full not in inputs or dyn_incomplete(full, cspec, inputs):
+            return True
+    return False
+
 
 def ui_to_api(wf, object_info):
     nodes, linklist, forced, dangling, shared = expand_subgraphs(wf, object_info)
@@ -312,6 +337,27 @@ def ui_to_api(wf, object_info):
                     inputs[name] = (v if isinstance(v, dict) else {}) if isinstance(typ, str) and typ in VIEWER_TYPES else sub(v)
                     if name in ("seed", "noise_seed") and wi < len(wv) and wv[wi] in ("fixed", "increment", "decrement", "randomize"):
                         wi += 1
+        # The positional mapping above follows one level of dynamic combo. A nested
+        # one (BuildPoseFile: format -> mesh_style) leaves required inputs unset and
+        # shifts every later value. Newer frontends also save widgets_values_named,
+        # keyed by API input name; use it for such a node only, since templates
+        # edited by script can carry stale named values.
+        named = n.get("widgets_values_named")
+        decl = {**(info["input"].get("required") or {}), **(info["input"].get("optional") or {})}
+        if isinstance(named, dict) and named and any(
+                dyn_incomplete(k, s, inputs) for k, s in (info["input"].get("required") or {}).items()):
+            print(f"positional values do not fit {t} #{nid}; using widgets_values_named")
+            dyn = {k for k, s in decl.items() if s and s[0] == "COMFY_DYNAMICCOMBO_V3"}
+            linked = {k for k, v in inputs.items() if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)}
+            for k in [k for k in inputs if "." in k and k.split(".")[0] in dyn and k not in named]:
+                del inputs[k]
+            for k, v in named.items():
+                top = k.split(".")[0]
+                if top not in decl or k in linked or ("." in k and top not in dyn):
+                    continue
+                if isinstance(decl[top][0], str) and decl[top][0] in VIEWER_TYPES:
+                    v = v if isinstance(v, dict) else {}
+                inputs[k] = sub(v)
         for (fnid, fname), v in forced.items():
             if fnid == nid:
                 inputs[fname] = sub(v)
@@ -359,6 +405,12 @@ def ui_to_api(wf, object_info):
             if t in prompt and n not in prompt[t]["inputs"]:
                 prompt[t]["inputs"][n] = values[0]
                 print(f"shared subgraph input: {prompt[t]['class_type']}.{n} = {str(values[0])[:40]!r}")
+    # A list in a prompt means a link. List-valued widgets (CreateBoundingBoxes'
+    # editor_state) go wrapped as {"__value__": [...]}, as the frontend sends them.
+    for node in prompt.values():
+        for k, v in list(node["inputs"].items()):
+            if isinstance(v, list) and not (len(v) == 2 and isinstance(v[0], str) and isinstance(v[1], int)):
+                node["inputs"][k] = {"__value__": v}
     # prune dangling connection refs (muted/removed sources)
     for nid, node in prompt.items():
         for k in list(node["inputs"]):
@@ -463,6 +515,15 @@ cid = f"smoke-{uuid.uuid4().hex[:8]}"
 resp = api("/prompt", {"prompt": prompt, "client_id": cid})
 if "prompt_id" not in resp:
     print("QUEUE REJECTED:", json.dumps(resp)[:2000]); sys.exit(1)
+if resp.get("node_errors"):
+    # ComfyUI drops an output whose node fails validation and runs the rest
+    print("NODE ERRORS (outputs dropped):", json.dumps(resp["node_errors"])[:2000], flush=True)
+    for path_, body in (("/queue", {"delete": [resp["prompt_id"]]}), ("/interrupt", {"prompt_id": resp["prompt_id"]})):
+        try:
+            api(path_, body)
+        except (Exception, SystemExit):
+            pass
+    sys.exit(1)
 pid = resp["prompt_id"]
 print("queued", os.path.basename(path), "prompt_id", pid)
 

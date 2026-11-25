@@ -376,7 +376,7 @@ budget twenty minutes and do not run anything else while it works.
 | Image to video, distilled | `ltx-2.0-i2v-distilled` | `video_ltx2_i2v_distilled` | Template | 64 GB | 80 s |
 | Text to video, full dev checkpoint | `ltx-2.0-t2v-full` | `video_ltx2_t2v` | Template | 71 GB | 165 s |
 | Image to video, full dev checkpoint | `ltx-2.0-i2v-full` | `video_ltx2_i2v` | Template | 72 GB | 165 s |
-| Refine an existing video (detailer LoRA) | `ltx-2.0-v2v-detailer` | `video_ltx2_i2v_lora` | Template | 74 GB | 6 min |
+| Image to video with the detailer LoRA | `ltx-2.0-v2v-detailer` | Image to Video with Detailer LoRA (LTX 2.0) | Ours | 74 GB | 6 min |
 | Video guided by canny edges | `ltx-2.0-iclora-all-distilled` | Canny to Video (LTX 2.0) | Ours | 59 GB | 255 s |
 | Video guided by a depth map | `ltx-2.0-iclora-all-distilled-ref0.5` | Depth to Video (ltx 2.0) | Ours | 61 GB | 275 s |
 | Video guided by a pose sequence | `ltx-2.0-iclora-all-bundled` | Pose to Video (LTX 2.0) | Ours | 61 GB | 300 s |
@@ -391,6 +391,12 @@ height setting to the audio VAE loader; the `dgx-state` fork fixes both. The
 Canny and Depth profiles download the dev checkpoint, Gemma encoder and
 distilled LoRA those blueprints load, and no longer the distilled checkpoint,
 second Gemma encoder and union LoRA nothing in them used.
+
+Image to Video with Detailer LoRA is a copy of core's `video_ltx2_i2v_lora`,
+whose subgraph lost the link to its video output in template package 0.11.114.
+The copy restores it and loads the detailer LoRA. It carries no
+`properties.models`, so the 50 GB of LTX-2.0 files come only with the
+profile. Delete it once upstream fixes the template.
 
 ### LTX 2.3, newest generation, 22B
 
