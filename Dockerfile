@@ -271,6 +271,24 @@ RUN mkdir -p /opt/comfy-aimdo && \
     cp dist/comfy_aimdo-*.whl /opt/comfy-aimdo/ && \
     cd / && rm -rf /tmp/comfy-aimdo-build
 
+# =====================================================================
+# NeMo-Speech.cpp: the nemo-speech CLI for Nemotron 3.5 Transcribe
+# (CUDA ASR build with the Speech-LLM path; ggml makes 121 into 121a)
+# =====================================================================
+ARG NEMO_SPEECH_REF=e790e463b2913cff9f989a3df224c587f14b4c5c
+RUN git clone https://github.com/NVIDIA/NeMo-Speech.cpp.git /tmp/nemo-speech && \
+    cd /tmp/nemo-speech && \
+    git checkout ${NEMO_SPEECH_REF} && \
+    git submodule update --init --depth 1 llama.cpp && \
+    JOBS=${BUILD_JOBS} scripts/build_sentencepiece_static.sh && \
+    scripts/configure.sh cuda-asr \
+        -DNEMO_SPEECH_BUILD_SPEECHLM=ON \
+        -DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF \
+        -DCMAKE_CUDA_ARCHITECTURES=121 && \
+    cmake --build --preset cuda-asr -j ${BUILD_JOBS} && \
+    cmake --install build/cuda-asr --prefix /opt/nemo-speech && \
+    cd / && rm -rf /tmp/nemo-speech
+
 
 # Venv will be created at runtime in mounted volume
 ENV VENV_PATH="/workspace/venv"

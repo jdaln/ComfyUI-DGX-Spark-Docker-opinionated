@@ -11,9 +11,10 @@ interface here rather than pulling the pack in. See that module for detail.
 one run into eight takes. `dialogue_nodes` splits a script into one speech clip
 per line, joins the clips back, with pauses for listening exercises if wanted,
 plans MiniMax H3 shots for the joined track, and writes, burns in and saves
-subtitles, for the dialogue and subtitle templates. `speech_nodes` adds Whisper
-large-v3 speech to text with word timings, and Chatterbox Speech, which runs the
-multilingual Chatterbox or Finnish-NLP's Finnish fine-tune of it.
+subtitles, for the dialogue and subtitle templates. `speech_nodes` adds speech to
+text with word timings (Nemotron 3.5 Transcribe, the default, and Whisper
+large-v3), and Chatterbox Speech, which runs the multilingual Chatterbox or
+Finnish-NLP's Finnish fine-tune of it.
 
 `character_nodes` keeps a picture and a voice sample together as a named
 character in input/cast/. `speech_text_nodes` cuts text into sentences and writes out numbers in Finnish

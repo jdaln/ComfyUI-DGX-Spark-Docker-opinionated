@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 113 profiles. The 112 in the category tables below
+`asset-profiles.json` defines 114 profiles. The 113 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 112 have an automated smoke lane. Three do not, because their
+Most of those 113 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -186,8 +186,9 @@ PedroMarinhoDev/ComfyUI-LongCat-Avatar, on its int8 file and Wan 2.1's text
 encoder and VAE. It makes 93-frame segments at 25 fps, each continuing from the
 last 13 frames of the one before, for as long as the speech lasts. The 4.4 s
 sample took 361 s at 512x768; the mouth follows the speech and the face stays
-the picture's. Give clean speech without music, and a calm prompt. One speaker
-only.
+the picture's. A 13 s Finnish clip (Chatterbox-Finnish speech) took 726 s and
+keeps the lip sync on long vowels and double consonants. Give clean speech
+without music, and a calm prompt. One speaker only.
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
 Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
@@ -686,7 +687,8 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | Speech in a sampled voice, 23 languages, Finnish from a Finnish fine-tune | `chatterbox-multilingual` | Text to Speech (Chatterbox Multilingual) | Ours | 5.3 GB | 15 s |
 | Speech in a cloned voice, 23 languages, 44.1 kHz | `audio8-tts` | Text to Speech (Audio8 Voice Clone) | Ours | 4.6 GB | 40 s |
 | Two people in a picture speak a script, subtitles included | `talking-characters` | Talking Characters with Subtitles | Ours | 55 GB | 571 s |
-| Subtitles for any video in 100 languages, Finnish included: transcript, .srt and a burned-in copy | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
+| Subtitles for any video, the default: transcript, .srt and a burned-in copy, 40 languages, Finnish included, recordings up to an hour | `nemotron-3.5-transcribe` | Subtitles from Speech (Nemotron 3.5) | Ours | 21.4 GB | 40 s |
+| Same with a smaller model, 100 languages, for those Nemotron lacks or when memory is short | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
 | A voice cleaned of noise, music and room sound, and what was removed | `voice-isolator` | Clean Up Voice (Inworld Voice Isolator) | Ours | 0.3 GB | 10 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
@@ -748,15 +750,35 @@ script and the clip lengths, so their text and timing are exact. The sample
 script is Finnish; Qwen3-TTS has no Finnish, so the voices are designed in
 English. Join Dialogue stops the run when a clip comes back empty or far longer
 than its line, before the video model is asked for a runaway length.
-Recordings of real voices can replace the designed ones with one switch.
+Recordings of real voices can replace the designed ones witSubtitles from Speech is for audio without a script. The default is the
+Nemotron template: NVIDIA's Nemotron 3.5 Transcribe 30B-A4B, run by the
+`nemo-speech` CLI of NeMo-Speech.cpp, which `Dockerfile` builds into the image.
+It writes punctuation and capitals, knows 40 languages and takes recordings up
+to an hour. The node frees ComfyUI's models first and needs about 21 GB while it
+runs. The Whisper template is the same graph with Whisper large-v3, for the
+languages Nemotron lacks or when memory is short. The Word Timestamps to
+Subtitles node groups the words into lines. Burn In Subtitles draws with DejaVu
+Sans, so burned-in text covers Latin, Greek and Cyrillic; Chinese, Japanese and
+other scripts need the .srt.
 
-Subtitles from Speech is for audio without a script. Whisper large-v3
-transcribes and times every word in its 100 languages; in the
-[BuzzASR](https://arxiv.org/abs/2609.09554) comparison it transcribed Finnish
-with 1.89 % character errors. The Word Timestamps to Subtitles node groups the
-words into lines. Burn In Subtitles draws with DejaVu Sans, so burned-in text
-covers Latin, Greek and Cyrillic; Chinese, Japanese and other scripts need the
-.srt.
+On 12 minutes of Finnish read speech from the FLEURS dev set (59 sentences,
+women and men), as one recording:
+
+| | CER | WER | CER without numbers | Time |
+| --- | ---: | ---: | ---: | ---: |
+| Nemotron 3.5 Transcribe, AD-NVFP4 | 4.5 % | 13.1 % | 2.1 % | 50 s |
+| Whisper large-v3 | 6.9 % | 14.4 % | 6.8 % | 334 s |
+
+Nemotron writes numbers as words where FLEURS has digits, hence the third
+column. Whisper's errors on the long recording are its known long-form ones:
+loops, a "kiitos kun katsoit videon" from nowhere, text repeated across 30 s
+windows; on short clips it does better (1.89 % in the
+[BuzzASR](https://arxiv.org/abs/2609.09554) comparison). On a 4.5 minute
+Finnish TV clip both tracks stay in sync with the speech. Whisper ran its 30 s
+windows in batches of 8 until this test, which took over 80 GB on two minutes
+of speech; it runs them one at a time now.
+
+t a time now.
 
 These add two node packs: filliptm's ComfyUI_Fill-ChatterBox (MIT), for its
 Chatterbox code, and 1038lab's ComfyUI-QwenTTS (GPL-3.0). QwenTTS and the

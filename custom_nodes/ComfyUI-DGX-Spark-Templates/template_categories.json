@@ -75,6 +75,7 @@
   "5-speech": {
     "ComfyUI-DGX-Spark-Templates": [
       "Clean Up Voice (Inworld Voice Isolator)",
+      "Subtitles from Speech (Nemotron 3.5)",
       "Subtitles from Speech (Whisper large-v3)",
       "Talking Characters with Subtitles",
       "Text to Speech (Audio8 Voice Clone)",

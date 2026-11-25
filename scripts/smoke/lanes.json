@@ -89,6 +89,7 @@
     ["ming-3-tts-script",                           "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Ming 3.0 Script).json"],
     ["qwen3-tts-voice-design",                      "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Qwen3-TTS Voice Design).json"],
     ["whisper-subtitles",                           "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Subtitles from Speech (Whisper large-v3).json"],
+    ["nemotron-3.5-transcribe",                     "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Subtitles from Speech (Nemotron 3.5).json"],
     ["talking-characters",                          "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Talking Characters with Subtitles.json"],
     ["infinitetalk",                                "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Talking Video (InfiniteTalk Two Speakers).json"],
     ["longcat-avatar",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Talking Video (LongCat Avatar 1.6).json"],

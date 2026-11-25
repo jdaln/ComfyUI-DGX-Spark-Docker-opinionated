@@ -609,6 +609,10 @@
   ],
   "poro-2-8b": [
    "poro-2-8b-model"
+  ],
+  "nemotron-3.5-transcribe": [
+   "nemotron-3.5-transcribe-model",
+   "subtitles-sample-input"
   ]
  },
  "selection_metadata": {
@@ -2611,6 +2615,18 @@
     "dest": "/workspace/ComfyUI/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_bfl_flux_1_kontext_multiple_images_input_dog.jpg",
     "label": "Sample picture: a dog"
+   }
+  ],
+  "nemotron-3.5-transcribe-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/stt/nemotron/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-AD-NVFP4.gguf",
+    "url": "https://huggingface.co/AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF/resolve/dbd06c5cad7a2f33c8e06be2fb3ef814dbd9aa59/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-AD-NVFP4.gguf",
+    "label": "Nemotron 3.5 Transcribe: decoder, AD-NVFP4"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/stt/nemotron/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-Encoder-F16.gguf",
+    "url": "https://huggingface.co/AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF/resolve/dbd06c5cad7a2f33c8e06be2fb3ef814dbd9aa59/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-Encoder-F16.gguf",
+    "label": "Nemotron 3.5 Transcribe: speech encoder, F16"
    }
   ]
  }

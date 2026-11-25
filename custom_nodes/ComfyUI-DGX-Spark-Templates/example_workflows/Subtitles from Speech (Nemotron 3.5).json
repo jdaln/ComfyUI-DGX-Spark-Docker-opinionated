@@ -1,0 +1,562 @@
+{
+  "id": "3fc5e625-bd9f-5b4b-a987-f040e4bd1e1b",
+  "revision": 0,
+  "last_node_id": 11,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadVideo",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        400,
+        420
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadVideo"
+      },
+      "widgets_values": [
+        "dubit_input.mp4",
+        "image"
+      ],
+      "title": "Video with speech"
+    },
+    {
+      "id": 2,
+      "type": "GetVideoComponents",
+      "pos": [
+        0,
+        540
+      ],
+      "size": [
+        300,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            2,
+            10
+          ]
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "links": [
+            7,
+            11
+          ]
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "links": null
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GetVideoComponents"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 3,
+      "type": "NemotronSpeechToText",
+      "pos": [
+        460,
+        80
+      ],
+      "size": [
+        380,
+        120
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "timestamps",
+          "type": "STRING",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "NemotronSpeechToText"
+      },
+      "widgets_values": [
+        "auto"
+      ],
+      "title": "Speech to text (Nemotron 3.5 Transcribe)"
+    },
+    {
+      "id": 4,
+      "type": "TimestampsToSubtitles",
+      "pos": [
+        900,
+        80
+      ],
+      "size": [
+        360,
+        160
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "timestamps",
+          "type": "STRING",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "subtitles",
+          "type": "STRING",
+          "links": [
+            4,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TimestampsToSubtitles"
+      },
+      "widgets_values": [
+        42,
+        6.0,
+        0.8
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SaveSubtitles",
+      "pos": [
+        900,
+        280
+      ],
+      "size": [
+        360,
+        120
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "subtitles",
+          "type": "STRING",
+          "link": 4
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveSubtitles"
+      },
+      "widgets_values": [
+        "subtitles/nemotron"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PreviewAny",
+      "pos": [
+        900,
+        440
+      ],
+      "size": [
+        360,
+        220
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "Transcript"
+    },
+    {
+      "id": 7,
+      "type": "BurnInSubtitles",
+      "pos": [
+        1320,
+        80
+      ],
+      "size": [
+        340,
+        200
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": 7,
+          "widget": {
+            "name": "fps"
+          }
+        },
+        {
+          "name": "subtitles",
+          "type": "STRING",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BurnInSubtitles"
+      },
+      "widgets_values": [
+        24.0,
+        4.5,
+        "bottom",
+        0.0
+      ]
+    },
+    {
+      "id": 8,
+      "type": "CreateVideo",
+      "pos": [
+        1320,
+        320
+      ],
+      "size": [
+        340,
+        140
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 9
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 10
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": 11,
+          "widget": {
+            "name": "fps"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24,
+        "auto",
+        "sRGB",
+        "none"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "SaveVideo",
+      "pos": [
+        1700,
+        80
+      ],
+      "size": [
+        420,
+        460
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 12
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/nemotron_subtitled",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        720
+      ],
+      "size": [
+        900,
+        380
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Subtitles for any video\n\n1. Load a video with speech in **Video with speech**.\n2. Run. Nemotron 3.5 Transcribe writes down what is said and times every word, and Word Timestamps to Subtitles groups the words into subtitle lines.\n\nOutputs: an .srt file in `output/subtitles/`, a copy of the video with the subtitles burned in, in `output/video/`, and the plain transcript in the **Transcript** box. Burned-in subtitles draw Latin, Greek and Cyrillic letters; for other scripts use the .srt.\n\nSet the language in the speech to text node when you know it: with `auto`, short clips can come out in another language or translated. Nemotron knows 40 languages, Finnish included, and times words in all of them. It takes recordings up to an hour. `max_characters` and `max_seconds` decide how long one subtitle line gets.\n\nMemory: the node frees ComfyUI's models first and needs about 21 GB while it runs; the memory comes back when it ends."
+      ],
+      "title": "How to use"
+    },
+    {
+      "id": 11,
+      "type": "MarkdownNote",
+      "pos": [
+        960,
+        720
+      ],
+      "size": [
+        520,
+        300
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## About this workflow\n\nBuilt for this repo, a copy of Subtitles from Speech (Whisper large-v3) with the speech to text node swapped. Nemotron Speech to Text, Word Timestamps to Subtitles, Burn In Subtitles and Save Subtitles are this repo's template pack nodes. The first runs NVIDIA's [Nemotron 3.5 Transcribe 30B-A4B](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B) (OpenMDW-1.1) with the `nemo-speech` CLI of [NeMo-Speech.cpp](https://github.com/NVIDIA/NeMo-Speech.cpp) (Apache-2.0), built into the image.\n\nWeights: AtomicChat's GGUF conversion, [AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF](https://huggingface.co/AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF): the `AD-NVFP4` decoder (19.7 GB) and the F16 encoder (1.7 GB), in `models/stt/nemotron/`. The node downloads them on first use.\n\nSample clip `dubit_input.mp4` from Lightricks' ComfyUI-LTXVideo examples.\n\nAsset profile: `nemotron-3.5-transcribe`."
+      ],
+      "title": "About this workflow"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "VIDEO"
+    ],
+    [
+      2,
+      2,
+      1,
+      3,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      3,
+      1,
+      4,
+      0,
+      "STRING"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "STRING"
+    ],
+    [
+      5,
+      3,
+      0,
+      6,
+      0,
+      "STRING"
+    ],
+    [
+      6,
+      2,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      2,
+      2,
+      7,
+      1,
+      "FLOAT"
+    ],
+    [
+      8,
+      4,
+      0,
+      7,
+      2,
+      "STRING"
+    ],
+    [
+      9,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      2,
+      1,
+      8,
+      1,
+      "AUDIO"
+    ],
+    [
+      11,
+      2,
+      2,
+      8,
+      2,
+      "FLOAT"
+    ],
+    [
+      12,
+      8,
+      0,
+      9,
+      0,
+      "VIDEO"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Transcribe and subtitle",
+      "bounding": [
+        -20,
+        0,
+        2160,
+        700
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "definitions": {
+    "subgraphs": []
+  },
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -95,6 +95,7 @@
     "LongCatAvatarAudioEncode": "ComfyUI-LongCat-Avatar",
     "LongCatAvatarVideo": "ComfyUI-LongCat-Avatar",
     "LongCatAvatarVideoBase": "ComfyUI-LongCat-Avatar",
-    "VoiceIsolator": "ComfyUI-DGX-Spark-Templates"
+    "VoiceIsolator": "ComfyUI-DGX-Spark-Templates",
+    "NemotronSpeechToText": "ComfyUI-DGX-Spark-Templates"
   }
 }

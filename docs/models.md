@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 76
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 77
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
 every one declares its models in `properties.models`. On a fresh machine that is
 about 685 GB before the server starts, plus whatever the selected profiles add.

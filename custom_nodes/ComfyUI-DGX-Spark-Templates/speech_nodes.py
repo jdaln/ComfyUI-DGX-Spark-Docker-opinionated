@@ -15,19 +15,27 @@ model then talks on after the text in every language tried here, so this node
 samples itself, with that check (see _StopGuard). A line that still comes back
 too long for its text is made again with the next seed, three tries at most.
 
+Nemotron Speech to Text runs NVIDIA's Nemotron 3.5 Transcribe through the
+nemo-speech CLI of NeMo-Speech.cpp, built into the image, once per clip. It
+frees ComfyUI's models first; the child process gives its memory back when it
+exits. Same outputs as Whisper Speech to Text.
+
 Voice Isolator runs Inworld's offline Voice Isolator v1 through the
 inworld-voice-isolation package and returns the voice and the removed
 background. It is not under ComfyUI's model management, so it is dropped after
 each run unless keep_model_loaded is set.
 
-All three read their files from models/ and download any that are missing from
+All four read their files from models/ and download any that are missing from
 Hugging Face on first use; the asset profiles provision them in advance.
 """
 
 import gc
+import json
 import os
+import subprocess
 import sys
 import tempfile
+import time
 import wave
 
 import numpy as np
@@ -62,6 +70,20 @@ LANGUAGES = ("Arabic (ar)", "Chinese (zh)", "Danish (da)", "Dutch (nl)", "Englis
 VOICE_ISOLATOR_REPO = "inworld/voice-isolator"
 VOICE_ISOLATOR_FILE = "denoiser.safetensors"  # the offline v1 model; denoiser_realtime is the streaming one
 VOICE_ISOLATOR_DIR = os.path.join(folder_paths.models_dir, "voice_isolator")
+NEMO_SPEECH_BIN = os.environ.get("NEMO_SPEECH_BIN", "/opt/nemo-speech/bin/nemo-speech")
+NEMOTRON_REPO = "AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF"
+NEMOTRON_DIR = os.path.join(folder_paths.models_dir, "stt", "nemotron")
+NEMOTRON_DECODER = "NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-AD-NVFP4.gguf"
+NEMOTRON_ENCODER = "NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-Encoder-F16.gguf"  # the decoder names it; keep the name
+NEMOTRON_LANGUAGES = {
+    "Arabic": "ar", "Bengali": "bn", "Bulgarian": "bg", "Chinese": "zh", "Croatian": "hr", "Czech": "cs",
+    "Danish": "da", "Dutch": "nl", "English": "en", "Estonian": "et", "Filipino": "tl", "Finnish": "fi",
+    "French": "fr", "German": "de", "Greek": "el", "Hebrew": "he", "Hindi": "hi", "Hungarian": "hu",
+    "Indonesian": "id", "Italian": "it", "Japanese": "ja", "Korean": "ko", "Latvian": "lv", "Lithuanian": "lt",
+    "Maltese": "mt", "Marathi": "mr", "Polish": "pl", "Portuguese": "pt", "Romanian": "ro", "Russian": "ru",
+    "Slovak": "sk", "Slovenian": "sl", "Spanish": "es", "Swedish": "sv", "Tamil": "ta", "Telugu": "te",
+    "Thai": "th", "Turkish": "tr", "Ukrainian": "uk", "Vietnamese": "vi",
+}
 SPEECH_VOCAB = 6561  # S3 speech tokens; ids at or above it are control tokens
 MAX_SPEECH_TOKENS = 1000  # 40 s at 25 tokens a second
 TRIES = 3  # seeds tried for a line that comes back too long
@@ -138,8 +160,9 @@ class WhisperSpeechToText:
         options = {"task": "transcribe"}
         if language != "auto":
             options["language"] = language.rsplit("(", 1)[1].rstrip(")")
+        # batch_size 1: with word timestamps, batches of 8 took over 80 GB on 2 minutes of speech and were slower
         return _LOADED["whisper"]({"raw": speech.numpy(), "sampling_rate": 16000}, return_timestamps="word",
-                                  generate_kwargs=options, batch_size=8)
+                                  generate_kwargs=options, batch_size=1)
 
     @staticmethod
     def _word_lines(result):
@@ -152,6 +175,9 @@ class WhisperSpeechToText:
             if end is None:  # the last word of a chunk can come back open-ended
                 end = words[i + 1]["timestamp"][0] if i + 1 < len(words) else None
                 end = end if end is not None and end > start else start + 0.5
+            # the first word after a pause or music can start at the pause (0.00 - 9.48 for "Hyvät");
+            # no word is said that slowly, so start it a plausible length before its end
+            start = max(start, end - max(1.0, 0.1 * len(chunk["text"].strip())))
             lines.append(f"[{start:.2f} - {end:.2f}] {chunk['text'].strip()}")
         return "\n".join(lines)
 
@@ -502,14 +528,97 @@ class VoiceIsolator:
                 {"waveform": torch.stack(backgrounds), "sample_rate": rate})
 
 
+class NemotronSpeechToText:
+    INPUT_IS_LIST = True
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        languages = ["auto"] + [f"{name} ({code})" for name, code in sorted(NEMOTRON_LANGUAGES.items())]
+        return {
+            "required": {
+                "audio": ("AUDIO",),
+                "language": (languages, {"default": "auto",
+                                         "tooltip": "The spoken language. Name it when you know it: with auto, "
+                                                    "short clips can come out in another language."}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("text", "timestamps")
+    OUTPUT_IS_LIST = (True, True)
+    FUNCTION = "transcribe"
+    CATEGORY = "audio/speech"
+    DESCRIPTION = ("Writes down speech with NVIDIA Nemotron 3.5 Transcribe (30B, 4B active) through NeMo-Speech.cpp. "
+                   "timestamps holds one [start - end] word line per word, for Word Timestamps to Subtitles. It "
+                   "frees ComfyUI's models first; the model needs about 21 GB and is gone after the run.")
+
+    @staticmethod
+    def _run(wav_path, language, decoder):
+        command = [NEMO_SPEECH_BIN, "--quiet", "transcribe", wav_path, "--model", decoder, "--format", "json"]
+        if language != "auto":
+            command += ["-l", language.rsplit("(", 1)[1].rstrip(")")]
+        with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+            child = subprocess.Popen(command, stdout=out, stderr=err)
+            try:
+                while child.poll() is None:
+                    comfy.model_management.throw_exception_if_processing_interrupted()
+                    time.sleep(0.2)
+            finally:
+                if child.poll() is None:
+                    child.terminate()
+                    try:
+                        child.wait(10)
+                    except subprocess.TimeoutExpired:
+                        child.kill()
+            out.seek(0)
+            err.seek(0)
+            if child.returncode != 0:
+                raise RuntimeError(f"nemo-speech failed ({child.returncode}): "
+                                   f"{err.read().decode(errors='replace')[-2000:]}")
+            return json.loads(out.read().decode())
+
+    @staticmethod
+    def _word_lines(result):
+        return "\n".join(f"[{w['start']:.2f} - {w['end']:.2f}] {w['word'].strip()}"
+                         for w in result.get("words", []) if w["word"].strip())
+
+    def transcribe(self, audio, language):
+        if not os.path.exists(NEMO_SPEECH_BIN):
+            raise RuntimeError(f"{NEMO_SPEECH_BIN} is missing: this image was built without NeMo-Speech.cpp. "
+                               "Rebuild it with `docker compose build comfy`.")
+        decoder, _ = _fetch(NEMOTRON_REPO, (NEMOTRON_DECODER, NEMOTRON_ENCODER), NEMOTRON_DIR)
+        comfy.model_management.unload_all_models()
+        comfy.model_management.soft_empty_cache()
+        texts, stamps = [], []
+        progress = comfy.utils.ProgressBar(len(audio))
+        with tempfile.TemporaryDirectory() as folder:
+            for i, clip in enumerate(audio):
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                if not clip or "waveform" not in clip:  # a video without a sound track gives no audio
+                    raise ValueError("There is no sound to write down: the video has no sound track. Use a clip "
+                                     "in which people speak.")
+                speech = clip["waveform"][:1].float().mean(1, keepdim=True)
+                if clip["sample_rate"] != 16000:
+                    speech = torchaudio.functional.resample(speech, clip["sample_rate"], 16000)
+                path = os.path.join(folder, f"clip_{i}.wav")
+                _write_wav(path, {"waveform": speech, "sample_rate": 16000})
+                result = self._run(path, language[0], decoder)
+                texts.append(result.get("text", "").strip())
+                stamps.append(self._word_lines(result))
+                progress.update(1)
+        return (texts, stamps)
+
+
 NODE_CLASS_MAPPINGS = {
     "WhisperSpeechToText": WhisperSpeechToText,
+    "NemotronSpeechToText": NemotronSpeechToText,
     "ChatterboxSpeech": ChatterboxSpeech,
     "VoiceIsolator": VoiceIsolator,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "WhisperSpeechToText": "Whisper Speech to Text",
+    "NemotronSpeechToText": "Nemotron Speech to Text",
     "ChatterboxSpeech": "Chatterbox Speech",
     "VoiceIsolator": "Voice Isolator",
 }
