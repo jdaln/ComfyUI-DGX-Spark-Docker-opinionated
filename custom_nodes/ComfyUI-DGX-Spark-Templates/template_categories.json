@@ -7,7 +7,9 @@
       "Text to Image (Krea 2 Turbo NVFP4)",
       "Text to Image (Krea 2 Turbo Style LoRA)",
       "Text to Image (MiniMax H3 Image)",
-      "Text to Image (Qwen-Image)"
+      "Text to Image (Qwen-Image)",
+      "Depth to Image (Iris-Z small)",
+      "Text to Image and Depth (Iris-Z small)"
     ]
   },
   "2-image-editing": {
@@ -111,6 +113,7 @@
   "8-utility": {
     "ComfyUI-DGX-Spark-Templates": [
       "Image Depth Estimation (Lotus Depth)",
+      "Image to Depth (Iris-Z small)",
       "Remove Background (Lucida)",
       "Video to Pose Guide (FAB)",
       "Video to Pose Guide (SAM 3D Body)"

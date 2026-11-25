@@ -52,7 +52,8 @@ def stub_comfy():
            get_output_directory=lambda: os.path.join(WORK, "output"), get_save_image_path=save_image_path)
     comfy = module("comfy")
     comfy.model_management = module("comfy.model_management", throw_exception_if_processing_interrupted=lambda: None,
-                                    get_torch_device=lambda: "cpu")
+                                    get_torch_device=lambda: "cpu", intermediate_device=lambda: "cpu")
+    comfy.sd = module("comfy.sd")
     comfy.utils = module("comfy.utils", ProgressBar=lambda total: types.SimpleNamespace(update=lambda n: None))
     extras = module("comfy_extras")
     extras.nodes_audio = module("comfy_extras.nodes_audio", load=load)
@@ -294,6 +295,79 @@ class Dialogue(unittest.TestCase):
                                    "<Picture 1> Aino: repliikki 2", "<Picture 1> listens"])
         self.assertGreaterEqual(cues[1][0] - cues[0][1], 6.0 - 1e-3)  # the answer time is never shortened
         self.assertGreaterEqual(sum(frames) / 24, 15.5 - 1e-3)
+
+
+class IrisZ(unittest.TestCase):
+    def test_resolution_follows_the_sdk_rule(self):
+        iris = load("iris_z_nodes")
+        for source, side in (((1920, 1080), 1024), ((4000, 3000), 1024), ((900, 700), 512), ((400, 300), 512)):
+            w, h = iris.choose_resolution(*source, side)
+            self.assertEqual((w % 16, h % 16), (0, 0))
+            self.assertLessEqual(w * h, max(side * side, 0) * 1.2)
+            self.assertLessEqual(w * h, source[0] * source[1])  # never enlarged
+            self.assertLess(abs((w / h) / (source[0] / source[1]) - 1), 0.05)
+        self.assertEqual(iris.enlarged_size(256, 256, 1024), (1024, 1024))
+
+    def test_shards_are_found_from_the_first(self):
+        iris = load("iris_z_nodes")
+        folder = os.path.join(WORK, "models", "diffusion_models", "iris-z-test")
+        os.makedirs(folder, exist_ok=True)
+        names = [f"transformer-0000{k}-of-00003.safetensors" for k in (1, 2, 3)]
+        for name in names[:2]:
+            open(os.path.join(folder, name), "wb").close()
+        with self.assertRaisesRegex(FileNotFoundError, "00003-of-00003"):
+            iris.shard_paths(os.path.join(folder, names[0]))
+        open(os.path.join(folder, names[2]), "wb").close()
+        self.assertEqual([os.path.basename(p) for p in iris.shard_paths(os.path.join(folder, names[0]))], names)
+        with self.assertRaisesRegex(ValueError, "first shard"):
+            iris.shard_paths(os.path.join(folder, names[1]))
+
+    def test_task_patch_sets_modalities_and_positions(self):
+        import torch
+        iris = load("iris_z_nodes")
+        table = torch.arange(4, dtype=torch.float32)[:, None].expand(4, 3) * 10  # row k adds 10 * k
+
+        def run(task, tokens, ids, refs):
+            args = {"img": torch.zeros(1, tokens, 3), "img_ids": ids, "transformer_options":
+                    {"reference_image_num_tokens": refs} if refs else {}}
+            out = iris.make_patch(task, table)(args)
+            return out["img"][0, :, 0].tolist(), out["img_ids"][0]
+
+        ids = torch.zeros(1, 6, 4)
+        ids[0, 4:, 0] = 10  # core puts a reference at time index 10
+        img, out_ids = run("image to depth", 6, ids.clone(), [2])
+        self.assertEqual(img, [10.0] * 4 + [20.0] * 2)  # depth target, given picture
+        self.assertEqual(out_ids[:, 0].tolist(), [1.0] * 4 + [0.0] * 2)
+        img, out_ids = run("depth to image", 6, ids.clone(), [2])
+        self.assertEqual(img, [0.0] * 4 + [30.0] * 2)  # picture target, given depth
+        self.assertEqual(out_ids[:, 0].tolist(), [0.0] * 4 + [1.0] * 2)
+        joint = torch.zeros(1, 4, 4)
+        joint[0, :, 2] = torch.tensor([0, 1, 2, 3])  # one row, picture w 0-1, depth w 2-3
+        img, out_ids = run("text to image and depth", 4, joint, None)
+        self.assertEqual(img, [0.0, 0.0, 10.0, 10.0])
+        self.assertEqual(out_ids[:, 0].tolist(), [0.0, 0.0, 1.0, 1.0])
+        self.assertEqual(out_ids[:, 2].tolist(), [0.0, 1.0, 0.0, 1.0])
+        with self.assertRaisesRegex(ValueError, "exactly one reference"):
+            run("image to depth", 6, ids.clone(), None)
+
+    def test_depth_round_trip_and_latents(self):
+        import torch
+        iris = load("iris_z_nodes")
+        ramp = torch.linspace(0, 1, 64)[None, :].expand(48, 64)
+        decoded = ramp[None, ..., None].expand(1, 48, 64, 3).contiguous()  # the VAE's grey log-depth picture
+        depth, colours = iris.IrisZDepthDecode().decode(decoded)
+        self.assertEqual(tuple(depth.shape), (1, 48, 64, 3))
+        self.assertGreater(depth[0, 0, 0, 0].item(), depth[0, 0, -1, 0].item())  # near (dark grey) is bright
+        self.assertEqual(tuple(colours.shape), (1, 48, 64, 3))
+        grey, width, height = iris.IrisZDepthEncode().encode(depth, "Iris-Z depth", 512)
+        self.assertEqual((width % 16, height % 16), (0, 0))
+        back = torch.nn.functional.interpolate(grey.permute(0, 3, 1, 2), size=(48, 64), mode="bilinear")[0, 0]
+        self.assertLess((back[:, 4:-4] - ramp[:, 4:-4]).abs().max().item(), 0.08)  # 2-98 % rescale at the ends
+        latent, w, h = iris.IrisZEmptyLatent().make(512, 768, 2)
+        self.assertEqual(tuple(latent["samples"].shape), (2, 128, 48, 64))
+        picture, depth_latent = iris.IrisZSplit().split(latent)
+        self.assertEqual(tuple(picture["samples"].shape), (2, 128, 48, 32))
+        self.assertEqual(tuple(depth_latent["samples"].shape), (2, 128, 48, 32))
 
 
 if __name__ == "__main__":

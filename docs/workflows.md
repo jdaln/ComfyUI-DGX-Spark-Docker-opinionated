@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 118 profiles. The 117 in the category tables below
+`asset-profiles.json` defines 121 profiles. The 120 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 117 have an automated smoke lane. Three do not, because their
+Most of those 120 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -62,6 +62,8 @@ download nothing. See [models.md](models.md) for the current gated list.
 | 16-megapixel pictures in 6 steps, clean text at any size | `minimax-h3-image-t2i` | Text to Image (MiniMax H3 Image) | Ours | 37 GB | 165 s |
 | FLUX 3 Image Klein, 16 steps, strong text in pictures | `flux-3-klein-t2i` | `image_flux3_klein_distilled_t2i` | Template | 18 GB | 25 s |
 | Same, base model, 50 steps | `flux-3-klein-base-t2i` | `image_flux3_klein_t2i` | Template | 18 GB | 55 s |
+| A picture and its depth map from one prompt, drawn together | `iris-z-small-text-to-image-depth` | Text to Image and Depth (Iris-Z small) | Ours | 27 GB | 335 s |
+| A new picture on the layout of a depth map; the prompt says what things are | `iris-z-small-depth-to-image` | Depth to Image (Iris-Z small) | Ours | 27 GB | 310 s |
 
 Upstream ships the Ideogram blueprint with an empty prompt, and Ideogram answers
 an empty prompt with a grey card reading "Image blocked by safety filter"; the
@@ -92,6 +94,22 @@ under US$5M yearly revenue.
 In Finnish, a large sign ("Tervetuloa kirjastoon") came out right; on a small
 notice in the same picture, "Aukioloajat" became "Autiolajat". Check small
 Finnish text before using a picture.
+
+Iris-Z small (Speridlabs) is FLUX.2 Klein base 9B trained to draw a picture and
+its depth map in one sequence. Its weights load unchanged into core's FLUX.2
+model plus one embedding that marks each token as picture or depth, generated or
+given; the template pack's `iris_z_nodes.py` adds that embedding and the grid
+positions, and core's sampler does the rest, with a given picture or depth map
+as a reference latent at timestep 0. Checked against Speridlabs' SDK: one model
+call is within 1.1 % of the SDK in fp32, closer than the SDK's own bf16 (2.2 %);
+image to depth end to end agrees to 0.1 to 0.6 % of the depth range. Over 50
+steps with CFG 4 the details drift as much as the SDK drifts from itself when
+only its attention kernel changes; the scene stays the same. 1024x1024 takes
+about 4 minutes after loading. Text to Image and Depth draws the depth with the
+picture, a little softer than estimating it afterwards. Depth to Image reads
+Depth Anything, Lotus or MoGe maps (bright = near) as well as Iris-Z's own. The
+weights are under the FLUX non-commercial licence; the Qwen3 8B text encoder is
+Comfy-Org's fp8 build for Klein 9B.
 
 ## Editing existing images
 
@@ -784,7 +802,12 @@ The Voice Isolator node runs Inworld's offline Voice Isolator v1 (64M, 48 kHz,
 Apache-2.0) and returns the voice and the removed background, which add up to
 the input. Use it on a reference voice before cloning. On Inworld's noisy
 sample it removed the noise; Whisper large-v3 read that clip word for word
-with and without it.
+with and without it. Do not put it in front of speech to text by default: on
+3 minutes of clean Finnish (FLEURS) it raised Whisper's character errors from
+2.7 % to 10.3 % (Nemotron unchanged at 6.3 %), as quiet syllables went with the
+noise. Other people talking in the background are voices too, so it keeps them:
+with four English speakers mixed in at 5 dB, Whisper went from 75 % to 54 % and
+Nemotron from 66 % to 91 % errors, neither usable.
 
 The node uses the Chatterbox code in filliptm's ComfyUI_Fill-ChatterBox but
 samples with upstream Chatterbox's alignment check, which ends a line once the
@@ -1057,7 +1080,8 @@ rule they state.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Depth maps from images, for use as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Ours | 2 GB | 5 s |
+| Depth maps of pictures, the recommended one: cleanest edges here; 10 s a photo once loaded | `iris-z-small-depth` | Image to Depth (Iris-Z small) | Ours | 19 GB | 146 s |
+| Fast depth maps, for video frames and as control input | `lotus-depth-support` | Image Depth Estimation (Lotus Depth) | Ours | 2 GB | 5 s |
 | Background removal tuned for glass, glow, camouflage, text and print designs | `lucida-background-removal` | Remove Background (Lucida) | Ours | 0.9 GB | 5 s |
 | Smoother motion by frame interpolation (FILM) | `frame-interpolation-film` | `utility_video_frame_interpolation` | Template | 0.1 GB | 111 s |
 | Video upscale and restoration, SeedVR2 3B int8 | `seedvr2-video-upscale` | `utility_seedvr2_3b_int8_upscale_video` | Template | 4.0 GB | 356 s |
@@ -1065,6 +1089,17 @@ rule they state.
 | Same at 4x | `relayvsr-x4` | `utility_relayvsr_video_x4_upscale` | Template | 5.3 GB | 61 s |
 | A pose-guide video from a clip: a 2D skeleton with hands on black | `sam3d-body-pose-guide` | Video to Pose Guide (SAM 3D Body) | Ours | 5.5 GB | 150 s |
 | Same with FAB, 4x faster, its own person detector, non-commercial weights | `fab-pose-guide` | Video to Pose Guide (FAB) | Ours | 6.1 GB | 35 s |
+
+Image to Depth (Iris-Z small) was compared with Lotus and core's Depth Anything 3
+and MoGe blueprints on five sample photos (figurines, a staircase interior, the
+taxi street, a lounge, a puppy). Iris-Z gave the cleanest object edges, with no
+halo; Depth Anything 3 haloed around the figurines' heads, MoGe left a dark patch
+under the puppy, and Lotus kept the finest detail (a chandelier, chair legs) but
+showed grain on plain backgrounds. Iris-Z takes 10 s a photo against 1 to 5 s,
+and 18 GB of weights against 1 to 2 GB; the 146 s of the lane is mostly loading.
+So Iris-Z is the one to use for pictures, and Lotus stays the fast default inside
+the video depth workflows, where 10 s a frame would add about 20 minutes to a
+5 s clip.
 
 Lucida is a BiRefNet-HR fine-tune for the mattes the bundled
 `Remove Background (BiRefNet)` blueprint struggles with: semi-transparent
@@ -1130,6 +1165,8 @@ stack. Tracked in `scripts/smoke/pending_models.json`.
   aesthetics. Prefer the `-nvfp4` variants on Blackwell.
 - **Text inside the image**: `ideogram-4`.
 - **Editing a photo you already have**: `qwen-image-edit-2511-core`.
+- **A depth map of a picture**: `iris-z-small-depth`, 10 s a photo once loaded;
+  `lotus-depth-support` (5 s, 2 GB) when speed or memory matters.
 - **First video**: `ltx-2.0-i2v-distilled` at 80 s, before committing to Wan 2.2
   at around 10 minutes a clip.
 - **Best video quality**: the LTX 2.3 pair, or Wan 2.2 for motion.

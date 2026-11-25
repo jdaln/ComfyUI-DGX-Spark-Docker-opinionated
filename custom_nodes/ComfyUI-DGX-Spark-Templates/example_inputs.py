@@ -1,7 +1,8 @@
 """Copies sample inputs that ship with this pack into ComfyUI's input folder.
 
 Most templates get their sample files through the asset profiles, which
-download them. The InfiniteTalk speaker masks were made for this repo and live
+download them. The InfiniteTalk speaker masks and the Iris-Z sample depth map
+(the taxi photo's depth, for Depth to Image) were made for this repo and live
 in example_inputs/, so they are copied over at startup when missing; anything
 already there, file or link, is left alone. A symlink would not do: ComfyUI
 refuses input files that resolve outside the input folder.

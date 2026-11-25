@@ -59,10 +59,10 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 81
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 84
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
 every one declares its models in `properties.models`. On a fresh machine that is
-about 685 GB before the server starts, plus whatever the selected profiles add.
+about 712 GB before the server starts, plus whatever the selected profiles add.
 Models from gated repositories download only after their licence is accepted;
 each such template says so in its note.
 A bare Hugging Face repo link anywhere in a template file is enough for the
@@ -113,6 +113,7 @@ Not gated, but the terms restrict use, several to non-commercial use:
 | [Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image) | `minimax-h3-image-*` | MiniMax H3 Image Community License |
 | [Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body) | `sam3d-body-*`, `fab-pose-guide` | SAM License |
 | [noahcao/FAB](https://huggingface.co/noahcao/FAB) | `fab-pose-guide` | FAB weights licence, non-commercial research |
+| [speridlabs/iris-z](https://huggingface.co/speridlabs/iris-z) | `iris-z-small-*` | FLUX non-commercial |
 
 `fab-pose-guide` also needs SMPL 1.1.0, which no profile can download: register
 at [smpl.is.tue.mpg.de](https://smpl.is.tue.mpg.de) and copy the three `.pkl`

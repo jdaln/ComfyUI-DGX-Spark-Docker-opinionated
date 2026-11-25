@@ -643,6 +643,21 @@
    "ltx-2.5-distilled-int8",
    "ltx-2.5-iclora-ingredients",
    "minimax-h3-image-edit-input"
+  ],
+  "iris-z-small-depth": [
+   "iris-z-small-model",
+   "iris-z-small-vae",
+   "lotus-depth-input"
+  ],
+  "iris-z-small-depth-to-image": [
+   "iris-z-small-model",
+   "iris-z-small-vae",
+   "iris-z-small-text-encoder"
+  ],
+  "iris-z-small-text-to-image-depth": [
+   "iris-z-small-model",
+   "iris-z-small-vae",
+   "iris-z-small-text-encoder"
   ]
  },
  "selection_metadata": {
@@ -2789,6 +2804,57 @@
     "dest": "/workspace/ComfyUI/models/latent_upscale_models/minimax_h3_latent_upscaler_3d_fp16.safetensors",
     "url": "https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_conv_v1/minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors",
     "label": "MiniMax H3 3D latent upscaler (fp16)"
+   }
+  ],
+  "iris-z-small-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/transformer-00001-of-00004.safetensors",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00001-of-00004.safetensors",
+    "label": "Iris-Z small transformer-00001-of-00004.safetensors (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/transformer-00002-of-00004.safetensors",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00002-of-00004.safetensors",
+    "label": "Iris-Z small transformer-00002-of-00004.safetensors (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/transformer-00003-of-00004.safetensors",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00003-of-00004.safetensors",
+    "label": "Iris-Z small transformer-00003-of-00004.safetensors (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/transformer-00004-of-00004.safetensors",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00004-of-00004.safetensors",
+    "label": "Iris-Z small transformer-00004-of-00004.safetensors (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/empty_prompt.safetensors",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/empty_prompt.safetensors",
+    "label": "Iris-Z small empty_prompt.safetensors (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/config.json",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/config.json",
+    "label": "Iris-Z small config.json (FLUX non-commercial licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/iris-z-small/transformer.safetensors.index.json",
+    "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer.safetensors.index.json",
+    "label": "Iris-Z small transformer.safetensors.index.json (FLUX non-commercial licence)"
+   }
+  ],
+  "iris-z-small-vae": [
+   {
+    "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/flux2-klein/resolve/main/split_files/vae/flux2-vae.safetensors",
+    "label": "FLUX.2 VAE"
+   }
+  ],
+  "iris-z-small-text-encoder": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_3_8b_fp8mixed.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/1138ce884c8e977cdacacbe779784fec4426bb3f/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors",
+    "label": "Qwen3 8B text encoder for FLUX.2 Klein 9B (fp8 mixed)"
    }
   ]
  }

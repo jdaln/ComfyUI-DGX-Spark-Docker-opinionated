@@ -541,7 +541,7 @@ def property_model_specs(node):
         official = None
         ref_basename = basename(ref)
         for model in models:
-            if model["name"] == ref_basename:
+            if model["name"] in (ref_basename, normalize_relpath(ref)):
                 official = model
                 break
         if official is None and len(models) == 1:
@@ -566,6 +566,22 @@ def property_model_specs(node):
                 official_dest,
                 f"Workflow asset alias {ref_basename}",
             ))
+
+        # A model in its own subfolder (a sharded checkpoint and its side files) comes whole: the widget names one
+        # file, the node's other entries in the same subfolder are fetched with it.
+        folder = os.path.dirname(normalize_relpath(official["name"]))
+        if folder:
+            for model in models:
+                if model is official or model["directory"].strip("/") != directory:
+                    continue
+                if os.path.dirname(normalize_relpath(model["name"])) != folder:
+                    continue
+                specs.append((
+                    "file",
+                    os.path.join("/workspace/ComfyUI/models", directory, normalize_relpath(model["name"])),
+                    canonicalize_hf_url(model["url"]),
+                    f"Workflow asset {model['name']}",
+                ))
 
     return specs
 
