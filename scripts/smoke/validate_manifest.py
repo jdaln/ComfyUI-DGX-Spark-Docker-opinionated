@@ -23,6 +23,7 @@ import importlib.util
 import json
 import os
 import re
+import subprocess
 import sys
 
 MODELS_PREFIX = "/workspace/ComfyUI/models/"
@@ -68,6 +69,25 @@ def core_node_types(root):
     return types
 
 
+_CARRIED = {}
+
+
+def carried_packs(root):
+    """custom_nodes/ directories this repo carries. In a git checkout, only those with files git tracks (or new
+    files git does not ignore): the packs the entrypoint cloned there on this machine are not the repo's, and
+    checking them gave about 1,600 false problems. Without git, every directory counts."""
+    if root not in _CARRIED:
+        dirs = {os.path.basename(e.rstrip("/")) for e in glob.glob(os.path.join(root, "custom_nodes", "*", ""))}
+        try:
+            out = subprocess.run(["git", "-C", root, "ls-files", "-z", "-co", "--exclude-standard", "custom_nodes"],
+                                 capture_output=True, check=True).stdout.decode()
+            tracked = {p.split("/")[1] for p in out.split("\0") if p.count("/") >= 2}
+            _CARRIED[root] = dirs & tracked
+        except (OSError, subprocess.CalledProcessError):
+            _CARRIED[root] = dirs
+    return _CARRIED[root]
+
+
 def custom_node_dirs(root):
     """Directory names the entrypoint will clone out of custom_nodes.txt."""
     names = set()
@@ -79,8 +99,7 @@ def custom_node_dirs(root):
                 continue
             names.add(os.path.basename(line).removesuffix(".git"))
     # Directories carried in this repo rather than cloned.
-    for entry in sorted(glob.glob(os.path.join(root, "custom_nodes", "*", ""))):
-        names.add(os.path.basename(entry.rstrip("/")))
+    names |= carried_packs(root)
     return names
 
 
@@ -262,7 +281,8 @@ def check_template_categories(root, problems, warnings):
             workflows_dir = os.path.join(root, "custom_nodes", module, "example_workflows")
             for name in names:
                 claimed.setdefault((module, name), []).append(category)
-                if os.path.isdir(workflows_dir) and not os.path.exists(os.path.join(workflows_dir, name + ".json")):
+                if (module in carried_packs(root) and os.path.isdir(workflows_dir)
+                        and not os.path.exists(os.path.join(workflows_dir, name + ".json"))):
                     fail(problems, f"template category '{category}' lists {module}/{name}, which does not exist")
     for (module, name), owners in claimed.items():
         if len(owners) > 1:
@@ -485,7 +505,7 @@ def lane_workflow_path(root, target):
         relative = target[len(CUSTOM_NODES_MOUNT):]
         pack = relative.split("/", 1)[0]
         local = os.path.join(root, "custom_nodes", relative)
-        if os.path.isdir(os.path.join(root, "custom_nodes", pack)):
+        if pack in carried_packs(root):
             return local, True          # a pack carried in this repo: the file must be here
         return local, False             # cloned from custom_nodes.txt at startup
     if target.startswith(COMFY_PREFIX):
@@ -529,7 +549,8 @@ def main():
     for profile in manifest.get("profiles", {}):
         all_provided |= profile_files(manifest, profile)
 
-    templates = sorted(glob.glob(os.path.join(root, "custom_nodes", "*", "example_workflows", "*.json")))
+    templates = sorted(p for p in glob.glob(os.path.join(root, "custom_nodes", "*", "example_workflows", "*.json"))
+                       if os.path.relpath(p, os.path.join(root, "custom_nodes")).split(os.sep)[0] in carried_packs(root))
     provisions_without_profile = {}
     for path in templates:
         label = os.path.relpath(path, root)
