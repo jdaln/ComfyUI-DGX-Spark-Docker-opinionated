@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 323,
-  "last_link_id": 2,
+  "last_link_id": 632,
   "nodes": [
     {
       "id": 320,
@@ -275,7 +275,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA five-second video with sound that starts from a picture, with LTX-2.3. Spoken lines go in the prompt in quotes.\n\nThe middle node is ComfyUI's **Image to Video (LTX-2.3)** blueprint, the one in the node search box; double-click it to see inside. The sample picture and prompt are from Comfy's `video_ltx2_3_i2v` template (MIT).\n\nAsset profile: `ltx-2.3-t2v-i2v-single-stage-distilled-full`."
+        "## About this workflow\n\nA five-second video with sound that starts from a picture, with LTX-2.3. Spoken lines go in the prompt in quotes.\n\nThe middle node is ComfyUI's **Image to Video (LTX-2.3)** blueprint, the one in the node search box; double-click it to see inside. The sample picture and prompt are from Comfy's `video_ltx2_3_i2v` template (MIT).\n\nAsset profile: `ltx-2.3-t2v-i2v-single-stage-distilled-full`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -305,8 +305,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 25,
-          "lastNodeId": 323,
-          "lastLinkId": 631,
+          "lastNodeId": 324,
+          "lastLinkId": 632,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -3245,7 +3245,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  520
+                  632
                 ]
               },
               {
@@ -3575,6 +3575,45 @@
             "widgets_values": [
               "a * b + 1"
             ]
+          },
+          {
+            "id": 324,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              1660,
+              3860
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 45,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 632
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  520
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3827,7 +3866,7 @@
           },
           {
             "id": 520,
-            "origin_id": 316,
+            "origin_id": 324,
             "origin_slot": 0,
             "target_id": 285,
             "target_slot": 0,
@@ -4328,6 +4367,14 @@
             "target_id": 295,
             "target_slot": 2,
             "type": "INT"
+          },
+          {
+            "id": 632,
+            "origin_id": 316,
+            "origin_slot": 0,
+            "target_id": 324,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

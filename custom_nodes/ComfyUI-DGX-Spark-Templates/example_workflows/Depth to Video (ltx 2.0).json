@@ -2,7 +2,7 @@
   "id": "44a2a957-6cf5-56db-bbc9-4c3c08454612",
   "revision": 0,
   "last_node_id": 196,
-  "last_link_id": 437,
+  "last_link_id": 438,
   "nodes": [
     {
       "id": 143,
@@ -407,7 +407,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA new video that follows the depth of an existing one and starts from a picture you choose. The blueprint estimates the depth itself, with Lotus.\n\nThe middle node is ComfyUI's **Depth to Video (ltx 2.0)** blueprint, the one in the node search box; double-click it to see inside. The sample video, first frame and prompt are from Comfy's `video_ltx2_depth_to_video` template (MIT).\n\nAsset profile: `ltx-2.0-iclora-all-distilled-ref0.5`."
+        "## About this workflow\n\nA new video that follows the depth of an existing one and starts from a picture you choose. The blueprint estimates the depth itself, with Lotus.\n\nThe middle node is ComfyUI's **Depth to Video (ltx 2.0)** blueprint, the one in the node search box; double-click it to see inside. The sample video, first frame and prompt are from Comfy's `video_ltx2_depth_to_video` template (MIT).\n\nAsset profile: `ltx-2.0-iclora-all-distilled-ref0.5`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -453,8 +453,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 16,
-          "lastNodeId": 191,
-          "lastLinkId": 433,
+          "lastNodeId": 192,
+          "lastLinkId": 438,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -2803,7 +2803,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  325
+                  438
                 ]
               },
               {
@@ -3597,6 +3597,45 @@
               "ltx-2-19b-dev.safetensors",
               "default"
             ]
+          },
+          {
+            "id": 192,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -1650.0000287323687,
+              3738.88024326288
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 44,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 438
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  325
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3870,7 +3909,7 @@
           },
           {
             "id": 325,
-            "origin_id": 103,
+            "origin_id": 192,
             "origin_slot": 0,
             "target_id": 134,
             "target_slot": 0,
@@ -4427,6 +4466,14 @@
             "target_id": 97,
             "target_slot": 1,
             "type": "COMBO"
+          },
+          {
+            "id": 438,
+            "origin_id": 103,
+            "origin_slot": 0,
+            "target_id": 192,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

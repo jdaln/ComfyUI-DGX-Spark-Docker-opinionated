@@ -2,7 +2,7 @@
   "id": "7f5e0c56-93b4-4937-b7f2-efd0f1853e33",
   "revision": 0,
   "last_node_id": 116,
-  "last_link_id": 308,
+  "last_link_id": 309,
   "nodes": [
     {
       "id": 75,
@@ -392,10 +392,10 @@
         }
       },
       "widgets_values": [
-        "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n"
+        "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "widgets_values_named": {
-        "text": "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n"
+        "text": "## Image to Video with Detailer LoRA (LTX 2.0)\n\nOur copy of ComfyUI's `video_ltx2_i2v_lora` (workflow_templates 0.11.114, MIT).\nTwo changes:\n\n- The subgraph's video output is linked again. Upstream lost the link from\n  Create Video to the output, so Save Video got nothing.\n- The LoRA is `ltx-2-19b-ic-lora-detailer` instead of `ltx2-squish`.\n\nDelete this copy and point the lane back at `video_ltx2_i2v_lora` once\nupstream fixes the link.\n\n**Files** (profile `ltx-2.0-v2v-detailer`, about 50 GB): `ltx-2-19b-dev`,\nGemma 3 12B, `ltx-2-19b-distilled-lora-384`, `ltx-2-spatial-upscaler-x2-1.0`\nand `ltx-2-19b-ic-lora-detailer`. None is gated.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       },
       "color": "#222",
       "bgcolor": "#000"
@@ -427,8 +427,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 11,
-          "lastNodeId": 116,
-          "lastLinkId": 308,
+          "lastNodeId": 117,
+          "lastLinkId": 309,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -3266,8 +3266,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  209,
-                  296
+                  309
                 ]
               },
               {
@@ -3625,6 +3624,46 @@
               "lora_name": "ltx-2-19b-ic-lora-detailer.safetensors",
               "strength_model": 1
             }
+          },
+          {
+            "id": 117,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -900,
+              3600
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 44,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 309
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  209,
+                  296
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3856,7 +3895,7 @@
           },
           {
             "id": 209,
-            "origin_id": 1,
+            "origin_id": 117,
             "origin_slot": 0,
             "target_id": 68,
             "target_slot": 0,
@@ -4264,7 +4303,7 @@
           },
           {
             "id": 296,
-            "origin_id": 1,
+            "origin_id": 117,
             "origin_slot": 0,
             "target_id": 110,
             "target_slot": 0,
@@ -4357,6 +4396,14 @@
             "target_id": -20,
             "target_slot": 0,
             "type": "VIDEO"
+          },
+          {
+            "id": 309,
+            "origin_id": 1,
+            "origin_slot": 0,
+            "target_id": 117,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

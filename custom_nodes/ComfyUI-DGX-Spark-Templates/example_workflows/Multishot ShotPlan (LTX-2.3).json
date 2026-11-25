@@ -1,8 +1,8 @@
 {
   "id": "479c4a26-1856-4c26-998e-34945ebad313",
   "revision": 0,
-  "last_node_id": 333,
-  "last_link_id": 651,
+  "last_node_id": 334,
+  "last_link_id": 652,
   "nodes": [
     {
       "id": 278,
@@ -2770,7 +2770,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            520
+            652
           ]
         },
         {
@@ -3574,11 +3574,50 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Multishot ShotPlan (LTX-2.3)\n\nAdaptation of the `LTX Multishot Prompt + Refs` node created by Alisson Anjos (alisson-anjos), added to ComfyUI-BFSNodes on 2026-08-01, built on this repo's verified `Text to Video (LTX-2.3)` blueprint.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n\n## ⚠ The LoRA this needs is not published yet\n\nThe node targets `multishot_strata_r128_v1`, trained on the Pensioner/ShotPlan keyframe set. As of this commit that file is not on Hugging Face — the node shipped ahead of the weights — so **no profile can provision it** and this template will report a missing LoRA until it appears. When it does, drop it in as:\n\n```\n📂 ComfyUI/models/loras/bfs/multishot_strata_r128_v1.safetensors\n```\n\nEverything else here comes from the shared LTX-2.3 base, so selecting `bfs-ltx-2.3-multishot` gets you the rest of the stack today.\n\n## How it works\n\nOne prompt for the whole clip in ShotPlan caption format — a global preamble, then `Shot 1:`, `Shot 2:` … — plus one reference keyframe per shot. The builder assembles both from the per-shot fields, so you never hand-write the format.\n\n- **Batch order is shot order.** The LoRA was trained with `shuffle_reference_slots: false`, so slot N means shot N and nothing else.\n- **Shots compact.** Fill keyframes 1 and 3 and leave 2 empty and you get Shot 1 / Shot 2 on slots 0 and 1. Slot 0 must always be the opening shot.\n- **Unused slots are padded with flat mid-grey**, the blank the dataset used for samples with fewer than four shots.\n- **Vocabularies are not decorative.** The shot-size and camera-move dropdowns are the terms that actually occur in the training captions; anything outside them is out of distribution.\n- **Keep action lines short.** The text encoder truncates at 1024 tokens and four real ShotPlan shots already run long — overflow eats the last shot's description.\n\n`LTX Identity Transfer` is set to `layout=strata`, `source_id=2`, `phase_scale=1.0`, which reproduces the trained convention: source_id 2/3/4/5 on strata slots 0/1/2/3. Changing the layout is not a quality trade-off — it is a coordinate convention the model never learned.\n\nThe blueprint's image-to-video guide stays bypassed: the keyframes are separate reference tokens, not an I2V start frame."
+        "## Multishot ShotPlan (LTX-2.3)\n\nAdaptation of the `LTX Multishot Prompt + Refs` node created by Alisson Anjos (alisson-anjos), added to ComfyUI-BFSNodes on 2026-08-01, built on this repo's verified `Text to Video (LTX-2.3)` blueprint.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n\n## ⚠ The LoRA this needs is not published yet\n\nThe node targets `multishot_strata_r128_v1`, trained on the Pensioner/ShotPlan keyframe set. As of this commit that file is not on Hugging Face — the node shipped ahead of the weights — so **no profile can provision it** and this template will report a missing LoRA until it appears. When it does, drop it in as:\n\n```\n📂 ComfyUI/models/loras/bfs/multishot_strata_r128_v1.safetensors\n```\n\nEverything else here comes from the shared LTX-2.3 base, so selecting `bfs-ltx-2.3-multishot` gets you the rest of the stack today.\n\n## How it works\n\nOne prompt for the whole clip in ShotPlan caption format — a global preamble, then `Shot 1:`, `Shot 2:` … — plus one reference keyframe per shot. The builder assembles both from the per-shot fields, so you never hand-write the format.\n\n- **Batch order is shot order.** The LoRA was trained with `shuffle_reference_slots: false`, so slot N means shot N and nothing else.\n- **Shots compact.** Fill keyframes 1 and 3 and leave 2 empty and you get Shot 1 / Shot 2 on slots 0 and 1. Slot 0 must always be the opening shot.\n- **Unused slots are padded with flat mid-grey**, the blank the dataset used for samples with fewer than four shots.\n- **Vocabularies are not decorative.** The shot-size and camera-move dropdowns are the terms that actually occur in the training captions; anything outside them is out of distribution.\n- **Keep action lines short.** The text encoder truncates at 1024 tokens and four real ShotPlan shots already run long — overflow eats the last shot's description.\n\n`LTX Identity Transfer` is set to `layout=strata`, `source_id=2`, `phase_scale=1.0`, which reproduces the trained convention: source_id 2/3/4/5 on strata slots 0/1/2/3. Changing the layout is not a quality trade-off — it is a coordinate convention the model never learned.\n\nThe blueprint's image-to-video guide stays bypassed: the keyframes are separate reference tokens, not an I2V start frame.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "title": "Credit, status and how to use this",
       "color": "#222",
       "bgcolor": "#000"
+    },
+    {
+      "id": 334,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        1660,
+        3860
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 55,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 652
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            520
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
     }
   ],
   "links": [
@@ -3680,7 +3719,7 @@
     ],
     [
       520,
-      318,
+      334,
       0,
       287,
       0,
@@ -4221,6 +4260,14 @@
       332,
       0,
       "VIDEO"
+    ],
+    [
+      652,
+      318,
+      0,
+      334,
+      0,
+      "MODEL"
     ]
   ],
   "groups": [],

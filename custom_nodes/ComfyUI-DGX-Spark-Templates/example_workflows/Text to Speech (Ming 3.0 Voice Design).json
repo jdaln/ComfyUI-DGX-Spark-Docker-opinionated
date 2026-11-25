@@ -1,0 +1,322 @@
+{
+  "id": "a7e7fabe-20a3-4a47-a2ca-33e486451eca",
+  "revision": 0,
+  "last_node_id": 6,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        370,
+        70
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "ming-3.0-tts-0.5b_bf16.safetensors",
+            "url": "https://huggingface.co/nynxz/Ming-3.0/resolve/main/diffusion_models/ming-3.0-tts-0.5b_bf16.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "ming-3.0-tts-0.5b_bf16.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "ming/ming-3.0-tts-tiny_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 2,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        120
+      ],
+      "size": [
+        370,
+        70
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            2,
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "ming-3.0_audio_vae.safetensors",
+            "url": "https://huggingface.co/nynxz/Ming-3.0/resolve/main/vae/ming-3.0_audio_vae.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "ming-3.0_audio_vae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "ming/ming-3.0_audio_vae.safetensors"
+      }
+    },
+    {
+      "id": 3,
+      "type": "MingTTS",
+      "pos": [
+        420,
+        0
+      ],
+      "size": [
+        400,
+        370
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "showAdvanced": true,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "voice",
+          "shape": 7,
+          "type": "MING_VOICE",
+          "link": null
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 2
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MingTTS"
+      },
+      "widgets_values": [
+        "Good morning, everyone. Today we look at how the river changes through the seasons, from the first ice in November to the spring floods.",
+        "voice design",
+        "A calm, friendly female teacher in her forties, clear and unhurried, warm but not theatrical.",
+        "English",
+        42,
+        "fixed",
+        2,
+        10,
+        0,
+        0.25,
+        true,
+        50,
+        true
+      ],
+      "widgets_values_named": {
+        "text": "Hey guys! This is a test for Ming 3.0 in ComfyUI... mmm how does it sound?... Sounds pretty good to me...! Have Fun!...",
+        "task": "speak",
+        "language": "auto",
+        "seed": 297245516938607,
+        "control_after_generate": "randomize",
+        "cfg": 2,
+        "flow_steps": 10,
+        "temperature": 0,
+        "sigma": 0.25,
+        "split_text": true,
+        "max_fragment_length": 50,
+        "continuity": true
+      }
+    },
+    {
+      "id": 4,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        880,
+        0
+      ],
+      "size": [
+        170,
+        50
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 3
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      }
+    },
+    {
+      "id": 5,
+      "type": "SaveAudio",
+      "pos": [
+        1200,
+        0
+      ],
+      "size": [
+        400,
+        140
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/ming_voice_design"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "MarkdownNote",
+      "pos": [
+        -560,
+        0
+      ],
+      "size": [
+        520,
+        380
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Text to Speech (Ming 3.0 Voice Design)\n\nDescribe a voice in words and Ming invents it; no reference recording. On **Ming TTS**, `task` also offers a built-in voice (5 English, the rest Chinese), an emotion, speed, pitch and volume, a dialect, or free-form direction. Inline tags such as [Sigh] or [Laughter] go in the text.\n\nBuilt from the example workflows of Nynxz/ComfyUI-MingTTS (Apache-2.0). Model: inclusionAI's Ming-3.0-tts, 0.5B, MIT; files from nynxz/Ming-3.0. Languages: Chinese, English, German, Spanish, French, Korean, Japanese, Sichuanese and Cantonese. No Finnish: use the Chatterbox or Audio8 templates for Finnish.\n\nProfile `ming-3-tts-voice-design`, 3 GB.\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      2,
+      "VAE"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "LATENT"
+    ],
+    [
+      4,
+      2,
+      0,
+      4,
+      1,
+      "VAE"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -2,7 +2,7 @@
   "id": "3cb40b56-b170-57b2-9c2d-6bdd79f0bb9a",
   "revision": 0,
   "last_node_id": 28,
-  "last_link_id": 48,
+  "last_link_id": 49,
   "nodes": [
     {
       "id": 9,
@@ -249,10 +249,10 @@
       "title": "Model Links",
       "properties": {},
       "widgets_values": [
-        "Guide: [Subgraph](https://docs.comfy.org/interface/features/subgraph)\n\n## Model Links\n\n- [Hugging Face:Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image)\n- [Hugging Face:Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)\n- [Hugging Face:Comfy-Org/Qwen3.5](https://huggingface.co/Comfy-Org/Qwen3.5)\n\n**diffusion_models**\n\n- [minimax_h3_image_pruned_w4a8.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors) (12.55 GB)\n\n**text_encoders**\n\n- [qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) (about 16 GB)\n- [qwen3.5_9b_w4a8_gptq.safetensors](https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors) (6.84 GB)\n\n**vae**\n\n- [minimax_h3_image_vae_fp16.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/vae/minimax_h3_image_vae_fp16.safetensors) (1.17 GB)\n\n\n## Model Storage Location\n\n```\n📂 ComfyUI/\n├── 📂 models/\n│   ├── 📂 diffusion_models/\n│   │   └── minimax_h3_image_pruned_w4a8.safetensors\n│   ├── 📂 text_encoders/\n│   │   ├── qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n│   │   └── qwen3.5_9b_w4a8_gptq.safetensors\n│   └── 📂 vae/\n│       └── minimax_h3_image_vae_fp16.safetensors\n```\n\n## Report Issue\n\nNote: Please update ComfyUI first ([guide](https://docs.comfy.org/installation/update_comfyui)) and prepare required models. Desktop/Cloud updates follow stable releases, so some nightly-supported models may not be available yet.\n\n- Cannot run / runtime errors: [ComfyUI/issues](https://github.com/comfyanonymous/ComfyUI/issues)\n- UI / frontend issues: [ComfyUI_frontend/issues](https://github.com/Comfy-Org/ComfyUI_frontend/issues)\n- Workflow issues: [workflow_templates/issues](https://github.com/Comfy-Org/workflow_templates/issues)\n\n## Where this workflow comes from\n\nA copy of ComfyUI's `image_minimax_h3_image_t2i` template as it stands on the main branch of Comfy-Org/workflow_templates (MIT), which defaults to 16 MP. The released template package that ComfyUI v0.46.2 pins still defaults to 4 MP. Changed here: the transformer is the w4a8 build (12.55 GB instead of 21 GB) and the Qwen3-VL text encoder is the NVFP4 AWQ build the MiniMax H3 video workflows already use (about 16 GB instead of 25.28 GB). Delete this copy once ComfyUI's own template ships at 16 MP.\n"
+        "Guide: [Subgraph](https://docs.comfy.org/interface/features/subgraph)\n\n## Model Links\n\n- [Hugging Face:Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image)\n- [Hugging Face:Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)\n- [Hugging Face:Comfy-Org/Qwen3.5](https://huggingface.co/Comfy-Org/Qwen3.5)\n\n**diffusion_models**\n\n- [minimax_h3_image_pruned_w4a8.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors) (12.55 GB)\n\n**text_encoders**\n\n- [qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) (about 16 GB)\n- [qwen3.5_9b_w4a8_gptq.safetensors](https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors) (6.84 GB)\n\n**vae**\n\n- [minimax_h3_image_vae_fp16.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/vae/minimax_h3_image_vae_fp16.safetensors) (1.17 GB)\n\n\n## Model Storage Location\n\n```\n📂 ComfyUI/\n├── 📂 models/\n│   ├── 📂 diffusion_models/\n│   │   └── minimax_h3_image_pruned_w4a8.safetensors\n│   ├── 📂 text_encoders/\n│   │   ├── qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n│   │   └── qwen3.5_9b_w4a8_gptq.safetensors\n│   └── 📂 vae/\n│       └── minimax_h3_image_vae_fp16.safetensors\n```\n\n## Report Issue\n\nNote: Please update ComfyUI first ([guide](https://docs.comfy.org/installation/update_comfyui)) and prepare required models. Desktop/Cloud updates follow stable releases, so some nightly-supported models may not be available yet.\n\n- Cannot run / runtime errors: [ComfyUI/issues](https://github.com/comfyanonymous/ComfyUI/issues)\n- UI / frontend issues: [ComfyUI_frontend/issues](https://github.com/Comfy-Org/ComfyUI_frontend/issues)\n- Workflow issues: [workflow_templates/issues](https://github.com/Comfy-Org/workflow_templates/issues)\n\n## Where this workflow comes from\n\nA copy of ComfyUI's `image_minimax_h3_image_t2i` template as it stands on the main branch of Comfy-Org/workflow_templates (MIT), which defaults to 16 MP. The released template package that ComfyUI v0.46.2 pins still defaults to 4 MP. Changed here: the transformer is the w4a8 build (12.55 GB instead of 21 GB) and the Qwen3-VL text encoder is the NVFP4 AWQ build the MiniMax H3 video workflows already use (about 16 GB instead of 25.28 GB). Delete this copy once ComfyUI's own template ships at 16 MP.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "widgets_values_named": {
-        "text": "Guide: [Subgraph](https://docs.comfy.org/interface/features/subgraph)\n\n## Model Links\n\n- [Hugging Face:Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image)\n- [Hugging Face:Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)\n- [Hugging Face:Comfy-Org/Qwen3.5](https://huggingface.co/Comfy-Org/Qwen3.5)\n\n**diffusion_models**\n\n- [minimax_h3_image_pruned_w4a8.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors) (12.55 GB)\n\n**text_encoders**\n\n- [qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) (about 16 GB)\n- [qwen3.5_9b_w4a8_gptq.safetensors](https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors) (6.84 GB)\n\n**vae**\n\n- [minimax_h3_image_vae_fp16.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/vae/minimax_h3_image_vae_fp16.safetensors) (1.17 GB)\n\n\n## Model Storage Location\n\n```\n📂 ComfyUI/\n├── 📂 models/\n│   ├── 📂 diffusion_models/\n│   │   └── minimax_h3_image_pruned_w4a8.safetensors\n│   ├── 📂 text_encoders/\n│   │   ├── qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n│   │   └── qwen3.5_9b_w4a8_gptq.safetensors\n│   └── 📂 vae/\n│       └── minimax_h3_image_vae_fp16.safetensors\n```\n\n## Report Issue\n\nNote: Please update ComfyUI first ([guide](https://docs.comfy.org/installation/update_comfyui)) and prepare required models. Desktop/Cloud updates follow stable releases, so some nightly-supported models may not be available yet.\n\n- Cannot run / runtime errors: [ComfyUI/issues](https://github.com/comfyanonymous/ComfyUI/issues)\n- UI / frontend issues: [ComfyUI_frontend/issues](https://github.com/Comfy-Org/ComfyUI_frontend/issues)\n- Workflow issues: [workflow_templates/issues](https://github.com/Comfy-Org/workflow_templates/issues)\n\n## Where this workflow comes from\n\nA copy of ComfyUI's `image_minimax_h3_image_t2i` template as it stands on the main branch of Comfy-Org/workflow_templates (MIT), which defaults to 16 MP. The released template package that ComfyUI v0.46.2 pins still defaults to 4 MP. Changed here: the transformer is the w4a8 build (12.55 GB instead of 21 GB) and the Qwen3-VL text encoder is the NVFP4 AWQ build the MiniMax H3 video workflows already use (about 16 GB instead of 25.28 GB). Delete this copy once ComfyUI's own template ships at 16 MP.\n"
+        "text": "Guide: [Subgraph](https://docs.comfy.org/interface/features/subgraph)\n\n## Model Links\n\n- [Hugging Face:Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image)\n- [Hugging Face:Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)\n- [Hugging Face:Comfy-Org/Qwen3.5](https://huggingface.co/Comfy-Org/Qwen3.5)\n\n**diffusion_models**\n\n- [minimax_h3_image_pruned_w4a8.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors) (12.55 GB)\n\n**text_encoders**\n\n- [qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors) (about 16 GB)\n- [qwen3.5_9b_w4a8_gptq.safetensors](https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors) (6.84 GB)\n\n**vae**\n\n- [minimax_h3_image_vae_fp16.safetensors](https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/vae/minimax_h3_image_vae_fp16.safetensors) (1.17 GB)\n\n\n## Model Storage Location\n\n```\n📂 ComfyUI/\n├── 📂 models/\n│   ├── 📂 diffusion_models/\n│   │   └── minimax_h3_image_pruned_w4a8.safetensors\n│   ├── 📂 text_encoders/\n│   │   ├── qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n│   │   └── qwen3.5_9b_w4a8_gptq.safetensors\n│   └── 📂 vae/\n│       └── minimax_h3_image_vae_fp16.safetensors\n```\n\n## Report Issue\n\nNote: Please update ComfyUI first ([guide](https://docs.comfy.org/installation/update_comfyui)) and prepare required models. Desktop/Cloud updates follow stable releases, so some nightly-supported models may not be available yet.\n\n- Cannot run / runtime errors: [ComfyUI/issues](https://github.com/comfyanonymous/ComfyUI/issues)\n- UI / frontend issues: [ComfyUI_frontend/issues](https://github.com/Comfy-Org/ComfyUI_frontend/issues)\n- Workflow issues: [workflow_templates/issues](https://github.com/Comfy-Org/workflow_templates/issues)\n\n## Where this workflow comes from\n\nA copy of ComfyUI's `image_minimax_h3_image_t2i` template as it stands on the main branch of Comfy-Org/workflow_templates (MIT), which defaults to 16 MP. The released template package that ComfyUI v0.46.2 pins still defaults to 4 MP. Changed here: the transformer is the w4a8 build (12.55 GB instead of 21 GB) and the Qwen3-VL text encoder is the NVFP4 AWQ build the MiniMax H3 video workflows already use (about 16 GB instead of 25.28 GB). Delete this copy once ComfyUI's own template ships at 16 MP.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       },
       "color": "#222",
       "bgcolor": "#000"
@@ -292,8 +292,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 5,
-          "lastNodeId": 28,
-          "lastLinkId": 48,
+          "lastNodeId": 29,
+          "lastLinkId": 49,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -504,7 +504,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  5
+                  49
                 ]
               }
             ],
@@ -1411,6 +1411,45 @@
               "json_string": "",
               "key": "expanded_caption"
             }
+          },
+          {
+            "id": 29,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -180,
+              -120
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 16,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 49
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  5
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1518,7 +1557,7 @@
           },
           {
             "id": 5,
-            "origin_id": 1,
+            "origin_id": 29,
             "origin_slot": 0,
             "target_id": 7,
             "target_slot": 0,
@@ -1723,6 +1762,14 @@
             "target_id": 19,
             "target_slot": 1,
             "type": "STRING"
+          },
+          {
+            "id": 49,
+            "origin_id": 1,
+            "origin_slot": 0,
+            "target_id": 29,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {}

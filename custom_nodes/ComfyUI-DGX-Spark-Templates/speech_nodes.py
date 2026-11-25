@@ -15,7 +15,12 @@ model then talks on after the text in every language tried here, so this node
 samples itself, with that check (see _StopGuard). A line that still comes back
 too long for its text is made again with the next seed, three tries at most.
 
-Both read their files from models/ and download any that are missing from
+Voice Isolator runs Inworld's offline Voice Isolator v1 through the
+inworld-voice-isolation package and returns the voice and the removed
+background. It is not under ComfyUI's model management, so it is dropped after
+each run unless keep_model_loaded is set.
+
+All three read their files from models/ and download any that are missing from
 Hugging Face on first use; the asset profiles provision them in advance.
 """
 
@@ -54,6 +59,9 @@ LANGUAGES = ("Arabic (ar)", "Chinese (zh)", "Danish (da)", "Dutch (nl)", "Englis
              "German (de)", "Greek (el)", "Hebrew (he)", "Hindi (hi)", "Italian (it)", "Japanese (ja)", "Korean (ko)",
              "Malay (ms)", "Norwegian (no)", "Polish (pl)", "Portuguese (pt)", "Russian (ru)", "Spanish (es)",
              "Swahili (sw)", "Swedish (sv)", "Turkish (tr)")
+VOICE_ISOLATOR_REPO = "inworld/voice-isolator"
+VOICE_ISOLATOR_FILE = "denoiser.safetensors"  # the offline v1 model; denoiser_realtime is the streaming one
+VOICE_ISOLATOR_DIR = os.path.join(folder_paths.models_dir, "voice_isolator")
 SPEECH_VOCAB = 6561  # S3 speech tokens; ids at or above it are control tokens
 MAX_SPEECH_TOKENS = 1000  # 40 s at 25 tokens a second
 TRIES = 3  # seeds tried for a line that comes back too long
@@ -445,12 +453,63 @@ class ChatterboxSpeech:
         return clips
 
 
+class VoiceIsolator:
+    """Inworld Voice Isolator v1, offline model: the voice of a recording without its background."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "audio": ("AUDIO",),
+            "keep_model_loaded": ("BOOLEAN", {"default": False}),
+        }}
+
+    RETURN_TYPES = ("AUDIO", "AUDIO")
+    RETURN_NAMES = ("voice", "background")
+    FUNCTION = "isolate"
+    CATEGORY = "audio/speech"
+    DESCRIPTION = ("Separates the voice in a recording from noise, music and room sound with Inworld's Voice "
+                   "Isolator v1 (offline model, 48 kHz, Apache-2.0). background is what was removed. Use it on a "
+                   "reference voice before cloning, or on speech before Whisper.")
+
+    @staticmethod
+    def _model():
+        if "voice_isolator" not in _LOADED:
+            from inworld import voice_isolation
+            (path,) = _fetch(VOICE_ISOLATOR_REPO, (VOICE_ISOLATOR_FILE,), VOICE_ISOLATOR_DIR)
+            _LOADED["voice_isolator"] = voice_isolation.VoiceIsolator(
+                path, device=comfy.model_management.get_torch_device())
+        return _LOADED["voice_isolator"]
+
+    def isolate(self, audio, keep_model_loaded):
+        if not audio or "waveform" not in audio:
+            raise ValueError("There is no sound to clean: connect a clip with speech in it.")
+        rate = audio["sample_rate"]
+        try:
+            model = self._model()
+            voices, backgrounds = [], []
+            for wave_ in audio["waveform"]:
+                comfy.model_management.throw_exception_if_processing_interrupted()
+                mono = wave_.float().mean(0)
+                voice = model.isolate(mono.to(model.device), rate)
+                voice = torch.as_tensor(voice).float().reshape(-1).cpu()
+                voice = F.pad(voice, (0, max(0, mono.shape[-1] - voice.shape[-1])))[:mono.shape[-1]]
+                voices.append(voice.reshape(1, -1))
+                backgrounds.append((mono - voice).reshape(1, -1))
+        finally:
+            if not keep_model_loaded:
+                _unload("voice_isolator")
+        return ({"waveform": torch.stack(voices), "sample_rate": rate},
+                {"waveform": torch.stack(backgrounds), "sample_rate": rate})
+
+
 NODE_CLASS_MAPPINGS = {
     "WhisperSpeechToText": WhisperSpeechToText,
     "ChatterboxSpeech": ChatterboxSpeech,
+    "VoiceIsolator": VoiceIsolator,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "WhisperSpeechToText": "Whisper Speech to Text",
     "ChatterboxSpeech": "Chatterbox Speech",
+    "VoiceIsolator": "Voice Isolator",
 }

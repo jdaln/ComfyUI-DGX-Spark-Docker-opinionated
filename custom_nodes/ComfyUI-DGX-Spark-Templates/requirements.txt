@@ -1,0 +1,2 @@
+# Voice Isolator node (speech_nodes.py); its other dependencies are already in the venv
+inworld-voice-isolation==1.0.0

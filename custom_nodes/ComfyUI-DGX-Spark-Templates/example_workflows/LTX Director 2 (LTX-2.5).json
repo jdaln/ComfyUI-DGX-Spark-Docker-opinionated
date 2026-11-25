@@ -1,8 +1,8 @@
 {
   "id": "ee662af8-be9b-4e7c-b843-cdba1830b923",
   "revision": 0,
-  "last_node_id": 900,
-  "last_link_id": 1093,
+  "last_node_id": 901,
+  "last_link_id": 1094,
   "nodes": [
     {
       "id": 55,
@@ -1188,7 +1188,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            1093
+            1094
           ]
         }
       ],
@@ -1773,7 +1773,46 @@
       "color": "#432",
       "bgcolor": "#653",
       "widgets_values": [
-        "## LTX Director 2 - LTX-2.5 conversion\n\nAdapted from **LTX_Director_2_Workflow_Distilled.json** in\n[WhatDreamsCost-ComfyUI](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI)\nby WhatDreamsCost, licensed **GPL-3.0**. This derived file is GPL-3.0 too.\n\nChanges from the original, all to move it off LTX 2.3:\n\n- `DualCLIPLoader` -> `CLIPLoader`: 2.5 ships the text projection inside\n  `gemma4-12b-with-proj-ltx-2.5`, so the separate projection file is gone.\n- Transformer, both VAEs and the spatial upscaler swapped to their 2.5 builds.\n  The transformer is the NVFP4 distilled build.\n- Removed the `ModelPreviewOverrideKJ` + `VAELoaderKJ` preview pair, which\n  needed `taeltx2_3.safetensors`, a 2.3-only tiny VAE with no 2.5 equivalent.\n  Generation is unaffected; only the live latent preview is gone.\n\nThe LTX Director nodes themselves are unchanged and still come from the pack."
+        "## LTX Director 2 - LTX-2.5 conversion\n\nAdapted from **LTX_Director_2_Workflow_Distilled.json** in\n[WhatDreamsCost-ComfyUI](https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI)\nby WhatDreamsCost, licensed **GPL-3.0**. This derived file is GPL-3.0 too.\n\nChanges from the original, all to move it off LTX 2.3:\n\n- `DualCLIPLoader` -> `CLIPLoader`: 2.5 ships the text projection inside\n  `gemma4-12b-with-proj-ltx-2.5`, so the separate projection file is gone.\n- Transformer, both VAEs and the spatial upscaler swapped to their 2.5 builds.\n  The transformer is the NVFP4 distilled build.\n- Removed the `ModelPreviewOverrideKJ` + `VAELoaderKJ` preview pair, which\n  needed `taeltx2_3.safetensors`, a 2.3-only tiny VAE with no 2.5 equivalent.\n  Generation is unaffected; only the live latent preview is gone.\n\nThe LTX Director nodes themselves are unchanged and still come from the pack.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
+      ]
+    },
+    {
+      "id": 901,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        6450,
+        -770
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1094
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1093
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
       ]
     }
   ],
@@ -2268,9 +2307,17 @@
     ],
     [
       1093,
-      35,
+      901,
       0,
       131,
+      0,
+      "MODEL"
+    ],
+    [
+      1094,
+      35,
+      0,
+      901,
       0,
       "MODEL"
     ]

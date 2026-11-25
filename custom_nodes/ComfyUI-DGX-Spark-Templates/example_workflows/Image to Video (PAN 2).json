@@ -1,8 +1,8 @@
 {
   "id": "6c1f2a4e-9d1b-4a51-9c2e-0b7a5f3d2e18",
   "revision": 0,
-  "last_node_id": 18,
-  "last_link_id": 19,
+  "last_node_id": 19,
+  "last_link_id": 20,
   "nodes": [
     {
       "id": 1,
@@ -63,7 +63,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            12
+            20
           ]
         }
       ],
@@ -771,7 +771,46 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## Image to Video (PAN 2)\n\nMBZUAI's PAN 2 world model (29B, Apache-2.0), native in ComfyUI: a start\nimage and a description of what happens give a video of the next moments.\nLeave the start image unconnected for text to video.\n\nPAN 2 reads a structured world-state caption, not a free prompt. The caption\nwriter (Qwen3.5 9B, through Generate Text) turns the request into one with\nthe policy from ifm-ai/PAN2 (`inference/pan-prompt-rewriter/system_prompt.md`).\nWrite the request in plain English without double quotation marks. To write a\ncaption by hand, follow that format and connect it to **Positive** directly.\nThe negative is PAN 2's fixed template; its three time ranges match the clip\nlength, here 5 s.\n\nSettings from the model card: 1248x704, 24 fps, 50 steps, CFG 2.5, euler,\nshift 9 (set by the model). The card's default is 241 frames (10 s); this\ntemplate uses 121 to keep a run shorter. Use 8n+1 frames, up to 481.\n\nFiles: `pan2_int8_convrot` (26.7 GB), `qwen3.5_9b_int8_convrot` (9.8 GB),\n`wan2.2_vae` (1.4 GB), all from Comfy-Org/PAN2, and the caption writer\n`qwen3.5_9b_w4a8_gptq` from Comfy-Org/Qwen3.5. Profile `pan2-i2v`. The\nsample picture is `i2v_house_tour.jpg` from ifm-ai/PAN2.\n"
+        "## Image to Video (PAN 2)\n\nMBZUAI's PAN 2 world model (29B, Apache-2.0), native in ComfyUI: a start\nimage and a description of what happens give a video of the next moments.\nLeave the start image unconnected for text to video.\n\nPAN 2 reads a structured world-state caption, not a free prompt. The caption\nwriter (Qwen3.5 9B, through Generate Text) turns the request into one with\nthe policy from ifm-ai/PAN2 (`inference/pan-prompt-rewriter/system_prompt.md`).\nWrite the request in plain English without double quotation marks. To write a\ncaption by hand, follow that format and connect it to **Positive** directly.\nThe negative is PAN 2's fixed template; its three time ranges match the clip\nlength, here 5 s.\n\nSettings from the model card: 1248x704, 24 fps, 50 steps, CFG 2.5, euler,\nshift 9 (set by the model). The card's default is 241 frames (10 s); this\ntemplate uses 121 to keep a run shorter. Use 8n+1 frames, up to 481.\n\nFiles: `pan2_int8_convrot` (26.7 GB), `qwen3.5_9b_int8_convrot` (9.8 GB),\n`wan2.2_vae` (1.4 GB), all from Comfy-Org/PAN2, and the caption writer\n`qwen3.5_9b_w4a8_gptq` from Comfy-Org/Qwen3.5. Profile `pan2-i2v`. The\nsample picture is `i2v_house_tour.jpg` from ifm-ai/PAN2.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
+      ]
+    },
+    {
+      "id": 19,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        0,
+        630
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
       ]
     }
   ],
@@ -866,7 +905,7 @@
     ],
     [
       12,
-      2,
+      19,
       0,
       14,
       0,
@@ -927,6 +966,14 @@
       17,
       0,
       "VIDEO"
+    ],
+    [
+      20,
+      2,
+      0,
+      19,
+      0,
+      "MODEL"
     ]
   ],
   "groups": [],

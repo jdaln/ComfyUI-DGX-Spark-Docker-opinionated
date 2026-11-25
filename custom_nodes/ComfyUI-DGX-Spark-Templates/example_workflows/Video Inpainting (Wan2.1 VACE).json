@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 359,
-  "last_link_id": 3,
+  "last_link_id": 500,
   "nodes": [
     {
       "id": 355,
@@ -351,7 +351,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nReplaces something in a video. SAM3 finds it from a word, here the cat, and Wan2.1 VACE paints the reference picture's subject, here a dog, into its place, following the prompt.\n\nThe middle node is ComfyUI's **Video Inpainting (Wan2.1 VACE)** blueprint, the one in the node search box; double-click it to see inside. The sample video, picture, prompt and word are from Comfy's `video_wan_vace_inpainting` template (MIT).\n\nAsset profile: `wan2.1-vace-bundled`."
+        "## About this workflow\n\nReplaces something in a video. SAM3 finds it from a word, here the cat, and Wan2.1 VACE paints the reference picture's subject, here a dog, into its place, following the prompt.\n\nThe middle node is ComfyUI's **Video Inpainting (Wan2.1 VACE)** blueprint, the one in the node search box; double-click it to see inside. The sample video, picture, prompt and word are from Comfy's `video_wan_vace_inpainting` template (MIT).\n\nAsset profile: `wan2.1-vace-bundled`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -390,7 +390,7 @@
         "state": {
           "lastGroupId": 31,
           "lastNodeId": 355,
-          "lastLinkId": 499,
+          "lastLinkId": 500,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -2904,8 +2904,7 @@
                 "type": "MODEL",
                 "slot_index": 0,
                 "links": [
-                  428,
-                  429
+                  500
                 ]
               }
             ],
@@ -3131,6 +3130,46 @@
               "secondTabOffset": 80,
               "secondTabWidth": 65
             }
+          },
+          {
+            "id": 352,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -2720,
+              2160
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 36,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 500
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  428,
+                  429
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3318,7 +3357,7 @@
           },
           {
             "id": 428,
-            "origin_id": 347,
+            "origin_id": 352,
             "origin_slot": 0,
             "target_id": 322,
             "target_slot": 0,
@@ -3326,7 +3365,7 @@
           },
           {
             "id": 429,
-            "origin_id": 347,
+            "origin_id": 352,
             "origin_slot": 0,
             "target_id": 325,
             "target_slot": 0,
@@ -3795,6 +3834,14 @@
             "target_id": 351,
             "target_slot": 0,
             "type": "IMAGE"
+          },
+          {
+            "id": 500,
+            "origin_id": 347,
+            "origin_slot": 0,
+            "target_id": 352,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

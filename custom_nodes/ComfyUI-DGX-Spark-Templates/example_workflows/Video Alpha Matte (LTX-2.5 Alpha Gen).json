@@ -2,7 +2,7 @@
   "id": "5deb65e7-82e5-55cf-82e0-1222c315869a",
   "revision": 0,
   "last_node_id": 9008,
-  "last_link_id": 13796,
+  "last_link_id": 13799,
   "nodes": [
     {
       "id": 5509,
@@ -175,7 +175,7 @@
       "title": "About this copy",
       "properties": {},
       "widgets_values": [
-        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_V2V_ICLoRA_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- Prompt enhancer: Gemma 4 E2B int8 instead of bf16.\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-alpha-gen-0.9` instead of the deblur example LoRA. The output is a grayscale matte, white for the subject, frame-aligned with the source. The prompt stays empty, as the model card asks.\n- Sample input `street_dance_drive.mp4` (121 frames) from Comfy's template inputs. Above 145 frames the matte starts to pick up colour from the source, so trim longer clips first. \"use image input\" is off.\n- To composite, use the matte as the alpha channel of the original clip in your editor.\n\nAsset profile: `ltx-2.5-alpha-matte`.\n\n**Licence to accept first.** These models are gated on Hugging Face. Accept the licence on [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5), [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) with the account whose token is `HF_TOKEN` in `.env`. Until then the download fails and this template has no model.\n"
+        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_V2V_ICLoRA_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- Prompt enhancer: Gemma 4 E2B int8 instead of bf16.\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-alpha-gen-0.9` instead of the deblur example LoRA. The output is a grayscale matte, white for the subject, frame-aligned with the source. The prompt stays empty, as the model card asks.\n- Sample input `street_dance_drive.mp4` (121 frames) from Comfy's template inputs. Above 145 frames the matte starts to pick up colour from the source, so trim longer clips first. \"use image input\" is off.\n- To composite, use the matte as the alpha channel of the original clip in your editor.\n\nAsset profile: `ltx-2.5-alpha-matte`.\n\n**Licence to accept first.** These models are gated on Hugging Face. Accept the licence on [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5), [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) with the account whose token is `HF_TOKEN` in `.env`. Until then the download fails and this template has no model.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1337,8 +1337,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 158,
-          "lastNodeId": 9008,
-          "lastLinkId": 13796,
+          "lastNodeId": 9009,
+          "lastLinkId": 13799,
           "lastRerouteId": 5033
         },
         "revision": 0,
@@ -1669,7 +1669,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  9
+                  13799
                 ]
               }
             ],
@@ -1864,6 +1864,45 @@
               "ltx-2.5-22b-ic-lora-alpha-gen-0.9.safetensors",
               1
             ]
+          },
+          {
+            "id": 9009,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -820,
+              462
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 6,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 13799
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  9
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1939,7 +1978,7 @@
           },
           {
             "id": 9,
-            "origin_id": 5602,
+            "origin_id": 9009,
             "origin_slot": 0,
             "target_id": 5606,
             "target_slot": 0,
@@ -1992,6 +2031,14 @@
             "target_id": -20,
             "target_slot": 5,
             "type": "FLOAT"
+          },
+          {
+            "id": 13799,
+            "origin_id": 5602,
+            "origin_slot": 0,
+            "target_id": 9009,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {}

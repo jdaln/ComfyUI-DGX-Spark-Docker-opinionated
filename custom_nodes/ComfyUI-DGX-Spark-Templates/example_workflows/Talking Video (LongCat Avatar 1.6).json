@@ -1,0 +1,922 @@
+{
+  "id": "78f3c497-240f-4b32-8782-1411d25a5211",
+  "revision": 0,
+  "last_node_id": 12,
+  "last_link_id": 11,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        440,
+        560
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Talking Video (LongCat Avatar 1.6)\n\nA start image, a prompt and speech in; a talking video as long as the speech out, in 93-frame segments (3.7 s at 25 fps), each continuing from the last 13 frames of the one before. One speaker. Give clean speech without music. Keep the prompt calm, with small expressions.\n\nSize: pick the 480p bucket closest to the picture's shape, such as 512x768 for portrait or 768x512 for landscape. The video is encoded with x264; this image has no NVENC.\n\nBuilt from the distilled example of PedroMarinhoDev/ComfyUI-LongCat-Avatar (GPL-3.0). Model: Meituan's LongCat-Video-Avatar 1.6, MIT, int8 ConvRot file from PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI. Text encoder and VAE are Wan 2.1's. The Whisper encoder is saved as `whisper_large_v3_encoder_only_fp16`, since WanVideoWrapper's HuMo example puts a full Whisper model under the pack's name. Profile `longcat-avatar`.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
+      ],
+      "widgets_values_named": {
+        "text": "## Talking Video (LongCat Avatar 1.6)\n\nA start image, a prompt and speech in; a talking video as long as the speech out, in 93-frame segments (3.7 s at 25 fps), each continuing from the last 13 frames of the one before. One speaker. Give clean speech without music. Keep the prompt calm, with small expressions.\n\nSize: pick the 480p bucket closest to the picture's shape, such as 512x768 for portrait or 768x512 for landscape. The video is encoded with x264; this image has no NVENC.\n\nBuilt from the distilled example of PedroMarinhoDev/ComfyUI-LongCat-Avatar (GPL-3.0). Model: Meituan's LongCat-Video-Avatar 1.6, MIT, int8 ConvRot file from PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI. Text encoder and VAE are Wan 2.1's. The Whisper encoder is saved as `whisper_large_v3_encoder_only_fp16`, since WanVideoWrapper's HuMo example puts a full Whisper model under the pack's name. Profile `longcat-avatar`.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "LongCatAvatarModelLoader",
+      "pos": [
+        490,
+        0
+      ],
+      "size": [
+        223.745703125,
+        58
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LongCatAvatarModelLoader",
+        "models": [
+          {
+            "name": "longcat_video_avatar_1.6_int8_convrot.safetensors",
+            "url": "https://huggingface.co/PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI/resolve/main/diffusion_models/longcat-video-avatar/longcat_video_avatar_1.6_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "longcat_video_avatar_1.6_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "unet_name": "longcat-video-avatar/longcat_video_avatar_1.6_bf16.safetensors"
+      }
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        490,
+        118
+      ],
+      "size": [
+        210,
+        106
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip_name",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "type",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "models": [
+          {
+            "name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "umt5_xxl_bf16.safetensors",
+        "type": "wan",
+        "device": "default"
+      }
+    },
+    {
+      "id": 4,
+      "type": "CLIPTextEncode",
+      "pos": [
+        490,
+        284
+      ],
+      "size": [
+        360,
+        160
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 1
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "title": "Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "A young woman with dark hair tied back, in a white top, speaks calmly to the camera in a bright, plain studio. Small natural expressions, steady gaze, slight head movement, relaxed shoulders."
+      ],
+      "widgets_values_named": {
+        "text": "A western man stands on stage under dramatic lighting, holding a microphone close to their mouth. Wearing a vibrant red jacket with gold embroidery, the singer is speaking while smoke swirls around them, creating a dynamic and atmospheric scene."
+      }
+    },
+    {
+      "id": 5,
+      "type": "VAELoader",
+      "pos": [
+        490,
+        504
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "wan_2.1_vae.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "wan_2.1_vae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "wan_2.1_vae.safetensors"
+      }
+    },
+    {
+      "id": 6,
+      "type": "LoadImage",
+      "pos": [
+        900,
+        0
+      ],
+      "size": [
+        222.798828125,
+        102
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            9
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "asian_model_in_white_clothes.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "longcat_avatar_man.png",
+        "upload": "image"
+      }
+    },
+    {
+      "id": 7,
+      "type": "LoadAudio",
+      "pos": [
+        900,
+        162
+      ],
+      "size": [
+        222.798828125,
+        136
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "audioUI",
+          "name": "audioUI",
+          "type": "AUDIO_UI",
+          "widget": {
+            "name": "audioUI"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "AUDIOUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO",
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            3,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "audio_speaker1_woman.mp3",
+        null,
+        null
+      ],
+      "widgets_values_named": {
+        "audio": "longcat_avatar_speech_16s.wav",
+        "upload": ""
+      }
+    },
+    {
+      "id": 8,
+      "type": "AudioEncoderLoader",
+      "pos": [
+        900,
+        358
+      ],
+      "size": [
+        224.966796875,
+        58
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio_encoder_name",
+          "name": "audio_encoder_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio_encoder_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "AUDIO_ENCODER",
+          "name": "AUDIO_ENCODER",
+          "type": "AUDIO_ENCODER",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AudioEncoderLoader",
+        "models": [
+          {
+            "name": "whisper_large_v3_encoder_only_fp16.safetensors",
+            "url": "https://huggingface.co/PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI/resolve/main/audio_encoders/whisper_large_v3_encoder_fp16.safetensors",
+            "directory": "audio_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "whisper_large_v3_encoder_only_fp16.safetensors"
+      ],
+      "widgets_values_named": {
+        "audio_encoder_name": "whisper_large_v3_encoder_fp16.safetensors"
+      }
+    },
+    {
+      "id": 9,
+      "type": "LongCatAvatarAudioEncode",
+      "pos": [
+        900,
+        476
+      ],
+      "size": [
+        237.8072265625,
+        46
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio_encoder",
+          "name": "audio_encoder",
+          "type": "AUDIO_ENCODER",
+          "link": 2
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "audio_features",
+          "name": "audio_features",
+          "type": "LONGCAT_AVATAR_AUDIO",
+          "links": [
+            7
+          ]
+        },
+        {
+          "localized_name": "segments",
+          "name": "segments",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LongCatAvatarAudioEncode"
+      }
+    },
+    {
+      "id": 10,
+      "type": "LongCatAvatarVideo",
+      "pos": [
+        1187.8072265625,
+        0
+      ],
+      "size": [
+        305.2984375,
+        422
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 4
+        },
+        {
+          "localized_name": "positive",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 6
+        },
+        {
+          "localized_name": "audio_features",
+          "name": "audio_features",
+          "type": "LONGCAT_AVATAR_AUDIO",
+          "link": 7
+        },
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 8
+        },
+        {
+          "localized_name": "start_image",
+          "name": "start_image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 9
+        },
+        {
+          "localized_name": "dmd_lora",
+          "name": "dmd_lora",
+          "type": "COMBO",
+          "widget": {
+            "name": "dmd_lora"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "opsd_lora",
+          "name": "opsd_lora",
+          "type": "COMBO",
+          "widget": {
+            "name": "opsd_lora"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "max_segments",
+          "name": "max_segments",
+          "type": "INT",
+          "widget": {
+            "name": "max_segments"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sampler_name",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "mix_steps",
+          "name": "mix_steps",
+          "type": "INT",
+          "widget": {
+            "name": "mix_steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "mix_alpha",
+          "name": "mix_alpha",
+          "type": "FLOAT",
+          "widget": {
+            "name": "mix_alpha"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ref_img_index",
+          "name": "ref_img_index",
+          "type": "INT",
+          "widget": {
+            "name": "ref_img_index"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "encoder",
+          "name": "encoder",
+          "type": "COMBO",
+          "widget": {
+            "name": "encoder"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VIDEO",
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LongCatAvatarVideo",
+        "models": [
+          {
+            "name": "longcat_video_avatar_1.6_dmd_lora_bf16.safetensors",
+            "url": "https://huggingface.co/PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI/resolve/main/loras/longcat-video-avatar/longcat_video_avatar_1.6_dmd_lora_bf16.safetensors",
+            "directory": "loras"
+          },
+          {
+            "name": "longcat_video_avatar_1.6_opsd_lora_bf16.safetensors",
+            "url": "https://huggingface.co/PedroMarinhoDev/LongCat-Video-Avatar-1.6-ComfyUI/resolve/main/loras/longcat-video-avatar/longcat_video_avatar_1.6_opsd_lora_bf16.safetensors",
+            "directory": "loras"
+          }
+        ]
+      },
+      "widgets_values": [
+        "longcat_video_avatar_1.6_dmd_lora_bf16.safetensors",
+        "longcat_video_avatar_1.6_opsd_lora_bf16.safetensors",
+        42,
+        "fixed",
+        512,
+        768,
+        0,
+        "euler",
+        4,
+        1,
+        10,
+        "auto"
+      ],
+      "widgets_values_named": {
+        "dmd_lora": "longcat-video-avatar/longcat_video_avatar_1.6_dmd_lora_bf16.safetensors",
+        "opsd_lora": "longcat-video-avatar/longcat_video_avatar_1.6_opsd_lora_bf16.safetensors",
+        "seed": 42,
+        "control_after_generate": "randomize",
+        "width": 768,
+        "height": 512,
+        "max_segments": 0,
+        "sampler_name": "euler",
+        "mix_steps": 4,
+        "mix_alpha": 1,
+        "ref_img_index": 10,
+        "encoder": "auto"
+      }
+    },
+    {
+      "id": 11,
+      "type": "SaveVideo",
+      "pos": [
+        1543.1056640625002,
+        0
+      ],
+      "size": [
+        210,
+        106
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "link": 10
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "codec",
+          "name": "format.codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format.codec"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "format",
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "codec",
+          "name": "codec",
+          "shape": 7,
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "codec"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "video",
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "video/longcat_avatar",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "longcat_avatar/video",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      }
+    },
+    {
+      "id": 12,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        490,
+        98
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      4,
+      0,
+      "CLIP"
+    ],
+    [
+      2,
+      8,
+      0,
+      9,
+      0,
+      "AUDIO_ENCODER"
+    ],
+    [
+      3,
+      7,
+      0,
+      9,
+      1,
+      "AUDIO"
+    ],
+    [
+      4,
+      12,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      5,
+      4,
+      0,
+      10,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      6,
+      5,
+      0,
+      10,
+      2,
+      "VAE"
+    ],
+    [
+      7,
+      9,
+      0,
+      10,
+      3,
+      "LONGCAT_AVATAR_AUDIO"
+    ],
+    [
+      8,
+      7,
+      0,
+      10,
+      4,
+      "AUDIO"
+    ],
+    [
+      9,
+      6,
+      0,
+      10,
+      5,
+      "IMAGE"
+    ],
+    [
+      10,
+      10,
+      0,
+      11,
+      0,
+      "VIDEO"
+    ],
+    [
+      11,
+      2,
+      0,
+      12,
+      0,
+      "MODEL"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

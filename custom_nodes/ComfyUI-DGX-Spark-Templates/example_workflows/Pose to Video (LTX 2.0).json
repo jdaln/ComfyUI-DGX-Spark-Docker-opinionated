@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 153,
-  "last_link_id": 11,
+  "last_link_id": 1775,
   "nodes": [
     {
       "id": 143,
@@ -557,7 +557,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA new video in which someone moves like the person in a source video. SDPose draws the source dancer's pose frame by frame, and LTX 2.0 renders the video from those poses and a first frame. The sample uses the source's own first frame; put a picture of your character in a similar pose into **Image From Batch**'s place to make them dance instead.\n\nThe middle node is ComfyUI's **Pose to Video (LTX 2.0)** blueprint, the one in the node search box; double-click it to see inside. The sample video is from Comfy's `video_minimax_h3_fun_controlnet_union` template (MIT).\n\nAsset profile: `ltx-2.0-iclora-all-bundled`."
+        "## About this workflow\n\nA new video in which someone moves like the person in a source video. SDPose draws the source dancer's pose frame by frame, and LTX 2.0 renders the video from those poses and a first frame. The sample uses the source's own first frame; put a picture of your character in a similar pose into **Image From Batch**'s place to make them dance instead.\n\nThe middle node is ComfyUI's **Pose to Video (LTX 2.0)** blueprint, the one in the node search box; double-click it to see inside. The sample video is from Comfy's `video_minimax_h3_fun_controlnet_union` template (MIT).\n\nAsset profile: `ltx-2.0-iclora-all-bundled`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -660,7 +660,7 @@
         "state": {
           "lastGroupId": 14,
           "lastNodeId": 701,
-          "lastLinkId": 1774,
+          "lastLinkId": 1775,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -3231,7 +3231,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  325
+                  1775
                 ]
               },
               {
@@ -3616,6 +3616,45 @@
               "lanczos",
               0.5
             ]
+          },
+          {
+            "id": 190,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -1650,
+              3720
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 40,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 1775
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  325
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3863,7 +3902,7 @@
           },
           {
             "id": 325,
-            "origin_id": 103,
+            "origin_id": 190,
             "origin_slot": 0,
             "target_id": 134,
             "target_slot": 0,
@@ -4348,6 +4387,14 @@
             "target_id": 100,
             "target_slot": 0,
             "type": "COMBO"
+          },
+          {
+            "id": 1775,
+            "origin_id": 103,
+            "origin_slot": 0,
+            "target_id": 190,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

@@ -1,8 +1,8 @@
 {
   "id": "dd6a0578-b43e-457e-8bc1-6e71edf20a9a",
   "revision": 0,
-  "last_node_id": 5062,
-  "last_link_id": 13563,
+  "last_node_id": 5063,
+  "last_link_id": 13564,
   "nodes": [
     {
       "id": 4832,
@@ -537,7 +537,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            13217
+            13564
           ]
         },
         {
@@ -1834,10 +1834,49 @@
       "title": "Credits",
       "properties": {},
       "widgets_values": [
-        "## Credits\n\nThe official example `LTX-2.3_ICLoRA_Motion_Track_Distilled.json` from Lightricks' [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo), `example_workflows/2.3` at commit `3bf3ca6`. The pack and the LTX-2.3 weights are released under the LTX-2 Community License Agreement.\n\nDraw splines on the image in the LTX Sparse Track Editor. Each spline is the path one point of the image follows over the clip; LTX Draw Sparse Tracks renders them into the guide video the Motion Track IC-LoRA follows, and the `tracks` video it saves shows that guide.\n\nChanges here:\n\n- This note, a workflow id of its own, and download links on the two LoRA loaders.\n- Drops a link from LoadImage to node 2653, which the original no longer contains.\n\nThe `ltx-2.3-iclora-motion-track-distilled` profile provisions the models and `motion_track_input.jpg`, the sample input from the pack's `example_workflows/assets` folder."
+        "## Credits\n\nThe official example `LTX-2.3_ICLoRA_Motion_Track_Distilled.json` from Lightricks' [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo), `example_workflows/2.3` at commit `3bf3ca6`. The pack and the LTX-2.3 weights are released under the LTX-2 Community License Agreement.\n\nDraw splines on the image in the LTX Sparse Track Editor. Each spline is the path one point of the image follows over the clip; LTX Draw Sparse Tracks renders them into the guide video the Motion Track IC-LoRA follows, and the `tracks` video it saves shows that guide.\n\nChanges here:\n\n- This note, a workflow id of its own, and download links on the two LoRA loaders.\n- Drops a link from LoadImage to node 2653, which the original no longer contains.\n\nThe `ltx-2.3-iclora-motion-track-distilled` profile provisions the models and `motion_track_input.jpg`, the sample input from the pack's `example_workflows/assets` folder.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 5063,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -4648.711127852091,
+        3409.8631653599823
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 13564
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            13217
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
     }
   ],
   "links": [
@@ -1915,7 +1954,7 @@
     ],
     [
       13217,
-      3940,
+      5063,
       0,
       4922,
       0,
@@ -2320,6 +2359,14 @@
       5049,
       0,
       "IMAGE"
+    ],
+    [
+      13564,
+      3940,
+      0,
+      5063,
+      0,
+      "MODEL"
     ]
   ],
   "floatingLinks": [

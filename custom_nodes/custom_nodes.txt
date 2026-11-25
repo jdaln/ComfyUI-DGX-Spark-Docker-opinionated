@@ -66,3 +66,13 @@ https://github.com/filliptm/ComfyUI_Fill-ChatterBox.git
 
 # Qwen3-TTS: voices described in words, cloned or preset (GPL-3.0)
 https://github.com/1038lab/ComfyUI-QwenTTS.git
+# Ming 3.0 TTS: voice design, built-in voices, scripts with line timings; no extra packages (Apache-2.0)
+https://github.com/Nynxz/ComfyUI-MingTTS.git
+# Audio8-TTS-Realistic-Air: voice cloning in 23 languages incl. Finnish (Apache-2.0)
+https://github.com/NidAll/ComfyUI-Audio8.git
+# pi-Flow adapters: MiniMax H3 in 2 or 4 steps (pi-H3); no extra packages (Apache-2.0)
+https://github.com/Lakonik/ComfyUI-piFlow.git
+# Open-H3-Regenerate-2K-IC helper nodes: MiniMax H3 drafts redrawn at 2K (Apache-2.0)
+https://github.com/slmonker/ComfyUI-OpenH3Regenerate2KIC.git
+# LongCat-Video-Avatar 1.6: talking video from speech, native model on core's samplers (GPL-3.0)
+https://github.com/PedroMarinhoDev/ComfyUI-LongCat-Avatar.git

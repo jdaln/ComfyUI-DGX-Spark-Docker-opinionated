@@ -1,8 +1,8 @@
 {
   "id": "6c1d7a0e-3f5b-4f4e-9a52-1b7e2a9d4c31",
   "revision": 0,
-  "last_node_id": 342,
-  "last_link_id": 677,
+  "last_node_id": 343,
+  "last_link_id": 678,
   "nodes": [
     {
       "id": 278,
@@ -2366,7 +2366,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            520
+            678
           ]
         },
         {
@@ -2965,7 +2965,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Masked inpainting from a reference picture\n\nThe region to repaint is filled with magenta, and BFS's **Reserved Region Frame Composer** puts the reference picture in a green strip beside every frame: the layout the reference-driven LoRA (`bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors`) was trained with. The sample puts the dog from the reference picture where the round stool stands. Move the **Region to repaint** rectangle, or connect a mask of your own to **Image Composite Masked**, for another clip. Name what the reference shows in the prompt; BFS notes that prompt and mask size matter most with this LoRA, and that a reference on a plain background helps. Needs ComfyUI-BFSNodes for the composer. Original graph: `Alissonerdx/LTX-LoRAs/workflows/ltx23_masked_ref_inpaint_v1.json`.\n\n### How the clip goes in\n\nThe clip is a guide, as in BFS's own graphs: `LTXV Add Guide` appends its frames to the latent in both stages, and `LTXV Crop Guides` takes them off after each. The task LoRA was trained to change a video it sees beside the one it makes; an earlier version of this template pinned the frames into the video itself with `LTXV Img To Video Inplace` and gave the clip back unchanged. The length (whole 8n+1 frames) and the frame rate come from the clip, and the result keeps the clip's sound.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n"
+        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Masked inpainting from a reference picture\n\nThe region to repaint is filled with magenta, and BFS's **Reserved Region Frame Composer** puts the reference picture in a green strip beside every frame: the layout the reference-driven LoRA (`bfs/ltx23_inpaint_masked_r2v_rank32_v1_3000steps.safetensors`) was trained with. The sample puts the dog from the reference picture where the round stool stands. Move the **Region to repaint** rectangle, or connect a mask of your own to **Image Composite Masked**, for another clip. Name what the reference shows in the prompt; BFS notes that prompt and mask size matter most with this LoRA, and that a reference on a plain background helps. Needs ComfyUI-BFSNodes for the composer. Original graph: `Alissonerdx/LTX-LoRAs/workflows/ltx23_masked_ref_inpaint_v1.json`.\n\n### How the clip goes in\n\nThe clip is a guide, as in BFS's own graphs: `LTXV Add Guide` appends its frames to the latent in both stages, and `LTXV Crop Guides` takes them off after each. The task LoRA was trained to change a video it sees beside the one it makes; an earlier version of this template pinned the frames into the video itself with `LTXV Img To Video Inplace` and gave the clip back unchanged. The length (whole 8n+1 frames) and the frame rate come from the clip, and the result keeps the clip's sound.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "title": "Credit, models and settings",
       "color": "#222",
@@ -3610,6 +3610,45 @@
         0
       ],
       "title": "Reference strip beside every frame"
+    },
+    {
+      "id": 343,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        1660,
+        3860
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 55,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 678
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            520
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
     }
   ],
   "links": [
@@ -3671,7 +3710,7 @@
     ],
     [
       520,
-      318,
+      343,
       0,
       287,
       0,
@@ -4268,6 +4307,14 @@
       342,
       2,
       "IMAGE"
+    ],
+    [
+      678,
+      318,
+      0,
+      343,
+      0,
+      "MODEL"
     ]
   ],
   "groups": [],

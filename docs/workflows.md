@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 106 profiles. The 105 in the category tables below
+`asset-profiles.json` defines 113 profiles. The 112 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 105 have an automated smoke lane. Three do not, because their
+Most of those 112 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -179,6 +179,15 @@ Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 | The person in a video replaced by a character from one picture | `scail-2-int8` | `video_wan21_scail2_character_replacement_int8` | Template | 29 GB | 383 s |
 | A character picture moved by a reference video, distilled | `wan-animate-2-distilled` | `video_wan_animate2_distilled` | Template | 25 GB | 396 s |
 | Two people in a picture speak two recorded tracks, lips matched | `infinitetalk` | Talking Video (InfiniteTalk Two Speakers) | Ours | 30 GB | 555 s |
+| One person in a picture speaks a recording, as long as the speech | `longcat-avatar` | Talking Video (LongCat Avatar 1.6) | Ours | 28 GB | 361 s |
+
+`longcat-avatar` runs Meituan's LongCat-Video-Avatar 1.6 (MIT) through
+PedroMarinhoDev/ComfyUI-LongCat-Avatar, on its int8 file and Wan 2.1's text
+encoder and VAE. It makes 93-frame segments at 25 fps, each continuing from the
+last 13 frames of the one before, for as long as the speech lasts. The 4.4 s
+sample took 361 s at 512x768; the mouth follows the speech and the face stays
+the picture's. Give clean speech without music, and a calm prompt. One speaker
+only.
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
 Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
@@ -246,9 +255,10 @@ nodes.
 | Same as `minimax-h3-i2v`, distilled to 8 steps with the turbo LoRA | `minimax-h3-i2v-turbo` | Image to Video (MiniMax H3 Turbo) | Ours | 44 GB | 145 s |
 | Same as `minimax-h3-t2v`, 8 steps through VDN hybrid attention | `minimax-h3-vdn-8step` | Text to Video (MiniMax H3 VDN 8-step) | Ours | 48 GB | 235 s |
 | Same as `minimax-h3-ref2v`, 8 steps with block-sparse attention (FastH3 Omni) | `fasth3-omni` | `video_fasth3_ominiref_r2v` | Template | 35 GB | 250 s |
+| Same as `minimax-h3-i2v`, in 2 steps (pi-H3) | `pi-h3` | Text to Video (pi-H3) | Ours | 47 GB | 85 s |
 
-Two faster paths for MiniMax H3. The three profiles above are unchanged and
-still run 20 steps. Both fast paths lose some detail and motion stability, so
+Faster paths for MiniMax H3. The three profiles above are unchanged and
+still run 20 steps. The turbo and VDN paths lose some detail and motion stability, so
 keep using the slower ones when the frame matters more than the wait.
 
 Do not combine them. `minimax-h3-i2v-turbo` adds the lightx2v turbo LoRA, 1.96
@@ -259,6 +269,15 @@ twice.
 
 Both give 24 fps, 5.2 s, stereo AAC around -14 dB mean, same as the
 unaccelerated profiles.
+
+`pi-h3` runs Lakonik's pi-H3 workflow (ComfyUI-piFlow): MiniMax H3's
+first-last-frame model with Hansheng Chen's 2-step DWD adapter, which predicts
+the frames directly at the last step, so the video VAE decoder is skipped. It
+made 124 frames at 1344x768 with sound in 85 s, against 145 s for
+`minimax-h3-i2v-turbo`, and on-screen text stayed readable. Set `steps` to 4
+on the adapter node for more detail. The first and last frame loaders are
+bypassed; switch one on with Ctrl+B. The adapters are under the H3 community
+licence.
 
 `fasth3-omni` runs core's template on FastVideo's NVFP4 QAD transformer (13.8 GB
 instead of the 22.2 GB int8 file), linked from the file name the template asks
@@ -414,6 +433,24 @@ back 2560x1408 over the same 4.8 s with the audio intact, so the upscale is a re
 2x rather than a re-encode. It is the slowest thing in the catalogue at 943 s;
 budget twenty minutes and do not run anything else while it works.
 
+
+### Open-H3-Regenerate-2K-IC, H3 clips redrawn at 2K
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Redraw a 768P H3 clip at 2560x1440 in 3 steps, faces, lip sync and text kept | `open-h3-regenerate-2k-ic` | Video Refine 2K (Open-H3 IC) | Ours | 54 GB | 1436 s |
+
+NVlabs' in-context refiner, through slmonker's community port
+(ComfyUI-OpenH3Regenerate2KIC, Apache-2.0 nodes). It redraws the draft with the
+draft itself as reference, so faces, mouths and lettering stay where they were,
+and copies the draft's audio. The template runs on the H3 files this repo
+already has (the pruned int8 Ref2VA model, the NVFP4 text encoder, the fp16
+video VAE and the 3D latent upscaler) plus three LoRAs: the IC LoRA in ComfyUI
+layout, drbaph's HyperFlow 8-step conversion and the LMS LoRA. The draft needs
+at least 113 frames at 24 fps. On the 1280x720 sample, a real clip, the face
+and motion stayed the draft's with more hair and skin detail; 124 frames took
+24 minutes with 43 GiB lowest available memory. The weights are under the H3
+community licence.
 
 ### LTX 2.0, fast video, distilled or full quality
 
@@ -644,9 +681,13 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | A voice described in words rather than sampled | `ltx-2.3-tts-prompted-voice` | Text to Speech (LTX-2.3 Prompted Voice) | Ours | 60 GB | 95 s |
 | Both at once: describe one voice, clone the rest, run the conversation [^h] | `tts-prompted-conversation` | Text to Speech (Prompted Voices to Conversation) | Ours | 78 GB | 311 s |
 | A voice described in words from a small model, 10 languages | `qwen3-tts-voice-design` | Text to Speech (Qwen3-TTS Voice Design) | Ours | 4.5 GB | 45 s |
+| A voice described in words, 9 languages, no Finnish | `ming-3-tts-voice-design` | Text to Speech (Ming 3.0 Voice Design) | Ours | 3.0 GB | 15 s |
+| A script for up to 4 voices, with each line's timing for subtitles, 9 languages | `ming-3-tts-script` | Text to Speech (Ming 3.0 Script) | Ours | 3.0 GB | 11 s |
 | Speech in a sampled voice, 23 languages, Finnish from a Finnish fine-tune | `chatterbox-multilingual` | Text to Speech (Chatterbox Multilingual) | Ours | 5.3 GB | 15 s |
+| Speech in a cloned voice, 23 languages, 44.1 kHz | `audio8-tts` | Text to Speech (Audio8 Voice Clone) | Ours | 4.6 GB | 40 s |
 | Two people in a picture speak a script, subtitles included | `talking-characters` | Talking Characters with Subtitles | Ours | 55 GB | 571 s |
 | Subtitles for any video in 100 languages, Finnish included: transcript, .srt and a burned-in copy | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
+| A voice cleaned of noise, music and room sound, and what was removed | `voice-isolator` | Clean Up Voice (Inworld Voice Isolator) | Ours | 0.3 GB | 10 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
 does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
@@ -664,7 +705,30 @@ Chatterbox or Finnish-NLP's
 fine-tune of it, picked in its `model` widget; both are MIT. Read back with
 Whisper large-v3, six Finnish sentences in three voices came out at 1.9 %
 character errors from the fine-tune and 5.4 % from the multilingual model, so
-the Finnish templates start on the fine-tune.
+the Finnish templates start on the fine-tune. A second run on 2026-11-23, six
+other sentences in three voices, scored the fine-tune at 0.3 % and Audio8 at
+5.7 %. Audio8 slipped most on vowel length ("tuulei" for "tuulee") and long
+compounds ("Kaavinkaiten" for "Kahvinkeitin"), so Chatterbox-Finnish stays the
+Finnish default and Audio8 is for the other languages.
+
+Ming 3.0 (inclusionAI, MIT, through Nynxz/ComfyUI-MingTTS) designs a voice from
+a description or picks one of its built-in voices (5 English, the rest
+Chinese), with emotion, speed, pitch, dialect or free-form direction. Its
+script node voices each line in turn and returns a timeline of when each line
+starts and ends. Both clips read back word for word in English. It speaks
+Chinese, English, German, Spanish, French, Korean, Japanese, Sichuanese and
+Cantonese, not Finnish.
+
+Audio8 (Edge0's Audio8-TTS-Realistic-Air, 0.6B, Apache-2.0, through
+NidAll/ComfyUI-Audio8) clones a voice from a clip and its exact words. The
+template cuts the reference to 10 seconds and transcribes it with Whisper
+large-v3; correct the transcript by hand if Whisper misheard.
+
+The Voice Isolator node runs Inworld's offline Voice Isolator v1 (64M, 48 kHz,
+Apache-2.0) and returns the voice and the removed background, which add up to
+the input. Use it on a reference voice before cloning. On Inworld's noisy
+sample it removed the noise; Whisper large-v3 read that clip word for word
+with and without it.
 
 The node uses the Chatterbox code in filliptm's ComfyUI_Fill-ChatterBox but
 samples with upstream Chatterbox's alignment check, which ends a line once the
@@ -966,6 +1030,7 @@ The `LTX Multishot Prompt + Refs` node landed on 2026-08-01 but its
 `multishot_strata_r128_v1` LoRA is not published, so the template reports one
 missing LoRA and has no smoke lane. The profile provisions the rest of the
 stack. Tracked in `scripts/smoke/pending_models.json`.
+
 
 ---
 

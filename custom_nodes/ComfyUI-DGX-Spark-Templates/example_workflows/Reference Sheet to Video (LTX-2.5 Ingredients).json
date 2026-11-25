@@ -2,7 +2,7 @@
   "id": "3562a5f1-c8b9-5380-bd99-0be8da8d79a7",
   "revision": 0,
   "last_node_id": 9017,
-  "last_link_id": 13819,
+  "last_link_id": 13822,
   "nodes": [
     {
       "id": 5509,
@@ -223,7 +223,7 @@
       "title": "About this copy",
       "properties": {},
       "widgets_values": [
-        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_ICLoRA_Ingredients_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-ingredients-0.9`, released for 2.5 after the example shipped, instead of the 2.3 build it loads.\n- Sample sheet `german_shepherd_news_anchor_ref.png` from Comfy's template inputs. The prompt is core's LTX-2.3 Ingredients sample rewritten in the model card's two parts, \"Reference sheet:\" for the panels and \"Generated video:\" for the action, with the card's negative prompt.\n- 5 seconds at 24 fps, 121 frames: the length the LoRA was trained on.\n\nAsset profile: `ltx-2.5-ingredients`.\n\n**Licence to accept first.** These models are gated on Hugging Face. Accept the licence on [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5), [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) with the account whose token is `HF_TOKEN` in `.env`. Until then the download fails and this template has no model.\n"
+        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_ICLoRA_Ingredients_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-ingredients-0.9`, released for 2.5 after the example shipped, instead of the 2.3 build it loads.\n- Sample sheet `german_shepherd_news_anchor_ref.png` from Comfy's template inputs. The prompt is core's LTX-2.3 Ingredients sample rewritten in the model card's two parts, \"Reference sheet:\" for the panels and \"Generated video:\" for the action, with the card's negative prompt.\n- 5 seconds at 24 fps, 121 frames: the length the LoRA was trained on.\n\nAsset profile: `ltx-2.5-ingredients`.\n\n**Licence to accept first.** These models are gated on Hugging Face. Accept the licence on [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5), [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) with the account whose token is `HF_TOKEN` in `.env`. Until then the download fails and this template has no model.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1166,8 +1166,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 158,
-          "lastNodeId": 9017,
-          "lastLinkId": 13819,
+          "lastNodeId": 9018,
+          "lastLinkId": 13822,
           "lastRerouteId": 9025
         },
         "revision": 0,
@@ -1471,7 +1471,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  9
+                  13822
                 ]
               }
             ],
@@ -1614,6 +1614,45 @@
               "ltx-2.5-22b-ic-lora-ingredients-0.9.safetensors",
               1
             ]
+          },
+          {
+            "id": 9018,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -820,
+              462
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 5,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 13822
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  9
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1681,7 +1720,7 @@
           },
           {
             "id": 9,
-            "origin_id": 5602,
+            "origin_id": 9018,
             "origin_slot": 0,
             "target_id": 5606,
             "target_slot": 0,
@@ -1726,6 +1765,14 @@
             "target_id": -20,
             "target_slot": 4,
             "type": "FLOAT"
+          },
+          {
+            "id": 13822,
+            "origin_id": 5602,
+            "origin_slot": 0,
+            "target_id": 9018,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {}
