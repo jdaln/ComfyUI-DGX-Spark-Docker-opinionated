@@ -88,8 +88,8 @@ lands and the pack is pulled.
 
 ## ComfyUI submodule
 
-The submodule tracks `jdaln/ComfyUI` branch `dgx-state`: upstream master as of
-2026-10-03 (v0.38.0 plus 32 commits) with the DGX commits rebased on top. It is
+The submodule tracks `jdaln/ComfyUI` branch `dgx-state`: upstream v0.46.2
+(2026-11-20) with the DGX commits rebased on top. It is
 a fork rather than upstream because the branch carries changes ahead of a
 release:
 
