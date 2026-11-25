@@ -309,6 +309,44 @@
    "minimax-h3-easy-assets",
    "sample-video-lounge"
   ],
+  "fasth3-omni": [
+   "minimax-h3-support-assets",
+   "fasth3-omni-nvfp4-model",
+   "fasth3-omni-input"
+  ],
+  "minimax-h3-image-t2i": [
+   "minimax-h3-text-encoder",
+   "minimax-h3-image-models"
+  ],
+  "minimax-h3-image-edit": [
+   "minimax-h3-text-encoder",
+   "minimax-h3-image-models",
+   "minimax-h3-image-edit-input"
+  ],
+  "flux-3-klein-t2i": [
+   "flux3-klein-support",
+   "flux3-klein-distilled-model"
+  ],
+  "flux-3-klein-edit": [
+   "flux3-klein-support",
+   "flux3-klein-distilled-model",
+   "flux3-klein-edit-input"
+  ],
+  "flux-3-klein-base-t2i": [
+   "flux3-klein-support",
+   "flux3-klein-base-model"
+  ],
+  "flux-3-klein-base-edit": [
+   "flux3-klein-support",
+   "flux3-klein-base-model",
+   "flux3-klein-edit-input"
+  ],
+  "flux-3-klein-multi-reference": [
+   "flux3-klein-support",
+   "flux3-klein-distilled-model",
+   "flux3-klein-edit-input",
+   "flux3-klein-multi-reference-input"
+  ],
   "ltx-2.5-distilled": [
    "ltx-2.5-text-encoder",
    "ltx-2.5-video-vae",
@@ -506,6 +544,24 @@
   "seedvr2-video-upscale": [
    "seedvr2-3b-int8",
    "seedvr2-video-input"
+  ],
+  "relayvsr-x2": [
+   "relayvsr-x2-models",
+   "relayvsr-video-input"
+  ],
+  "relayvsr-x4": [
+   "relayvsr-x4-models",
+   "relayvsr-x4-input"
+  ],
+  "sam3d-body-mocap": [
+   "sam3-segmentation",
+   "sam3d-body-models",
+   "sam3d-body-input"
+  ],
+  "sam3d-body-pose-guide": [
+   "sam3-segmentation",
+   "sam3d-body-models",
+   "sam3d-body-input"
   ],
   "gemma-4-12b": [
    "gemma-4-12b-model"
@@ -1485,6 +1541,125 @@
     "label": "MiniMax H3 3D latent upscaler (fp16)"
    }
   ],
+  "fasth3-omni-nvfp4-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/fasth3_omniref_qad_nvfp4_comfy.safetensors",
+    "url": "https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD-Comfy/resolve/main/fasth3_omniref_qad_nvfp4_comfy.safetensors",
+    "label": "FastH3 Omni 8-step reference to video (NVFP4 QAD)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/fasth3_omniref_8step_pruned_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/diffusion_models/fasth3_omniref_qad_nvfp4_comfy.safetensors",
+    "label": "FastH3 Omni int8 name, pointed at the NVFP4 QAD build (core's template asks for it)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/vae/minimax_h3_video_vae_fp16.safetensors",
+    "label": "MiniMax H3 int8 video VAE name, pointed at the fp16 VAE (core's FastH3 Omni template asks for it)"
+   }
+  ],
+  "fasth3-omni-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/yellow_plane_ref.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/yellow_plane_ref.png",
+    "label": "FastH3 Omni sample reference: a yellow plane"
+   }
+  ],
+  "minimax-h3-text-encoder": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "label": "MiniMax H3 Qwen3-VL-32B text encoder (NVFP4 AWQ)"
+   }
+  ],
+  "minimax-h3-image-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors",
+    "label": "MiniMax H3 Image (pruned w4a8)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_image_pruned_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/diffusion_models/minimax_h3_image_pruned_w4a8.safetensors",
+    "label": "MiniMax H3 Image int8 name, pointed at the w4a8 build (core's templates ask for it)"
+   },
+   {
+    "type": "symlink",
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+    "target": "/workspace/ComfyUI/models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "label": "MiniMax H3 int8 text encoder name, pointed at the NVFP4 AWQ build (core's H3 Image templates ask for it)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/minimax_h3_image_vae_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3-Image/resolve/main/vae/minimax_h3_image_vae_fp16.safetensors",
+    "label": "MiniMax H3 Image VAE (fp16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+    "label": "Qwen3.5 9B prompt expander for MiniMax H3 Image (w4a8 GPTQ)"
+   }
+  ],
+  "minimax-h3-image-edit-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/vintage_yellow_taxi.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/vintage_yellow_taxi.png",
+    "label": "MiniMax H3 Image edit sample: a vintage yellow taxi"
+   }
+  ],
+  "flux3-klein-support": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3vl_4b_int8_convrot.safetensors",
+    "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy/resolve/main/text_encoders/qwen3vl_4b_int8_convrot.safetensors",
+    "label": "FLUX 3 Image Klein text encoder, Qwen3-VL 4B (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors",
+    "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy/resolve/main/text_encoders/qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors",
+    "label": "FLUX 3 Image Klein prompt upsampler, Qwen3.5 9B (w4a8)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/flux2-vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/flux2-klein/resolve/main/split_files/vae/flux2-vae.safetensors",
+    "label": "FLUX.2 VAE"
+   }
+  ],
+  "flux3-klein-base-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/flux3-image-klein-base-int8-convrot.safetensors",
+    "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy/resolve/main/diffusion_models/flux3-image-klein-base-int8-convrot.safetensors",
+    "label": "FLUX 3 Image Klein base, 50 steps (int8 convrot)"
+   }
+  ],
+  "flux3-klein-distilled-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/flux3-image-klein-int8-convrot.safetensors",
+    "url": "https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy/resolve/main/diffusion_models/flux3-image-klein-int8-convrot.safetensors",
+    "label": "FLUX 3 Image Klein distilled, 16 steps (int8 convrot)"
+   }
+  ],
+  "flux3-klein-edit-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/woman_gold_earring_teal_top_portrait.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/woman_gold_earring_teal_top_portrait.png",
+    "label": "Sample picture: a woman with a gold earring"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/fashion_portrait_blue_silk_gown_vis.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/fashion_portrait_blue_silk_gown_vis.png",
+    "label": "Sample picture: a blue silk gown"
+   }
+  ],
+  "flux3-klein-multi-reference-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/interior_orange_sofa.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/interior_orange_sofa.png",
+    "label": "Sample picture: a living room with an orange sofa"
+   }
+  ],
   "yue2-assets": [
    {
     "dest": "/workspace/ComfyUI/models/checkpoints/yue2_3b_bf16.safetensors",
@@ -2059,6 +2234,68 @@
     "dest": "/workspace/ComfyUI/input/grainy_perfume_shot_crf32.mp4",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/grainy_perfume_shot_crf32.mp4",
     "label": "SeedVR2 sample clip"
+   }
+  ],
+  "relayvsr-x2-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/relayvsr_x2_lightx2v_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/diffusion_models/relayvsr_x2_lightx2v_int8_convrot.safetensors",
+    "label": "RelayVSR 2x keyframe model, LightX2V retrain (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/relayvsr_flash_vae_x2_fp32.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/vae/relayvsr_flash_vae_x2_fp32.safetensors",
+    "label": "RelayVSR 2x Flash decoder (fp32)"
+   }
+  ],
+  "relayvsr-x4-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/relayvsr_x4_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/diffusion_models/relayvsr_x4_int8_convrot.safetensors",
+    "label": "RelayVSR 4x keyframe model (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/relayvsr_flash_vae_x4_fp32.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/RelayVSR/resolve/main/vae/relayvsr_flash_vae_x4_fp32.safetensors",
+    "label": "RelayVSR 4x Flash decoder (fp32)"
+   }
+  ],
+  "relayvsr-video-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/utility_relayvsr_video_x2_upscale_input.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/utility_relayvsr_video_x2_upscale_input.mp4",
+    "label": "RelayVSR sample clip (576x736, 5 s)"
+   }
+  ],
+  "relayvsr-x4-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/cyber_samurai_chainsaw_lunge_video.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/cyber_samurai_chainsaw_lunge_video.mp4",
+    "label": "RelayVSR 4x sample clip (576x736, 5 s)"
+   }
+  ],
+  "sam3d-body-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/detection/sam_3d_body_dinov3_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/sam-3d-body/resolve/main/detection/sam_3d_body_dinov3_bf16.safetensors",
+    "label": "SAM 3D Body, DINOv3 backbone (bf16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "label": "MoGe-2 ViT-L normal (field of view for SAM 3D Body)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/rt_detr_v4-x-hgnet_fp32.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/SDPose/resolve/main/diffusion_models/rt_detr_v4-x-hgnet_fp32.safetensors",
+    "label": "RT-DETR v4-X person detector (fp32)"
+   }
+  ],
+  "sam3d-body-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/woman_holding_water_glass.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/woman_holding_water_glass.mp4",
+    "label": "SAM 3D Body sample clip: a woman holding a glass of water"
    }
   ],
   "qwen-image-edit-2511-inputs": [

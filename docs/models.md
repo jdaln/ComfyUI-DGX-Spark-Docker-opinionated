@@ -23,7 +23,7 @@ Prefer profiles. Use them for anything you want to be able to reproduce or test.
 
 ## Asset profiles
 
-A profile is a named set of file groups in `asset-profiles.json`. There are 93.
+A profile is a named set of file groups in `asset-profiles.json`. There are 105.
 Each entry is a direct download, a symlink to a file another group provides, or
 a whole Hugging Face repo snapshot. Groups are shared, so two profiles that use
 the same text encoder download it once.
@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 60
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 67
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty.
 The 13 that wrap a ComfyUI blueprint are the exception: they carry no download
 links, so their models come only with their profiles, as they did when the
@@ -97,6 +97,7 @@ without a token.
 | `Comfy-Org/Krea-2` | every `krea-2-*` profile | Krea 2 Community License |
 | `Comfy-Org/Ideogram-4` | `ideogram-4`, `ideogram-4-nvfp4` | Ideogram non-commercial |
 | `Comfy-Org/flux2-dev` | `flux2-vae.safetensors` for both Ideogram profiles | FLUX dev non-commercial |
+| `black-forest-labs/flux-3-image-klein-comfy` | every `flux-3-klein-*` profile | FLUX Kommunity License |
 | `MuScriptor/muscriptor-large` | `muscriptor` | CC BY-NC 4.0 |
 
 Approval is per repository. A token accepted for the Gemma repo is still denied

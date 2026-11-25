@@ -2,10 +2,10 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 93 profiles. The 92 in the category tables below
+`asset-profiles.json` defines 105 profiles. The 92 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
-workflow's default settings. The remaining one is listed under
+workflow's default settings. The remaining thirteen are listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
 Most of those 92 have an automated smoke lane. Three do not, because their
@@ -40,8 +40,8 @@ hand instead: `vibevoice-large`, `heartmula-transcribe` and
    | **Ours** | Browse Templates → Extensions, under its type: Image, Image editing, Video, Video editing, Speech, Music, 3D, Utility or Text. Those named after a ComfyUI blueprint wrap it; the blueprint itself is in the node search box |
    | **Node example** | Browse Templates → Extensions; the ones verified here are under their type, the rest under the custom node's name |
 
-Krea 2, Ideogram 4, Gemma 3, MuScriptor and six LTX LoRAs are gated on Hugging Face. Accept
-the licence on the model page and set `HF_TOKEN` in `.env`, or those profiles
+Krea 2, Ideogram 4, FLUX 3 Image Klein, Gemma 3, MuScriptor and six LTX LoRAs are
+gated on Hugging Face. Accept the licence on the model page and set `HF_TOKEN` in `.env`, or those profiles
 download nothing. See [models.md](models.md) for the current gated list.
 
 ---
@@ -869,12 +869,101 @@ both pass and the output looks right. Commands in [verifying.md](verifying.md).
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| Plan a multi-shot clip from one caption plus a keyframe per shot | `bfs-ltx-2.3-multishot` | Multishot ShotPlan (LTX-2.3) | Ours | 60 GB | — |
+| Plan a multi-shot clip from one caption plus a keyframe per shot | `bfs-ltx-2.3-multishot` | Multishot ShotPlan (LTX-2.3) | Ours | 60 GB | |
 
 The `LTX Multishot Prompt + Refs` node landed on 2026-08-01 but its
 `multishot_strata_r128_v1` LoRA is not published, so the template reports one
 missing LoRA and has no smoke lane. The profile provisions the rest of the
 stack. Tracked in `scripts/smoke/pending_models.json`.
+
+### Models that are native in ComfyUI v0.46.2
+
+The twelve profiles in the four tables below were written against ComfyUI
+v0.46.2 without access to a DGX Spark. Nothing in them has been downloaded or
+run: the manifest passes `validate_manifest.py` and each has a smoke lane, but
+no lane has passed yet. FastH3 Omni, H3 Image, FLUX 3 Image Klein's templates
+and RelayVSR need the `dgx-state` fork rebased onto v0.46.2; the core this repo
+pinned before has neither their nodes nor their templates. SAM 3D Body was
+already in it. The steps, the checks and the order are in
+[plans/2026-11-new-models.md](plans/2026-11-new-models.md). Disk figures are
+added up from published file sizes, or estimated where marked "about";
+replace them with what `plan_downloads.py` reports when a row is promoted.
+
+#### MiniMax H3 family: FastH3 Omni and H3 Image
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Carry people, objects and style over from reference images into a video with sound, in 8 steps | `fasth3-omni` | `video_fasth3_ominiref_r2v` | Template | 35 GB | |
+| Text to image at 16 megapixels in 6 steps | `minimax-h3-image-t2i` | Text to Image (MiniMax H3 Image) | Ours | 37 GB | |
+| Edit a picture from an instruction at 16 megapixels | `minimax-h3-image-edit` | Image Edit (MiniMax H3 Image) | Ours | 37 GB | |
+
+- `fasth3-omni` runs core's template on FastVideo's NVFP4 QAD transformer
+  (13.8 GB instead of the 22.2 GB int8 file), through a symlink from the
+  template's file name. The int8 video VAE name points at the fp16 VAE the
+  other H3 profiles already use, so a machine that has one of them downloads
+  the transformer and a sample image, nothing else. Open check: whether the
+  template's `Model Sparse Attention` node accepts the NVFP4 file.
+- The two H3 Image templates are ours because ComfyUI's own default to 16 MP
+  only on the main branch of its template repository; the release v0.46.2
+  pins still defaults to 4 MP, which the model card calls too low. Ours load
+  the w4a8 transformer (12.55 GB instead of 21 GB) and the NVFP4 text encoder
+  of the H3 video profiles (about 16 GB instead of 25.28 GB). On a machine
+  with an H3 video profile the new download is 21 GB. The profiles also link
+  the int8 names to those files, so ComfyUI's own templates run too. Open
+  check: w4a8 against int8 picture quality; a third-party measurement puts
+  w4a8 further from full precision (LPIPS 0.27 against 0.13). Delete our two
+  copies once ComfyUI's released templates default to 16 MP.
+
+The weights are under MiniMax's H3 community licence; read the model cards
+before any commercial use.
+
+#### FLUX 3 Image Klein
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Text to image in 16 steps, strong text in pictures | `flux-3-klein-t2i` | `image_flux3_klein_distilled_t2i` | Template | about 18 GB | |
+| Edit a picture from an instruction, with layout boxes | `flux-3-klein-edit` | `image_flux3_klein_distilled_image_edit` | Template | about 18 GB | |
+| Combine up to 10 pictures into one: a person, clothes, a place | `flux-3-klein-multi-reference` | Multi-Reference Edit (FLUX 3 Klein) | Ours | about 18 GB | |
+| Text to image with the base model, 50 steps | `flux-3-klein-base-t2i` | `image_flux3_klein_t2i` | Template | about 18 GB | |
+| Edit with the base model, 50 steps | `flux-3-klein-base-edit` | `image_flux3_klein_image_edit` | Template | about 18 GB | |
+
+Black Forest Labs' 5.6B open model, in their own int8 files. The distilled
+checkpoint is the one to use; the base one is published for fine-tuning and
+runs three times the steps. The repository is gated: accept the FLUX
+Kommunity License on its Hugging Face page and set `HF_TOKEN`, or these
+profiles download nothing. The licence allows commercial use of the pictures
+for anyone under US$5M yearly revenue. Ours is core's distilled edit template
+with two more reference pictures wired into both reference nodes; each node
+grows a slot per picture, up to 10. Black Forest Labs report accuracy falling
+past about four references. Klein's prompt enhancer (Qwen3.5 9B) is on in all
+five; it sees the pictures and rewrites the request.
+
+#### Video upscaling with RelayVSR
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| Upscale and restore a video 2x in one sampling step | `relayvsr-x2` | `utility_relayvsr_video_x2_upscale` | Template | 5.3 GB | |
+| The same at 4x | `relayvsr-x4` | `utility_relayvsr_video_x4_upscale` | Template | 5.3 GB | |
+
+The factor comes from the weights, so each one has its own pair of files and
+its own profile. 4x turns the 576x736 sample into 2304x2944 over 124 frames;
+watch the lowest available memory on the first run.
+
+#### Motion capture with SAM 3D Body
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| A 3D body fit of the people in a clip: a mesh overlay video and an animated `.glb` | `sam3d-body-mocap` | `utility_sam3d_body` | Template | 5.5 GB | |
+| A pose-guide video from a clip: a 2D skeleton on black | `sam3d-body-pose-guide` | Video to Pose Guide (SAM 3D Body) | Ours | 5.5 GB | |
+
+Both profiles provision the same four files. Ours is core's template with the
+render style set to `openpose_2d`, no background and the 3D export removed.
+Watch the `.glb` export of `sam3d-body-mocap` on the first run: with
+`--bf16-vae`, the Pixal3D texture bake and GLB export each needed a float cast
+in the `dgx-state` fork before they would run.
+
+Four of the bundled templates above have no thumbnail yet; make each one from
+its first good output.
 
 ---
 

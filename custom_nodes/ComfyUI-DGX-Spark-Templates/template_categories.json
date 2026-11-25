@@ -6,6 +6,7 @@
       "Text to Image (Krea 2 RAW)",
       "Text to Image (Krea 2 Turbo NVFP4)",
       "Text to Image (Krea 2 Turbo Style LoRA)",
+      "Text to Image (MiniMax H3 Image)",
       "Text to Image (Qwen-Image)"
     ]
   },
@@ -13,8 +14,10 @@
     "ComfyUI-DGX-Spark-Templates": [
       "Image Edit (Mage-Flow Turbo)",
       "Image Edit (Mage-Flow)",
+      "Image Edit (MiniMax H3 Image)",
       "Image Edit (Qwen 2511)",
-      "Image Inpainting (Qwen-image)"
+      "Image Inpainting (Qwen-image)",
+      "Multi-Reference Edit (FLUX 3 Klein)"
     ]
   },
   "3-video": {
@@ -95,7 +98,8 @@
   "8-utility": {
     "ComfyUI-DGX-Spark-Templates": [
       "Image Depth Estimation (Lotus Depth)",
-      "Remove Background (Lucida)"
+      "Remove Background (Lucida)",
+      "Video to Pose Guide (SAM 3D Body)"
     ]
   },
   "9-text": {
