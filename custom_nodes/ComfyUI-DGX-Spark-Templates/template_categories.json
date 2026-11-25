@@ -80,6 +80,7 @@
   "5-speech": {
     "ComfyUI-DGX-Spark-Templates": [
       "Clean Up Voice (Inworld Voice Isolator)",
+      "Separate Two Speakers (MossFormer2)",
       "Subtitles from Speech (Nemotron 3.5)",
       "Subtitles from Speech (Whisper large-v3)",
       "Talking Characters with Subtitles",

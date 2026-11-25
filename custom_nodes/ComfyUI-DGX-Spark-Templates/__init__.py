@@ -24,6 +24,8 @@ Text does not, such as the Finnish-trained Poro 2, through transformers.
 `movieroll_nodes` runs Tencent's MovieRoll long-video sampler on core's HunyuanVideo 1.5
 model (Tencent Hunyuan Community Licence, see licenses/). `iris_z_nodes` runs Speridlabs' Iris-Z small
 (image to depth, depth to image, text to image and depth) on core's FLUX.2 Klein 9B model and sampler.
+`separation_nodes` splits two people talking over each other into one track each with ClearerVoice's
+MossFormer2 (model code vendored in vendor/, Apache-2.0, see licenses/).
 
 `cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
 to the system once the queue has been idle for a minute. `example_inputs` copies
@@ -32,13 +34,14 @@ input folder when they are missing.
 """
 
 from . import (body_nodes, character_nodes, cpu_memory, dialogue_nodes, example_inputs, iris_z_nodes,
-               language_model_nodes, memory_nodes, movieroll_nodes, seed_nodes, speech_nodes, speech_text_nodes)
+               language_model_nodes, memory_nodes, movieroll_nodes, seed_nodes, separation_nodes, speech_nodes,
+               speech_text_nodes)
 
 cpu_memory.start()
 example_inputs.install()
 
 _MODULES = (memory_nodes, seed_nodes, dialogue_nodes, speech_nodes, character_nodes, speech_text_nodes,
-            language_model_nodes, body_nodes, movieroll_nodes, iris_z_nodes)
+            language_model_nodes, body_nodes, movieroll_nodes, iris_z_nodes, separation_nodes)
 NODE_CLASS_MAPPINGS = {name: node for module in _MODULES for name, node in module.NODE_CLASS_MAPPINGS.items()}
 NODE_DISPLAY_NAME_MAPPINGS = {name: title for module in _MODULES
                               for name, title in module.NODE_DISPLAY_NAME_MAPPINGS.items()}

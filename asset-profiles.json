@@ -658,6 +658,9 @@
    "iris-z-small-model",
    "iris-z-small-vae",
    "iris-z-small-text-encoder"
+  ],
+  "speech-separation": [
+   "speech-separation-model"
   ]
  },
  "selection_metadata": {
@@ -2855,6 +2858,13 @@
     "dest": "/workspace/ComfyUI/models/text_encoders/qwen_3_8b_fp8mixed.safetensors",
     "url": "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/1138ce884c8e977cdacacbe779784fec4426bb3f/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors",
     "label": "Qwen3 8B text encoder for FLUX.2 Klein 9B (fp8 mixed)"
+   }
+  ],
+  "speech-separation-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/speech_separation/mossformer2_ss_16k.pt",
+    "url": "https://huggingface.co/alibabasglab/MossFormer2_SS_16K/resolve/407cb030cd66340918ebb6c8cc63b18f8592cdbe/last_best_checkpoint.pt",
+    "label": "MossFormer2 two-speaker separation, 16 kHz (ClearerVoice-Studio)"
    }
   ]
  }

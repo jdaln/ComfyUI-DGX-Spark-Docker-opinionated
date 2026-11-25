@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 121 profiles. The 120 in the category tables below
+`asset-profiles.json` defines 122 profiles. The 121 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 120 have an automated smoke lane. Three do not, because their
+Most of those 121 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -762,6 +762,7 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | Subtitles for any video, the default: transcript, .srt and a burned-in copy, 40 languages, Finnish included, recordings up to an hour | `nemotron-3.5-transcribe` | Subtitles from Speech (Nemotron 3.5) | Ours | 21.4 GB | 40 s |
 | Same with a smaller model, 100 languages, for those Nemotron lacks or when memory is short | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
 | A voice cleaned of noise, music and room sound, and what was removed | `voice-isolator` | Clean Up Voice (Inworld Voice Isolator) | Ours | 0.3 GB | 10 s |
+| Two people talking over each other, split into one track each | `speech-separation` | Separate Two Speakers (MossFormer2) | Ours | 0.7 GB | 10 s |
 
 Pick by what you have. [VibeVoice](https://github.com/Enemyx-net/VibeVoice-ComfyUI)
 does real multi-speaker dialogue (`[1]:`/`[2]:` script, up to four voices,
@@ -808,6 +809,21 @@ with and without it. Do not put it in front of speech to text by default: on
 noise. Other people talking in the background are voices too, so it keeps them:
 with four English speakers mixed in at 5 dB, Whisper went from 75 % to 54 % and
 Nemotron from 66 % to 91 % errors, neither usable.
+
+Separate Two Speakers is for that case with two voices: it splits a recording of
+two people talking over each other into one track each, with MossFormer2 from
+Alibaba's ClearerVoice-Studio (Apache-2.0, model code vendored in the template
+pack). The model was trained on short mixtures, so the node works in 20 s
+windows overlapping by 4 s and keeps each speaker on the same track from window
+to window; the whole file at once came out much worse. On 3 minutes of Finnish
+read speech with an English speaker over it at the same level, the Finnish
+track came out at 18 dB SI-SDR (the mix: -4 dB), the same voice on the same track
+throughout, and the character errors fell from 74 % to 27 % with Nemotron and
+from 82 % to 22 % with Whisper (clean: 6 % and 3 %), in 30 s. It compared better
+than TIGER (+6 dB, 42 % and 33 %) and SepFormer, whose speakers swapped tracks.
+None of the three separates four voices at once. The output is 16 kHz. The
+Voice Isolator after it made the errors worse (29 % and 31 %): it removes noise,
+not other voices, and takes quiet syllables with it.
 
 The node uses the Chatterbox code in filliptm's ComfyUI_Fill-ChatterBox but
 samples with upstream Chatterbox's alignment check, which ends a line once the

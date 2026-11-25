@@ -14,9 +14,9 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   than compiling them on every machine.
 - **33 custom node packs**, cloned at startup from
   [`custom_nodes/custom_nodes.txt`](custom_nodes/custom_nodes.txt).
-- **121 asset profiles.** Name one in `.env` and the container downloads every
+- **122 asset profiles.** Name one in `.env` and the container downloads every
   model that workflow needs before it starts.
-- **84 bundled templates**, for models ComfyUI ships no template for and for
+- **85 bundled templates**, for models ComfyUI ships no template for and for
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
   HeartMuLa, VibeVoice, YuE2, MuScriptor, the LTX-2.3 task LoRAs, LTX-2.5
   audio to video and IC-LoRA edits, speech with subtitles, text from Gemma 4
@@ -126,7 +126,7 @@ docker logs -f comfyui
 ## First start
 
 The first run installs PyTorch and every custom node's dependencies into the
-mounted venv, then downloads the models of the bundled templates (about 712 GB,
+mounted venv, then downloads the models of the bundled templates (about 713 GB,
 see [docs/models.md](docs/models.md#templates-that-download-without-a-profile))
 and of the profiles you selected. ComfyUI's
 HTTP server starts only after all of that finishes, so the port stays closed for
@@ -189,12 +189,12 @@ from
 | `.env.example` | template for `.env` |
 | `docker-compose.override.yml.example` | optional mount for an apps repository in `apps/` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions, and protobuf below 5 |
-| `asset-profiles.json` | the 121 profiles and the files each one downloads |
+| `asset-profiles.json` | the 122 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |
 | `patches/` | startup patches applied to ComfyUI and to cloned node packs |
 | `custom_nodes/custom_nodes.txt` | the list of node repositories to clone |
-| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 84 templates this repo bundles |
+| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 85 templates this repo bundles |
 | `DGX-Spark-WheelsBuilder/` | builds and exports the aarch64 wheels the image consumes |
 | `models-cutter/` | splits a monolithic `.safetensors` into ComfyUI's expected files |
 | `ComfyUI/` | submodule, `jdaln/ComfyUI` branch `dgx-state` |

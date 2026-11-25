@@ -59,10 +59,10 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 84
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 85
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
 every one declares its models in `properties.models`. On a fresh machine that is
-about 712 GB before the server starts, plus whatever the selected profiles add.
+about 713 GB before the server starts, plus whatever the selected profiles add.
 Models from gated repositories download only after their licence is accepted;
 each such template says so in its note.
 A bare Hugging Face repo link anywhere in a template file is enough for the

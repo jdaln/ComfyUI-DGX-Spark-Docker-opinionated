@@ -1,0 +1,230 @@
+{
+  "id": "07df10ba-0f7a-5277-99b1-05601ed6fa11",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        360,
+        140
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "two_speakers_sample.flac",
+        null,
+        null
+      ],
+      "title": "Noisy recording"
+    },
+    {
+      "id": 2,
+      "type": "SeparateTwoSpeakers",
+      "pos": [
+        400,
+        0
+      ],
+      "size": [
+        340,
+        160
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "localized_name": "window_seconds",
+          "name": "window_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "window_seconds"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "overlap_seconds",
+          "name": "overlap_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "overlap_seconds"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "keep_model_loaded",
+          "name": "keep_model_loaded",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "keep_model_loaded"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "speaker_1",
+          "type": "AUDIO",
+          "links": [
+            2
+          ],
+          "localized_name": "speaker_1"
+        },
+        {
+          "name": "speaker_2",
+          "type": "AUDIO",
+          "links": [
+            3
+          ],
+          "localized_name": "speaker_2"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SeparateTwoSpeakers"
+      },
+      "widgets_values": [
+        20.0,
+        4.0,
+        false
+      ],
+      "title": "Separate Two Speakers (MossFormer2)"
+    },
+    {
+      "id": 3,
+      "type": "SaveAudio",
+      "pos": [
+        760,
+        0
+      ],
+      "size": [
+        380,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/speaker_1"
+      ],
+      "title": "Save speaker 1"
+    },
+    {
+      "id": 4,
+      "type": "SaveAudio",
+      "pos": [
+        760,
+        160
+      ],
+      "size": [
+        380,
+        120
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/speaker_2"
+      ],
+      "title": "Save speaker 2"
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        200
+      ],
+      "size": [
+        720,
+        520
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Separate Two Speakers (MossFormer2)\n\nTwo people talking over each other, split into one track each: `output/audio/speaker_1_...` and\n`speaker_2_...`. Listen and keep the one you need; which speaker lands on track 1 depends on the recording.\nUse it before subtitles or speech to text, or to get a clean reference voice for cloning.\n\n**Separate Two Speakers** runs MossFormer2_SS_16K from Alibaba's ClearerVoice-Studio (Apache-2.0). The model\nwas trained on short mixtures, so the node works in 20 s windows that overlap by 4 s, keeps each speaker on the\nsame track from window to window, and crossfades. The output is 16 kHz, mono.\n\nMeasured on 3 minutes of Finnish read speech with an English speaker over it at the same level: the Finnish\nvoice stayed on one track throughout; Nemotron's character errors fell from 74 % to 27 % and Whisper's from 82 %\nto 22 % (on the clean speech: 6 % and 3 %). Not for three or more voices at once: with four people talking\nbehind the speaker it did not help. For noise, music and room sound use Clean Up Voice (Inworld Voice Isolator);\ndo not chain the two: the isolator after this node made the errors worse (29 % and 31 %).\n\n## Settings worth knowing\n\n- **window_seconds**: 20, the best in the test; the whole file at once came out much worse.\n- **overlap_seconds**: 4; used to match the speakers between windows.\n- 3 minutes take about half a minute.\n\n## Model\n\n`models/speech_separation/mossformer2_ss_16k.pt` (0.67 GB), `last_best_checkpoint.pt` of\n[alibabasglab/MossFormer2_SS_16K](https://huggingface.co/alibabasglab/MossFormer2_SS_16K), renamed. The node\ndownloads it on first use (pinned, sha256 checked) and loads it as plain data. Profile `speech-separation`.\n\n## Where this workflow comes from\n\nOur own graph. The model code is vendored from ClearerVoice-Studio (pack `vendor/mossformer2_ss/`, licence in\n`licenses/`). The sample mixes a FLEURS Finnish sentence recording (Google, CC BY 4.0) with a LibriVox reading\n(public domain)."
+      ],
+      "title": "Note: Separate Two Speakers (MossFormer2)"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      2,
+      1,
+      4,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

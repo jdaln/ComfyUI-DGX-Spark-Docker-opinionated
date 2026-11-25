@@ -107,6 +107,7 @@
     "IrisZDepthDecode": "ComfyUI-DGX-Spark-Templates",
     "IrisZDepthEncode": "ComfyUI-DGX-Spark-Templates",
     "IrisZEmptyLatent": "ComfyUI-DGX-Spark-Templates",
-    "IrisZSplit": "ComfyUI-DGX-Spark-Templates"
+    "IrisZSplit": "ComfyUI-DGX-Spark-Templates",
+    "SeparateTwoSpeakers": "ComfyUI-DGX-Spark-Templates"
   }
 }

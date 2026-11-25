@@ -370,6 +370,34 @@ class IrisZ(unittest.TestCase):
         self.assertEqual(tuple(depth_latent["samples"].shape), (2, 128, 48, 32))
 
 
+class Separation(unittest.TestCase):
+    def test_windows_keep_each_speaker_on_its_track(self):
+        import numpy as np
+        import torch
+        sep = load("separation_nodes")
+        rate = sep.RATE
+        n = rate * 50
+        t = np.arange(n) / rate
+        a = (np.sin(2 * np.pi * 220 * t) * (1 + 0.5 * np.sin(2 * np.pi * 0.3 * t))).astype(np.float32)
+        b = (0.7 * np.sign(np.sin(2 * np.pi * 331 * t)) * (1 + 0.5 * np.cos(2 * np.pi * 0.2 * t))).astype(np.float32)
+        mix = a + b
+        calls = []
+
+        def model(x):  # a perfect separator that swaps its outputs in every other window, at a wrong scale
+            seg = x[0].numpy()
+            start = next(s for s in range(0, n, rate) if np.allclose(mix[s:s + len(seg)], seg))
+            calls.append(start)
+            first, second = a[start:start + len(seg)] * 3, b[start:start + len(seg)] * 0.2
+            outs = [first, second] if len(calls) % 2 else [second, first]
+            return [torch.from_numpy(o)[None] for o in outs]
+
+        out = sep.separate(model, mix, 20.0, 4.0)
+        self.assertGreater(len(calls), 2)
+        first = 0 if abs(np.corrcoef(out[0], a)[0, 1]) > abs(np.corrcoef(out[0], b)[0, 1]) else 1
+        self.assertLess(np.abs(out[first] - a).max(), 1e-3)  # same speaker on one track, at the mixture's scale
+        self.assertLess(np.abs(out[1 - first] - b).max(), 1e-3)
+
+
 if __name__ == "__main__":
     shutil.rmtree(WORK, ignore_errors=True)
     os.makedirs(os.path.join(WORK, "input"))
