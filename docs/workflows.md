@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 115 profiles. The 114 in the category tables below
+`asset-profiles.json` defines 118 profiles. The 117 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 114 have an automated smoke lane. Three do not, because their
+Most of those 117 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -351,7 +351,7 @@ fits.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| A longer video built as several connected segments, from mixed media | `minimax-h3-easy` | Context Segments (MiniMax H3 Easy) | Ours | 48 GB | 225 s |
+| A longer video built as several connected segments, from mixed media | `minimax-h3-easy` | Context Segments (MiniMax H3 Easy) | Ours | 48 GB | 263 s |
 
 [ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by
 nkxx188, MIT licensed. It folds the H3 loaders, conditioning and latent setup
@@ -399,7 +399,7 @@ carry.
 
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
-| The same segments, then a pixel-resize and a latent-upscale refine pass | `minimax-h3-easy-refine` | Context Segments Refine (MiniMax H3 Easy) | Ours | 49 GB | 517 s |
+| The same segments, then a pixel-resize and a latent-upscale refine pass | `minimax-h3-easy-refine` | Context Segments Refine (MiniMax H3 Easy) | Ours | 49 GB | 623 s |
 
 Same weights as `minimax-h3-easy` plus the 3D latent upscaler, 659 MB. It writes
 the first pass and a latent-upscale refine. A pixel-resize refine is wired in
@@ -410,9 +410,16 @@ It has its own profile rather than sharing one with `minimax-h3-easy` so each
 lane can be run on its own. Two MiniMax lanes back to back is what takes this
 machine down.
 
-The latent refine is the expensive half: the lane takes 517 s against 225 s for
-the plain segments, and free memory bottoms at 1.5 GiB, tighter than anything
-else here. Run it on its own.
+The latent refine is the expensive half: the lane takes 623 s against 263 s for
+the plain segments. Free memory once bottomed at 1.5 GiB here; on core v0.46.2 it
+stays above 53 GiB. Run it on its own all the same.
+
+Both templates use 73 frames of motion context between segments, the most the
+node takes, instead of the pack's 22. In a 30 s text-to-video test of three 10 s
+segments, 73 kept one subject where 22 let a second appear, for about a quarter
+more time. 22 is faster and enough for short segments. For long image to video
+it did not help: the picture is a reference, not the first frame, and the subject
+still drifted.
 
 
 ### MiniMax H3 Easy video refine
@@ -448,7 +455,7 @@ and copies the draft's audio. The template runs on the H3 files this repo
 already has (the pruned int8 Ref2VA model, the NVFP4 text encoder, the fp16
 video VAE and the 3D latent upscaler) plus three LoRAs: the IC LoRA in ComfyUI
 layout, drbaph's HyperFlow 8-step conversion and the LMS LoRA. The draft needs
-at least 113 frames at 24 fps. On the 1280x720 sample, a real clip, the face
+at least 113 frames at 24 fps, and at 2560x1440 at most 124 here: 243 and 362 frames ran out of memory. On the 1280x720 sample, a real clip, the face
 and motion stayed the draft's with more hair and skin detail; 124 frames took
 24 minutes with 43 GiB lowest available memory. The weights are under the H3
 community licence.
@@ -524,6 +531,7 @@ here with the sample input each one was made for:
 | Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
 | A picture that speaks a recorded line; the audio drives the video | `ltx-2.5-a2v` | Audio to Video (LTX-2.5) | Ours | 45 GB | 386 s |
 | A clip that keeps characters, props and set from one reference sheet | `ltx-2.5-ingredients` | Reference Sheet to Video (LTX-2.5 Ingredients) | Ours | 46 GB | 191 s |
+| 30 s from a start picture with sound, the subject held to the end | `ltx-2.5-long-i2v-sound` | Image to Long Video with Sound (LTX-2.5) | Ours | 46 GB | 26 min |
 | People removed from a clip, the empty scene left behind | `ltx-2.5-clean-plate` | Remove People from Video (LTX-2.5 Clean Plate) | Ours | 45 GB | 120 s |
 | A grayscale alpha matte of a clip, hair and smoke included | `ltx-2.5-alpha-matte` | Video Alpha Matte (LTX-2.5 Alpha Gen) | Ours | 46 GB | 115 s |
 | Sound effects for a silent clip, generated to match the picture | `ltx-2.5-foley` | Add Sound to Video (LTX-2.5 Foley) | Ours | 45 GB | 80 s |
@@ -588,6 +596,22 @@ It decodes in tiles, with the settings core's LTX 2.5 templates use. Decoding
 the doubled video in one piece took available memory down to 16 GiB; in tiles it
 stays above 80 GiB, for 6 s more run time.
 
+Image to Long Video with Sound is Reference Sheet to Video with the start picture
+used both as the held reference and as frame 0, at 30 s: MovieRoll's "sink" idea
+on LTX-2.5. On the taxi sample the car kept its shape and markings for all 30 s
+and the camera tracked it steadily, with a street soundtrack; the plain Shot
+Sequencer at 30 s changed the car's model instead. 26 minutes, 960x544, 63 GiB
+lowest available. Against MovieRoll's Image to Long Video it adds sound and a more
+photographic light, but is slower and no livelier. At 60 s in one pass it took 73
+minutes with 28 GiB lowest available; the car kept its door logo to the end, which
+MovieRoll's did not, the sound stayed even, and the light turned dimmer and hazier
+in the second half. Chaining two 30 s runs (the second opening on the first's last
+frame, with a sheet of the picture and frames at 10 s, 20 s and 30 s as its
+reference) took 52 minutes but changed the colour grade and the scene after the
+join, and its sound dropped 8 dB there. Its First frame step also
+works in Reference Sheet to Video now (off there): the `bypass` and
+`img_compression` inputs of Lightricks' Preprocess subgraph are wired to nothing.
+
 Audio to Video, Reference Sheet to Video, Remove People from Video and Video
 Alpha Matte are Lightricks' own LTX-2.5 example graphs from ComfyUI-LTXVideo
 (LTX-2 Community License), changed in the same ways: the int8 transformer and
@@ -625,6 +649,36 @@ every file 403s. Approval is instant, but it is not automatic.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Image to video via the Leapfusion LoRA | `leapfusion-hunyuanvideo-i2v` | `leapfusion_hunyuuanvideo_i2v_native_testing` | Node example | 29 GB | 6 min |
+| One long shot of 10 to 60 s from a prompt, people and place kept the whole way | `movieroll-t2v` | Text to Long Video (MovieRoll) | Ours | 46 GB | 15 min |
+| The same from a start picture, which stays the first frame and in the cache to the end | `movieroll-i2v` | Image to Long Video (MovieRoll) | Ours | 46 GB | 15 min |
+
+Tencent's MovieRoll is HunyuanVideo 1.5 distilled for long single shots: one prompt gives 10 to 60 s at
+864x480, 24 fps, no sound. The template pack's MovieRoll nodes run it on core's HunyuanVideo 1.5 model: a
+window of five chunks at five noise levels moves on one chunk per model call, and finished chunks go to a
+cache the later ones read. The nodes follow Tencent's sampler: on 129 frames their latents are as close to
+Tencent's as Tencent's own sampler is to itself with another attention kernel. Over 30 s such rounding
+differences change the motion, not the scene or the people. 30 s took 13 to 15 minutes here with 36 GiB
+lowest available memory. The cache is rebuilt from five chunks once it holds 18, so it does not grow with
+length: image to video at 60 s took 27 minutes with 34 GiB lowest available. The 33 GB fp32 file loads in bf16.
+
+Image to video uses MovieRoll's i2v weights. The start picture is VAE-encoded into one latent frame, the
+first of the video, and goes into the cache before the first chunk, so every chunk reads it; the model has
+no separate image encoder. Its context noise is 0, as in its config. Checked against Tencent's sampler: the
+start frame is exact, the encode within 0.05 %, single model calls within Tencent's own rounding spread.
+30 s took 15 minutes here with 32 GiB lowest available memory; the taxi of the sample stays the same car to
+the end while the street changes around it. At 60 s it stays a yellow taxi, but by the last seconds its door
+logo and roof sign have changed shape: the start frame holds the scene, not small markings.
+
+Both templates carry a full-quality group, off by default: MiniMax H3 redraws the draft at 2x in 10 s
+segments with latent-guided continuity, from the same prompt. Switch it on once a draft is worth keeping;
+ComfyUI reuses the draft it already made. The group first unloads the draft's models; without that the
+refine ran down to 3 GiB available. On the 30 s draft it added about 40 minutes, 15 GiB lowest available,
+and kept the person, pose and motion with sharper eyes, skin and hair; small objects can change shape a little. Of the refiners
+compared on that draft, the LTX-2.5 latent 2x only enlarged and smoothed, and Open-H3 2K, at its 124-frame
+limit in six parts (2 h 21 min), stayed faithful but added little detail to a 480p draft.
+
+Licence: Tencent Hunyuan Community License, which does not apply in the EU, the UK and South Korea; the
+nodes follow Tencent's code, so they carry the same licence (`licenses/` in the pack).
 
 ### PAN 2, a world model
 
@@ -1079,6 +1133,13 @@ stack. Tracked in `scripts/smoke/pending_models.json`.
 - **First video**: `ltx-2.0-i2v-distilled` at 80 s, before committing to Wan 2.2
   at around 10 minutes a clip.
 - **Best video quality**: the LTX 2.3 pair, or Wan 2.2 for motion.
+- **Long video, 30 s and more in one shot**: `movieroll-t2v` or `movieroll-i2v`, 15 min for 30 s
+  at 864x480; the same person, car or room the whole way. For the final version, switch on its H3 refine
+  group (+41 min, 1728x960, sharper faces). For a livelier camera, the LTX-2.5 Shot Sequencer at 30 s
+  (9 min, 1280x704), but objects drift over that length.
+  With sound from a start picture: `ltx-2.5-long-i2v-sound`, 26 min, the subject held to the end; at 60 s
+  73 min, small markings still held where MovieRoll's changed (27 min for 60 s).
+  Measured on one prompt each, seed 4890.
 - **Tight on disk**: image profiles are 12–30 GB, LTX profiles 60–75 GB each.
 
 ## Beyond this list

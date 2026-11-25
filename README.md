@@ -14,9 +14,9 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   than compiling them on every machine.
 - **33 custom node packs**, cloned at startup from
   [`custom_nodes/custom_nodes.txt`](custom_nodes/custom_nodes.txt).
-- **115 asset profiles.** Name one in `.env` and the container downloads every
+- **118 asset profiles.** Name one in `.env` and the container downloads every
   model that workflow needs before it starts.
-- **78 bundled templates**, for models ComfyUI ships no template for and for
+- **81 bundled templates**, for models ComfyUI ships no template for and for
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
   HeartMuLa, VibeVoice, YuE2, MuScriptor, the LTX-2.3 task LoRAs, LTX-2.5
   audio to video and IC-LoRA edits, speech with subtitles, text from Gemma 4
@@ -93,7 +93,7 @@ its templates stay without models.
 | --- | --- | --- |
 | [black-forest-labs/flux-3-image-klein-comfy](https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy) | `flux-3-klein-*` | FLUX Kommunity License |
 | [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5) | `ltx-2.5-*`, `talking-characters` | LTX-2.x Community License |
-| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients`, `ltx-2.5-long-i2v-sound` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate) | `ltx-2.5-clean-plate` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) | `ltx-2.5-alpha-matte` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details) | `ltx-2.5-refine-details` (parked, see the plan) | LTX-2.x Community License |
@@ -103,6 +103,7 @@ its templates stay without models.
 | [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large) | `muscriptor` | CC BY-NC 4.0 |
 | [google/gemma-3-12b-it-qat-q4_0-unquantized](https://huggingface.co/google/gemma-3-12b-it-qat-q4_0-unquantized) | `ltx-2.0-*` | Gemma, approved by hand |
 | [facebook/sam-3d-body-dinov3](https://huggingface.co/facebook/sam-3d-body-dinov3) | `fab-pose-guide` (its model config) | SAM License, approved by hand |
+| [yunyangge/MovieRoll](https://huggingface.co/yunyangge/MovieRoll) | `movieroll-t2v`, `movieroll-i2v` | Tencent Hunyuan Community License; does not apply in the EU, the UK and South Korea |
 
 Models that are not gated but restrict use are listed in
 [docs/models.md](docs/models.md#gated-models). `scripts/smoke/plan_downloads.py`
@@ -188,12 +189,12 @@ from
 | `.env.example` | template for `.env` |
 | `docker-compose.override.yml.example` | optional mount for an apps repository in `apps/` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions, and protobuf below 5 |
-| `asset-profiles.json` | the 115 profiles and the files each one downloads |
+| `asset-profiles.json` | the 118 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |
 | `patches/` | startup patches applied to ComfyUI and to cloned node packs |
 | `custom_nodes/custom_nodes.txt` | the list of node repositories to clone |
-| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 78 templates this repo bundles |
+| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 81 templates this repo bundles |
 | `DGX-Spark-WheelsBuilder/` | builds and exports the aarch64 wheels the image consumes |
 | `models-cutter/` | splits a monolithic `.safetensors` into ComfyUI's expected files |
 | `ComfyUI/` | submodule, `jdaln/ComfyUI` branch `dgx-state` |

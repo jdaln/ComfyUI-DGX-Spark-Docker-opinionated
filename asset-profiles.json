@@ -618,6 +618,31 @@
    "fab-models",
    "sam3d-body-mesh-and-fov",
    "sam3d-body-input"
+  ],
+  "movieroll-t2v": [
+   "movieroll-distilled-t2v-model",
+   "hunyuanvideo-1.5-text-and-vae",
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-easy-refine-files"
+  ],
+  "movieroll-i2v": [
+   "movieroll-distilled-i2v-model",
+   "hunyuanvideo-1.5-text-and-vae",
+   "minimax-h3-image-edit-input",
+   "minimax-h3-support-assets",
+   "minimax-h3-fl2va-model",
+   "minimax-h3-easy-refine-files"
+  ],
+  "ltx-2.5-long-i2v-sound": [
+   "ltx-2.5-text-encoder",
+   "ltx-2.5-video-vae",
+   "ltx-2.5-audio-vae",
+   "ltx-2.5-prompt-enhancer",
+   "ltx-2.5-spatial-upscaler",
+   "ltx-2.5-distilled-int8",
+   "ltx-2.5-iclora-ingredients",
+   "minimax-h3-image-edit-input"
   ]
  },
  "selection_metadata": {
@@ -2721,6 +2746,49 @@
     "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
     "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
     "label": "MoGe-2 ViT-L normal (field of view for SAM 3D Body)"
+   }
+  ],
+  "movieroll-distilled-t2v-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/movieroll_distilled_t2v_fp32.safetensors",
+    "url": "https://huggingface.co/yunyangge/MovieRoll/resolve/fe3150d9233e54c504c04b4b42e12ebbc76b7765/distilled/t2v/model.safetensors",
+    "label": "MovieRoll distilled text to video (fp32; gated: accept the licence)"
+   }
+  ],
+  "hunyuanvideo-1.5-text-and-vae": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+    "label": "HunyuanVideo 1.5 text encoder, Qwen2.5-VL 7B fp8"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/byt5_small_glyphxl_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/1405a2b738c29b890cf6d03fc038d8d3e92eeed7/split_files/text_encoders/byt5_small_glyphxl_fp16.safetensors",
+    "label": "HunyuanVideo 1.5 glyph text encoder, byT5"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/hunyuanvideo15_vae_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/1405a2b738c29b890cf6d03fc038d8d3e92eeed7/split_files/vae/hunyuanvideo15_vae_fp16.safetensors",
+    "label": "HunyuanVideo 1.5 VAE"
+   }
+  ],
+  "movieroll-distilled-i2v-model": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/movieroll_distilled_i2v_fp32.safetensors",
+    "url": "https://huggingface.co/yunyangge/MovieRoll/resolve/fe3150d9233e54c504c04b4b42e12ebbc76b7765/distilled/i2v/model.safetensors",
+    "label": "MovieRoll distilled image to video (fp32; gated: accept the licence)"
+   }
+  ],
+  "minimax-h3-easy-refine-files": [
+   {
+    "dest": "/workspace/ComfyUI/models/loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+    "label": "MiniMax H3 fl2v turbo LoRA (4 step v1.0, 768p)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/latent_upscale_models/minimax_h3_latent_upscaler_3d_fp16.safetensors",
+    "url": "https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_conv_v1/minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors",
+    "label": "MiniMax H3 3D latent upscaler (fp16)"
    }
   ]
  }

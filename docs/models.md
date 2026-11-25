@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 78
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 81
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
 every one declares its models in `properties.models`. On a fresh machine that is
 about 685 GB before the server starts, plus whatever the selected profiles add.
@@ -92,7 +92,7 @@ as HTTP 401 or 403.
 | [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5) | every `ltx-2.5-*` profile, `talking-characters` | LTX-2.x Community License |
 | [Lightricks/LTX-2.3-22b-IC-LoRA-HDR](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR) | `ltx-2.3-iclora-hdr-distilled` | LTX-2 Community License |
 | [Lightricks/LTX-2.3-22b-IC-LoRA-DubIt](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-DubIt) | `ltx-2.3-iclora-lipdub-two-stage-distilled` | LTX-2 Community License |
-| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients`, `ltx-2.5-long-i2v-sound` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate) | `ltx-2.5-clean-plate` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) | `ltx-2.5-alpha-matte` | LTX-2.x Community License |
 | [Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details) | `ltx-2.5-refine-details` (parked, see the plan) | LTX-2.x Community License |
@@ -100,6 +100,7 @@ as HTTP 401 or 403.
 | [black-forest-labs/flux-3-image-klein-comfy](https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy) | every `flux-3-klein-*` profile | FLUX Kommunity License |
 | [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large) | `muscriptor` | CC BY-NC 4.0 |
 | [facebook/sam-3d-body-dinov3](https://huggingface.co/facebook/sam-3d-body-dinov3) | `fab-pose-guide`, for its `model_config.yaml` only | SAM License, approved by hand |
+| [yunyangge/MovieRoll](https://huggingface.co/yunyangge/MovieRoll) | `movieroll-t2v`, `movieroll-i2v` | Tencent Hunyuan Community License; does not apply in the EU, the UK and South Korea |
 
 Not gated, but the terms restrict use, several to non-commercial use:
 

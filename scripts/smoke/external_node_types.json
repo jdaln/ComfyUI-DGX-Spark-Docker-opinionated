@@ -97,6 +97,9 @@
     "LongCatAvatarVideoBase": "ComfyUI-LongCat-Avatar",
     "VoiceIsolator": "ComfyUI-DGX-Spark-Templates",
     "NemotronSpeechToText": "ComfyUI-DGX-Spark-Templates",
-    "FABBodyPose": "ComfyUI-DGX-Spark-Templates"
+    "FABBodyPose": "ComfyUI-DGX-Spark-Templates",
+    "MovieRollModelLoader": "ComfyUI-DGX-Spark-Templates",
+    "MovieRollTextEncode": "ComfyUI-DGX-Spark-Templates",
+    "MovieRollSampler": "ComfyUI-DGX-Spark-Templates"
   }
 }

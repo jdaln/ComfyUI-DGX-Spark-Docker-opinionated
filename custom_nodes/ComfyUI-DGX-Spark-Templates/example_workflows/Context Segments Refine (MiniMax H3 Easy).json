@@ -1390,7 +1390,7 @@
         768,
         8,
         "4,4",
-        22,
+        73,
         "latent_guide",
         true,
         24,
@@ -1443,7 +1443,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Credits\n\nAdapted from `workflow/4.MiniMax_H3_Easy_Context_Segments_Refine.json` in [ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by **nkxx188**, MIT licence. The 3D latent upscaler is from [LBH-123-AI/Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler).\n\nChanges: the pruned int8 base this repo provisions, settings stored in English (the interface shows Chinese labels but the server validates English), two 4 s segments instead of three, and the rgthree group bypasser removed since it is a canvas-only node.\n\nThree outputs: the first pass, a pixel-resize refine and a latent-upscale refine.\n\nMiniMax H3 weights are under the MiniMax H3 Community License."
+        "## Credits\n\nAdapted from `workflow/4.MiniMax_H3_Easy_Context_Segments_Refine.json` in [ComfyUI-MiniMaxH3-Easy](https://github.com/nkxx188/ComfyUI-MiniMaxH3-Easy) by **nkxx188**, MIT licence. The 3D latent upscaler is from [LBH-123-AI/Minimax_h3_latent_Upscaler](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler).\n\nChanges: the pruned int8 base this repo provisions, settings stored in English (the interface shows Chinese labels but the server validates English), two 4 s segments instead of three, 73 context frames instead of 22 (kept the subject better in a 30 s test; 22 is faster), and the rgthree group bypasser removed since it is a canvas-only node.\n\nThree outputs: the first pass, a pixel-resize refine and a latent-upscale refine.\n\nMiniMax H3 weights are under the MiniMax H3 Community License."
       ],
       "color": "#432",
       "bgcolor": "#653"

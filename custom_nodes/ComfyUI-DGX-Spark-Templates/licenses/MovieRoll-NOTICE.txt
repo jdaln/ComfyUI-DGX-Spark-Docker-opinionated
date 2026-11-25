@@ -1,0 +1,7 @@
+Tencent Hunyuan is licensed under the Tencent Hunyuan Community License Agreement, Copyright © 2025 Tencent. All Rights Reserved. The trademark rights of “Tencent Hunyuan” are owned by Tencent or its affiliate.
+
+movieroll_nodes.py in this pack is derived from MovieRoll (https://github.com/Tencent-Hunyuan/MovieRoll, commit
+0b5f73e, Copyright (C) 2026 Tencent): its distilled sampler, re-implemented by this repository's authors on ComfyUI
+core's HunyuanVideo 1.5 model. It is distributed under the Tencent Hunyuan Community License Agreement, a copy of
+which is in MovieRoll-LICENSE.txt. That licence does not apply in the European Union, the United Kingdom and South
+Korea. Tencent is not affiliated with this repository and does not sponsor or endorse it.
