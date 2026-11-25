@@ -253,7 +253,7 @@ DIRECTORY_ROOTS = {
 }
 STRIPPED_PATH_PREFIXES = {"wanvideo", "wanvid"}
 MD_LINK_RE = re.compile(r"\((https://huggingface\.co/[^)\s]+)\)")
-PLAIN_URL_RE = re.compile(r"https://huggingface\.co/[^\s)\]]+")
+PLAIN_URL_RE = re.compile(r"https://huggingface\.co/[^\s)\]\"'<>,]+")
 GENERIC_HF_BASENAMES = {"diffusion_pytorch_model.safetensors", "main", "none"}
 SOURCE_OVERRIDES = {
     "WanVideo/2_2/Wan2_2-Animate-14B_high_fp8_e4m3fn_native_KJ.safetensors": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/Wan22Animate/Wan2_2-Animate-14B_fp8_scaled_e4m3fn_KJ_v2.safetensors",

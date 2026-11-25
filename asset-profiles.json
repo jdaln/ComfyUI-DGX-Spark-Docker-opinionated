@@ -548,6 +548,11 @@
    "seedvr2-3b-int8",
    "seedvr2-video-input"
   ],
+  "pan2-i2v": [
+   "pan2-models",
+   "qwen3.5-9b-caption-writer",
+   "pan2-i2v-input"
+  ],
   "relayvsr-x2": [
    "relayvsr-x2-models",
    "relayvsr-video-input"
@@ -2237,6 +2242,37 @@
     "dest": "/workspace/ComfyUI/input/grainy_perfume_shot_crf32.mp4",
     "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/grainy_perfume_shot_crf32.mp4",
     "label": "SeedVR2 sample clip"
+   }
+  ],
+  "pan2-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/diffusion_models/pan2_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/PAN2/resolve/main/diffusion_models/pan2_int8_convrot.safetensors",
+    "label": "PAN 2 world model (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_int8_convrot.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/PAN2/resolve/main/text_encoders/qwen3.5_9b_int8_convrot.safetensors",
+    "label": "PAN 2 text encoder, Qwen3.5 9B (int8 convrot)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/vae/wan2.2_vae.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/PAN2/resolve/main/vae/wan2.2_vae.safetensors",
+    "label": "Wan 2.2 VAE"
+   }
+  ],
+  "qwen3.5-9b-caption-writer": [
+   {
+    "dest": "/workspace/ComfyUI/models/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Qwen3.5/resolve/main/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+    "label": "Qwen3.5 9B caption writer (w4a8 GPTQ)"
+   }
+  ],
+  "pan2-i2v-input": [
+   {
+    "dest": "/workspace/ComfyUI/input/pan2_house_tour.jpg",
+    "url": "https://raw.githubusercontent.com/ifm-ai/PAN2/main/inference/prompts/i2v_house_tour.jpg",
+    "label": "PAN 2 sample start image"
    }
   ],
   "relayvsr-x2-models": [

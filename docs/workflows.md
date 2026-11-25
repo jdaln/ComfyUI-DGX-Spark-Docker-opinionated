@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 105 profiles. The 104 in the category tables below
+`asset-profiles.json` defines 106 profiles. The 105 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 104 have an automated smoke lane. Three do not, because their
+Most of those 105 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -587,6 +587,26 @@ every file 403s. Approval is instant, but it is not automatic.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Image to video via the Leapfusion LoRA | `leapfusion-hunyuanvideo-i2v` | `leapfusion_hunyuuanvideo_i2v_native_testing` | Node example | 29 GB | 6 min |
+
+### PAN 2, a world model
+
+| What you get | Profile | Workflow | Type | Disk | Run |
+| --- | --- | --- | --- | ---: | ---: |
+| What happens next in a picture: a start image and a description of the action give a 5 s video | `pan2-i2v` | Image to Video (PAN 2) | Ours | 45 GB | 28 min |
+
+MBZUAI's PAN 2 (29B, Apache-2.0), native in ComfyUI. It reads a structured
+world-state caption, not a free prompt, so the template puts a caption writer
+in front: Qwen3.5 9B through Generate Text, with the caption policy from
+ifm-ai/PAN2. Write the request in plain English; to write a caption by hand,
+follow that format and connect it to **Positive**. The negative is PAN 2's
+fixed template. Leave the start image unconnected for text to video.
+
+Settings are the model card's: 1248x704, 24 fps, 50 steps, CFG 2.5. The card's
+default is 241 frames (10 s); the template makes 121 (5 s), which took 28
+minutes here with 51 GiB lowest available memory, so 10 s takes about an hour.
+No sound. The sample request walks into the living room of the start picture
+and past a cat on the sofa; the room stays consistent and the cat appears where
+the request puts it.
 
 ### Video editing with LTX-2.3 task LoRAs
 
