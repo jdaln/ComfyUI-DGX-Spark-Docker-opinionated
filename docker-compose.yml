@@ -2,6 +2,8 @@ services:
   comfy:
     build: .
     container_name: comfyui
+    # Comes back after a reboot or a crash. `docker compose stop` keeps it down.
+    restart: unless-stopped
     user: "${UID}:${GID}"
     shm_size: "${COMFY_SHM_SIZE:-16g}"
     ulimits:

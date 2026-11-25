@@ -101,7 +101,9 @@ is expected. Watch `docker logs -f comfyui` rather than the port.
 
 Once the log shows the server listening, open <http://localhost:8188>.
 
-Stop with `docker compose down`.
+The container restarts after a reboot or a crash. `docker compose stop` keeps it
+down, also over reboots, until the next `docker compose up -d`.
+`docker compose down` removes it.
 
 ## Reaching the UI from another machine
 
