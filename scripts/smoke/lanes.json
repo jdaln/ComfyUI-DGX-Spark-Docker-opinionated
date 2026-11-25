@@ -108,6 +108,7 @@
     ["relayvsr-x4",                                 "utility_relayvsr_video_x4_upscale"],
     ["sam3d-body-mocap",                            "utility_sam3d_body"],
     ["sam3d-body-pose-guide",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video to Pose Guide (SAM 3D Body).json"],
+    ["fab-pose-guide",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Video to Pose Guide (FAB).json"],
     ["vibevoice-1.5b",                              "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text to Speech (Multi-Character Conversation).json",
       {"VibeVoice-Large": "VibeVoice-1.5B"}],
     ["gemma-4-12b",                                 "/workspace/ComfyUI/custom_nodes/ComfyUI-DGX-Spark-Templates/example_workflows/Text Generation (Gemma 4 12B).json"],

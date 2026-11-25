@@ -59,7 +59,7 @@ which is an asset profile, not a custom node directory.
 
 ## Templates that download without a profile
 
-`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 77
+`ComfyUI-DGX-Spark-Templates` is in the default allowlist, so this repo's 78
 bundled templates provision themselves even with `COMFY_ASSET_PROFILES` empty:
 every one declares its models in `properties.models`. On a fresh machine that is
 about 685 GB before the server starts, plus whatever the selected profiles add.
@@ -99,6 +99,7 @@ as HTTP 401 or 403.
 | [Lightricks/LTX-2.3-22b-LoRA-Foley-V2A](https://huggingface.co/Lightricks/LTX-2.3-22b-LoRA-Foley-V2A) | `ltx-2.5-foley` | LTX-2 Community License |
 | [black-forest-labs/flux-3-image-klein-comfy](https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy) | every `flux-3-klein-*` profile | FLUX Kommunity License |
 | [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large) | `muscriptor` | CC BY-NC 4.0 |
+| [facebook/sam-3d-body-dinov3](https://huggingface.co/facebook/sam-3d-body-dinov3) | `fab-pose-guide`, for its `model_config.yaml` only | SAM License, approved by hand |
 
 Not gated, but the terms restrict use, several to non-commercial use:
 
@@ -109,7 +110,13 @@ Not gated, but the terms restrict use, several to non-commercial use:
 | [Comfy-Org/flux2-dev](https://huggingface.co/Comfy-Org/flux2-dev) | `flux2-vae.safetensors` for both Ideogram profiles | FLUX dev non-commercial |
 | [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3), [FastVideo/FastH3-Omni-NVFP4-QAD-Comfy](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD-Comfy) | every `minimax-h3-*` profile, `fasth3-omni` | MiniMax H3 Community License |
 | [Comfy-Org/MiniMax-H3-Image](https://huggingface.co/Comfy-Org/MiniMax-H3-Image) | `minimax-h3-image-*` | MiniMax H3 Image Community License |
-| [Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body) | `sam3d-body-*` | SAM License |
+| [Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body) | `sam3d-body-*`, `fab-pose-guide` | SAM License |
+| [noahcao/FAB](https://huggingface.co/noahcao/FAB) | `fab-pose-guide` | FAB weights licence, non-commercial research |
+
+`fab-pose-guide` also needs SMPL 1.1.0, which no profile can download: register
+at [smpl.is.tue.mpg.de](https://smpl.is.tue.mpg.de) and copy the three `.pkl`
+files to `models/body_models/smpl/` as `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl` and
+`SMPL_FEMALE.pkl`.
 
 Approval is per repository. A token accepted for the Gemma repo is still denied
 for the Dub-It LoRA until that repo is accepted too.

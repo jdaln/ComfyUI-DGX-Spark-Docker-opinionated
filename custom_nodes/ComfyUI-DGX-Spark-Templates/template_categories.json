@@ -109,6 +109,7 @@
     "ComfyUI-DGX-Spark-Templates": [
       "Image Depth Estimation (Lotus Depth)",
       "Remove Background (Lucida)",
+      "Video to Pose Guide (FAB)",
       "Video to Pose Guide (SAM 3D Body)"
     ]
   },

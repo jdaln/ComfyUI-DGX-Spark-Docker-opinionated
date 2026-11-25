@@ -613,6 +613,11 @@
   "nemotron-3.5-transcribe": [
    "nemotron-3.5-transcribe-model",
    "subtitles-sample-input"
+  ],
+  "fab-pose-guide": [
+   "fab-models",
+   "sam3d-body-mesh-and-fov",
+   "sam3d-body-input"
   ]
  },
  "selection_metadata": {
@@ -2627,6 +2632,95 @@
     "dest": "/workspace/ComfyUI/models/stt/nemotron/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-Encoder-F16.gguf",
     "url": "https://huggingface.co/AtomicChat/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-GGUF/resolve/dbd06c5cad7a2f33c8e06be2fb3ef814dbd9aa59/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B-Encoder-F16.gguf",
     "label": "Nemotron 3.5 Transcribe: speech encoder, F16"
+   }
+  ],
+  "fab-models": [
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/SHA256SUMS",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/SHA256SUMS",
+    "label": "FAB: checksums of the weights"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/fab-l/model.pt",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/fab-l/model.pt",
+    "label": "FAB-L model"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/fab-l/config.json",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/fab-l/config.json",
+    "label": "FAB-L config"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/shared/detector.pt",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/shared/detector.pt",
+    "label": "FAB person detector"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/shared/smpl_fitter.pt",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/shared/smpl_fitter.pt",
+    "label": "FAB SMPL fitter"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/shared/smpl_fitter_mesh.pt",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/shared/smpl_fitter_mesh.pt",
+    "label": "FAB SMPL fitter, mesh"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/weights/shared/contact_video.pt",
+    "url": "https://huggingface.co/noahcao/FAB/resolve/f2e204f280aa27944b98fbf783f618a4bea2c223/shared/contact_video.pt",
+    "label": "FAB video contacts"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/fab/sam-3d-body-dinov3/model_config.yaml",
+    "url": "https://huggingface.co/facebook/sam-3d-body-dinov3/resolve/11aaa346c7204874a1cbafe3d39a979080b2c55a/model_config.yaml",
+    "label": "SAM 3D Body model config (gated: accept the licence)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/head_hand_mask.npz",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/head_hand_mask.npz",
+    "label": "MHR <-> SMPL conversion: head_hand_mask.npz"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/mhr2smpl_mapping.npz",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/mhr2smpl_mapping.npz",
+    "label": "MHR <-> SMPL conversion: mhr2smpl_mapping.npz"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/mhr2smplx_mapping.npz",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/mhr2smplx_mapping.npz",
+    "label": "MHR <-> SMPL conversion: mhr2smplx_mapping.npz"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/mhr_face_mask.ply",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/mhr_face_mask.ply",
+    "label": "MHR <-> SMPL conversion: mhr_face_mask.ply"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/smpl2mhr_mapping.npz",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/smpl2mhr_mapping.npz",
+    "label": "MHR <-> SMPL conversion: smpl2mhr_mapping.npz"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/smplx2mhr_mapping.npz",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/smplx2mhr_mapping.npz",
+    "label": "MHR <-> SMPL conversion: smplx2mhr_mapping.npz"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/body_models/mhr/subsampled_vertex_indices.npy",
+    "url": "https://raw.githubusercontent.com/facebookresearch/MHR/85fc2cbaf77f606e41346cb791d8ad96a75e1a4b/tools/mhr_smpl_conversion/assets/subsampled_vertex_indices.npy",
+    "label": "MHR <-> SMPL conversion: subsampled_vertex_indices.npy"
+   }
+  ],
+  "sam3d-body-mesh-and-fov": [
+   {
+    "dest": "/workspace/ComfyUI/models/detection/sam_3d_body_dinov3_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/sam-3d-body/resolve/main/detection/sam_3d_body_dinov3_bf16.safetensors",
+    "label": "SAM 3D Body, DINOv3 backbone (bf16)"
+   },
+   {
+    "dest": "/workspace/ComfyUI/models/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/MoGe/resolve/main/geometry_estimation/moge_2_vitl_normal_fp16.safetensors",
+    "label": "MoGe-2 ViT-L normal (field of view for SAM 3D Body)"
    }
   ]
  }

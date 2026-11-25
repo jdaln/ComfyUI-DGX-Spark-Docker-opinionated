@@ -2,13 +2,13 @@
 
 Every workflow this setup provisions, what it is for, and how to run it.
 
-`asset-profiles.json` defines 114 profiles. The 113 in the category tables below
+`asset-profiles.json` defines 115 profiles. The 114 in the category tables below
 are verified end to end on a DGX Spark: the models download, the workflow opens
 with no missing models, and it produces output. Run times are measured at each
 workflow's default settings. The remaining one is listed under
 [Provisioned, not yet hardware-verified](#provisioned-not-yet-hardware-verified).
 
-Most of those 113 have an automated smoke lane. Three do not, because their
+Most of those 114 have an automated smoke lane. Three do not, because their
 workflow needs an audio file the repo does not ship, so they were checked by
 hand instead: `vibevoice-large`, `heartmula-transcribe` and
 `tts-prompted-conversation`. They are marked below.
@@ -1010,6 +1010,7 @@ rule they state.
 | Video upscale and restoration 2x in one step, RelayVSR | `relayvsr-x2` | `utility_relayvsr_video_x2_upscale` | Template | 5.3 GB | 20 s |
 | Same at 4x | `relayvsr-x4` | `utility_relayvsr_video_x4_upscale` | Template | 5.3 GB | 61 s |
 | A pose-guide video from a clip: a 2D skeleton with hands on black | `sam3d-body-pose-guide` | Video to Pose Guide (SAM 3D Body) | Ours | 5.5 GB | 150 s |
+| Same with FAB, 4x faster, its own person detector, non-commercial weights | `fab-pose-guide` | Video to Pose Guide (FAB) | Ours | 6.1 GB | 35 s |
 
 Lucida is a BiRefNet-HR fine-tune for the mattes the bundled
 `Remove Background (BiRefNet)` blueprint struggles with: semi-transparent
@@ -1025,6 +1026,19 @@ kept; SeedVR2 takes 356 s. Both core templates keep the first 5 seconds.
 Video to Pose Guide is core's SAM 3D Body template with the render set to
 `openpose_2d` on black and the 3D export removed. It feeds pose-driven video
 workflows; face dots and the `scail` style are one widget away.
+
+Video to Pose Guide (FAB) swaps SAM 3D Body Predict, SAM 3.1 tracking and
+RT-DETR for the template pack's FAB Body Pose node. FAB-L (noahcao/FAB) is a
+distilled SAM 3D Body with its own person detector; the node returns core's MHR
+pose data, so Face Expression, Smooth and Render are unchanged, and core's SAM 3D
+Body model only gives the mesh faces and colours. On the same 5 s clip it took
+35 s against 150 s, and the skeletons match frame for frame; the hands are a
+little tighter, because FAB has no separate hand pass. The node fetches FAB's
+source at a pinned commit into `models/fab/code/` instead of installing the
+package, and loads every plain-data checkpoint with `weights_only=True`. It
+needs the SAM 3D Body licence accepted (for one config file) and SMPL 1.1.0
+placed by hand ([models.md](models.md#gated-models)). FAB's weights are for
+non-commercial research.
 
 [^h]: Checked by hand, not by an automated lane. These workflows need an audio
     file the repo does not ship, so there is nothing for `run_lanes.py` to run
