@@ -1,0 +1,1359 @@
+{
+  "id": "e39006a3-adf5-5b62-bea5-8b2153392390",
+  "revision": 0,
+  "last_node_id": 30,
+  "last_link_id": 26,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "IrisZModelLoader",
+      "pos": [
+        30,
+        40
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model_name",
+          "name": "model_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "model_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        },
+        {
+          "localized_name": "empty_prompt",
+          "name": "empty_prompt",
+          "type": "CONDITIONING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "IrisZModelLoader",
+        "models": [
+          {
+            "name": "iris-z-small/transformer-00001-of-00004.safetensors",
+            "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00001-of-00004.safetensors",
+            "directory": "diffusion_models"
+          },
+          {
+            "name": "iris-z-small/transformer-00002-of-00004.safetensors",
+            "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00002-of-00004.safetensors",
+            "directory": "diffusion_models"
+          },
+          {
+            "name": "iris-z-small/transformer-00003-of-00004.safetensors",
+            "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00003-of-00004.safetensors",
+            "directory": "diffusion_models"
+          },
+          {
+            "name": "iris-z-small/transformer-00004-of-00004.safetensors",
+            "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/transformer-00004-of-00004.safetensors",
+            "directory": "diffusion_models"
+          },
+          {
+            "name": "iris-z-small/empty_prompt.safetensors",
+            "url": "https://huggingface.co/speridlabs/iris-z/resolve/5d35ec0d3ebd55b7438cdaed93457a7231d6711f/Iris-Z-small/empty_prompt.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "iris-z-small/transformer-00001-of-00004.safetensors"
+      ],
+      "title": "Load Iris-Z small"
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        30,
+        160
+      ],
+      "size": [
+        340,
+        60
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "vae_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            6,
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "flux2-vae.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-klein/resolve/main/split_files/vae/flux2-vae.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "flux2-vae.safetensors"
+      ],
+      "title": "Load VAE"
+    },
+    {
+      "id": 2,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        30,
+        260
+      ],
+      "size": [
+        340,
+        82
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 4,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "localized_name": "lora_name",
+          "name": "lora_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "lora_name"
+          }
+        },
+        {
+          "localized_name": "strength_model",
+          "name": "strength_model",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "strength_model"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ],
+      "title": "Load LoRA (optional)"
+    },
+    {
+      "id": 5,
+      "type": "CLIPLoader",
+      "pos": [
+        30,
+        400
+      ],
+      "size": [
+        340,
+        110
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip_name",
+          "name": "clip_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "clip_name"
+          }
+        },
+        {
+          "localized_name": "type",
+          "name": "type",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "type"
+          }
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "device"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2,
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "models": [
+          {
+            "name": "qwen_3_8b_fp8mixed.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/1138ce884c8e977cdacacbe779784fec4426bb3f/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen_3_8b_fp8mixed.safetensors",
+        "flux2",
+        "default"
+      ],
+      "title": "Load Text Encoder"
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        400,
+        560
+      ],
+      "size": [
+        400,
+        160
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "A red vintage taxi on a rainy city street at night, neon reflections on wet asphalt, cinematic photo."
+      ],
+      "title": "Prompt"
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [
+        400,
+        760
+      ],
+      "size": [
+        400,
+        90
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Negative (empty, as Iris-Z)"
+    },
+    {
+      "id": 4,
+      "type": "LoadImage",
+      "pos": [
+        850,
+        560
+      ],
+      "size": [
+        320,
+        360
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "image"
+          }
+        },
+        {
+          "localized_name": "upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "link": null,
+          "widget": {
+            "name": "upload"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "iris_z_taxi_depth.png",
+        "image"
+      ],
+      "title": "Depth map"
+    },
+    {
+      "id": 8,
+      "type": "IrisZDepthEncode",
+      "pos": [
+        1200,
+        560
+      ],
+      "size": [
+        300,
+        110
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "depth",
+          "name": "depth",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "localized_name": "depth_format",
+          "name": "depth_format",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "depth_format"
+          }
+        },
+        {
+          "localized_name": "resolution",
+          "name": "resolution",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "resolution"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "encoded",
+          "name": "encoded",
+          "type": "IMAGE",
+          "links": [
+            5
+          ]
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "links": [
+            11,
+            21
+          ]
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "links": [
+            12,
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "IrisZDepthEncode"
+      },
+      "widgets_values": [
+        "Iris-Z depth",
+        1024
+      ],
+      "title": "Iris-Z Depth Encode"
+    },
+    {
+      "id": 9,
+      "type": "VAEEncode",
+      "pos": [
+        1540,
+        560
+      ],
+      "size": [
+        220,
+        50
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "pixels",
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 5
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            9,
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 20,
+      "type": "ReferenceLatent",
+      "pos": [
+        1540,
+        660
+      ],
+      "size": [
+        240,
+        50
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "conditioning",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 7
+        },
+        {
+          "localized_name": "latent",
+          "name": "latent",
+          "type": "LATENT",
+          "link": 9,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ReferenceLatent"
+      },
+      "widgets_values": [],
+      "title": "Depth map, positive"
+    },
+    {
+      "id": 21,
+      "type": "ReferenceLatent",
+      "pos": [
+        1540,
+        760
+      ],
+      "size": [
+        240,
+        50
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "conditioning",
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 8
+        },
+        {
+          "localized_name": "latent",
+          "name": "latent",
+          "type": "LATENT",
+          "link": 10,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CONDITIONING",
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ReferenceLatent"
+      },
+      "widgets_values": [],
+      "title": "Depth map, negative"
+    },
+    {
+      "id": 22,
+      "type": "EmptyFlux2LatentImage",
+      "pos": [
+        1540,
+        860
+      ],
+      "size": [
+        260,
+        110
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "link": 11,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "link": 12,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "localized_name": "batch_size",
+          "name": "batch_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "batch_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            23
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyFlux2LatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 10,
+      "type": "IrisZTask",
+      "pos": [
+        420,
+        40
+      ],
+      "size": [
+        300,
+        60
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 13
+        },
+        {
+          "localized_name": "task",
+          "name": "task",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "task"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "IrisZTask"
+      },
+      "widgets_values": [
+        "depth to image"
+      ],
+      "title": "Iris-Z Task"
+    },
+    {
+      "id": 11,
+      "type": "Flux2Scheduler",
+      "pos": [
+        420,
+        150
+      ],
+      "size": [
+        300,
+        110
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "steps",
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "link": 21,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "link": 22,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "SIGMAS",
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2Scheduler"
+      },
+      "widgets_values": [
+        50,
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": 12,
+      "type": "KSamplerSelect",
+      "pos": [
+        420,
+        300
+      ],
+      "size": [
+        300,
+        60
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "sampler_name",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "SAMPLER",
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "RandomNoise",
+      "pos": [
+        420,
+        400
+      ],
+      "size": [
+        300,
+        82
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "noise_seed",
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "NOISE",
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        0,
+        "fixed"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "CFGGuider",
+      "pos": [
+        770,
+        400
+      ],
+      "size": [
+        300,
+        100
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 14
+        },
+        {
+          "localized_name": "positive",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 19
+        },
+        {
+          "localized_name": "negative",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 20
+        },
+        {
+          "localized_name": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "GUIDER",
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CFGGuider"
+      },
+      "widgets_values": [
+        4.0
+      ]
+    },
+    {
+      "id": 15,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        770,
+        40
+      ],
+      "size": [
+        300,
+        110
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "noise",
+          "name": "noise",
+          "type": "NOISE",
+          "link": 15
+        },
+        {
+          "localized_name": "guider",
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 16
+        },
+        {
+          "localized_name": "sampler",
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 17
+        },
+        {
+          "localized_name": "sigmas",
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 18
+        },
+        {
+          "localized_name": "latent_image",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "output",
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            24
+          ]
+        },
+        {
+          "localized_name": "denoised_output",
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 16,
+      "type": "VAEDecode",
+      "pos": [
+        1150,
+        40
+      ],
+      "size": [
+        220,
+        50
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 24
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            26
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "SaveImage",
+      "pos": [
+        1450,
+        40
+      ],
+      "size": [
+        420,
+        420
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 26
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "image/iris_z_from_depth"
+      ],
+      "title": "Save picture"
+    },
+    {
+      "id": 30,
+      "type": "MarkdownNote",
+      "pos": [
+        -640,
+        0
+      ],
+      "size": [
+        600,
+        1000
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Note: Depth to Image (Iris-Z small)",
+      "properties": {},
+      "widgets_values": [
+        "## Depth to Image (Iris-Z small)\n\nA new picture on the layout of a depth map: what is near stays near, what is far stays far, and the prompt says\nwhat everything is. Iris-Z small is FLUX.2 Klein base 9B trained to make pictures and depth maps together; here\nthe depth map is given and it draws the picture.\n\n**Depth map** → **Iris-Z Depth Encode** → **VAE Encode** → reference latent on both prompts → 50 euler steps,\nCFG 4 → **VAE Decode** → `output/image/iris_z_from_depth_...`.\n\nThe sample depth map is the taxi photo's depth from Image to Depth (Iris-Z small).\n\n## Settings worth knowing\n\n- **Iris-Z Depth Encode, depth_format**: *disparity* for the depth maps of Depth Anything, Lotus or MoGe here\n  (bright = near), *depth* for bright = far, *Iris-Z depth* or *Iris-Z colours* for Image to Depth's outputs.\n- **Iris-Z Depth Encode, resolution**: 1024 (or 512): the picture has about that many pixels squared, in the depth\n  map's aspect; small maps are enlarged.\n- **CFG Guider, cfg**: 4, Iris-Z small's own default. The negative prompt stays empty, as Iris-Z was trained.\n- **Load LoRA (optional)**: bypassed. A FLUX.2 Klein 9B LoRA may load here; Iris-Z was fine-tuned from Klein base\n  9B, so the effect is not guaranteed.\n- Time: about 5 minutes the first time at 1024, about 4 once the models are loaded.\n## Model Links\n\n**diffusion_models/iris-z-small** (from [speridlabs/iris-z](https://huggingface.co/speridlabs/iris-z), folder `Iris-Z-small`, revision 5d35ec0)\n\n- transformer-00001-of-00004.safetensors to transformer-00004-of-00004.safetensors (18.2 GB, bf16)\n- empty_prompt.safetensors (13 MB)\n\n**vae**\n\n- [flux2-vae.safetensors](https://huggingface.co/Comfy-Org/flux2-klein/resolve/main/split_files/vae/flux2-vae.safetensors) (336 MB)\n\n**text_encoders**\n\n- [qwen_3_8b_fp8mixed.safetensors](https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/1138ce884c8e977cdacacbe779784fec4426bb3f/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors) (8.7 GB)\n\n## Where this workflow comes from\n\nOur own graph. Iris-Z is Speridlabs' FLUX.2 Klein base 9B trained to make a picture and its depth map together\n(arXiv 2611.16010). This pack's `iris_z_nodes.py` runs it on ComfyUI core's FLUX.2 model and sampler, written anew\nfrom the Iris-Z SDK (Apache-2.0); one model call matches the SDK's to bf16 rounding. The weights are under the FLUX\nnon-commercial licence: fine for personal and teaching use, not for commercial use. No licence to accept first."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      5,
+      0,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      5,
+      0,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      4,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      8,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      6,
+      3,
+      0,
+      9,
+      1,
+      "VAE"
+    ],
+    [
+      7,
+      6,
+      0,
+      20,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      8,
+      7,
+      0,
+      21,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      9,
+      0,
+      20,
+      1,
+      "LATENT"
+    ],
+    [
+      10,
+      9,
+      0,
+      21,
+      1,
+      "LATENT"
+    ],
+    [
+      11,
+      8,
+      1,
+      22,
+      0,
+      "INT"
+    ],
+    [
+      12,
+      8,
+      2,
+      22,
+      1,
+      "INT"
+    ],
+    [
+      13,
+      2,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      14,
+      10,
+      0,
+      14,
+      0,
+      "MODEL"
+    ],
+    [
+      15,
+      13,
+      0,
+      15,
+      0,
+      "NOISE"
+    ],
+    [
+      16,
+      14,
+      0,
+      15,
+      1,
+      "GUIDER"
+    ],
+    [
+      17,
+      12,
+      0,
+      15,
+      2,
+      "SAMPLER"
+    ],
+    [
+      18,
+      11,
+      0,
+      15,
+      3,
+      "SIGMAS"
+    ],
+    [
+      19,
+      20,
+      0,
+      14,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      20,
+      21,
+      0,
+      14,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      21,
+      8,
+      1,
+      11,
+      1,
+      "INT"
+    ],
+    [
+      22,
+      8,
+      2,
+      11,
+      2,
+      "INT"
+    ],
+    [
+      23,
+      22,
+      0,
+      15,
+      4,
+      "LATENT"
+    ],
+    [
+      24,
+      15,
+      0,
+      16,
+      0,
+      "LATENT"
+    ],
+    [
+      25,
+      3,
+      0,
+      16,
+      1,
+      "VAE"
+    ],
+    [
+      26,
+      16,
+      0,
+      17,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Load models",
+      "bounding": [
+        10,
+        0,
+        380,
+        540
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        700,
+        100
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 326,
-  "last_link_id": 1,
+  "last_link_id": 632,
   "nodes": [
     {
       "id": 324,
@@ -230,7 +230,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA five-second video with sound from a prompt, with LTX-2.3.\n\nThe middle node is ComfyUI's **Text to Video (LTX-2.3)** blueprint, the one in the node search box; double-click it to see inside. The sample prompt is from Comfy's `video_ltx2_3_t2v` template (MIT).\n\nAsset profile: `ltx-2.3-t2v-i2v-two-stage-distilled`."
+        "## About this workflow\n\nA five-second video with sound from a prompt, with LTX-2.3.\n\nThe middle node is ComfyUI's **Text to Video (LTX-2.3)** blueprint, the one in the node search box; double-click it to see inside. The sample prompt is from Comfy's `video_ltx2_3_t2v` template (MIT).\n\nAsset profile: `ltx-2.3-t2v-i2v-two-stage-distilled`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -253,7 +253,7 @@
         "state": {
           "lastGroupId": 26,
           "lastNodeId": 324,
-          "lastLinkId": 631,
+          "lastLinkId": 632,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -633,7 +633,14 @@
               "hasSecondTab": false,
               "secondTabText": "Send Back",
               "secondTabOffset": 80,
-              "secondTabWidth": 65
+              "secondTabWidth": 65,
+              "models": [
+                {
+                  "name": "ltx-2.3-22b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                  "directory": "checkpoints"
+                }
+              ]
             },
             "widgets_values": [
               "ltx-2.3-22b-dev.safetensors"
@@ -1048,7 +1055,14 @@
               "hasSecondTab": false,
               "secondTabText": "Send Back",
               "secondTabOffset": 80,
-              "secondTabWidth": 65
+              "secondTabWidth": 65,
+              "models": [
+                {
+                  "name": "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+                  "directory": "loras"
+                }
+              ]
             },
             "widgets_values": [
               "ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
@@ -2826,7 +2840,14 @@
               "hasSecondTab": false,
               "secondTabText": "Send Back",
               "secondTabOffset": 80,
-              "secondTabWidth": 65
+              "secondTabWidth": 65,
+              "models": [
+                {
+                  "name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+                  "directory": "latent_upscale_models"
+                }
+              ]
             },
             "widgets_values": [
               "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
@@ -3158,7 +3179,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  520
+                  632
                 ]
               },
               {
@@ -3192,7 +3213,14 @@
               "hasSecondTab": false,
               "secondTabText": "Send Back",
               "secondTabOffset": 80,
-              "secondTabWidth": 65
+              "secondTabWidth": 65,
+              "models": [
+                {
+                  "name": "ltx-2.3-22b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                  "directory": "checkpoints"
+                }
+              ]
             },
             "widgets_values": [
               "ltx-2.3-22b-dev.safetensors"
@@ -3267,7 +3295,19 @@
               "hasSecondTab": false,
               "secondTabText": "Send Back",
               "secondTabOffset": 80,
-              "secondTabWidth": 65
+              "secondTabWidth": 65,
+              "models": [
+                {
+                  "name": "ltx-2.3-22b-dev.safetensors",
+                  "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-dev.safetensors",
+                  "directory": "checkpoints"
+                },
+                {
+                  "name": "gemma_3_12B_it_fp4_mixed.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+                  "directory": "text_encoders"
+                }
+              ]
             },
             "widgets_values": [
               "gemma_3_12B_it_fp4_mixed.safetensors",
@@ -3540,6 +3580,45 @@
             "widgets_values": [
               "a * b + 1"
             ]
+          },
+          {
+            "id": 324,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              1660,
+              3860
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 46,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 632
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  520
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -3805,7 +3884,7 @@
           },
           {
             "id": 520,
-            "origin_id": 318,
+            "origin_id": 324,
             "origin_slot": 0,
             "target_id": 287,
             "target_slot": 0,
@@ -4306,6 +4385,14 @@
             "target_id": 297,
             "target_slot": 2,
             "type": "INT"
+          },
+          {
+            "id": 632,
+            "origin_id": 318,
+            "origin_slot": 0,
+            "target_id": 324,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

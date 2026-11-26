@@ -63,9 +63,9 @@ shift
 if [ $# -gt 0 ]; then
     remaining=("$@")
 else
-    mapfile -t remaining < <(python3 -c "
+    mapfile -t remaining < <(docker exec -i comfyui python3 -c "
 import json, sys
-print('\n'.join(l[0] for l in json.load(open(sys.argv[1]))['lanes']))" "$SMOKE/lanes.json")
+print('\n'.join(l[0] for l in json.load(sys.stdin)['lanes']))" < "$SMOKE/lanes.json")
 fi
 ran=("${remaining[@]}")
 
@@ -91,7 +91,10 @@ for attempt in $(seq 0 "$restarts"); do
     done
 done
 
-python3 - "$OUT" <<'EOF'
+# merge the attempts' reports in a one-off locked container (no Python on the host)
+docker run --rm -i --network none --cap-drop ALL --security-opt no-new-privileges --read-only \
+    --user "$(id -u):$(id -g)" -v "$OUT:/o" --entrypoint python3 \
+    "$(docker inspect -f '{{.Config.Image}}' comfyui)" - /o <<'EOF'
 import glob, json, sys
 merged = {}
 for path in sorted(glob.glob(f"{sys.argv[1]}/lane_report.*.json")):
@@ -99,6 +102,9 @@ for path in sorted(glob.glob(f"{sys.argv[1]}/lane_report.*.json")):
 json.dump(merged, open(f"{sys.argv[1]}/lane_report.json", "w"), indent=1)
 passed = sum(1 for v in merged.values() if v["status"] == "PASS")
 print(f"\n{passed}/{len(merged)} lanes passed in total")
+hollow = [p for p, v in merged.items() if v["status"] == "PASS" and v.get("hollow")]
+if hollow:
+    print(f"{len(hollow)} of the passes are hollow (stand-in inputs or values): {', '.join(hollow)}")
 EOF
 docker cp "$OUT/lane_report.json" comfyui:/tmp/sweep_report.json
 docker exec comfyui python3 /tmp/audit_refs.py "${ran[@]}" > "$OUT/audit.log" 2>&1

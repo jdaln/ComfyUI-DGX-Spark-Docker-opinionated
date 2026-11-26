@@ -69,6 +69,17 @@ docker compose build --no-cache              # also rebuilds decord, which lives
 Commit refreshed wheels through git-lfs; `.gitattributes` already routes
 `*.whl` there.
 
+## NeMo-Speech.cpp
+
+`Dockerfile` builds the `nemo-speech` CLI into `/opt/nemo-speech/` for the
+Nemotron Speech to Text node: NVIDIA/NeMo-Speech.cpp at commit
+`e790e463b2913cff9f989a3df224c587f14b4c5c` (`NEMO_SPEECH_REF`), preset
+`cuda-asr` with `NEMO_SPEECH_BUILD_SPEECHLM=ON`, SentencePiece built static by
+upstream's script. It adds about 4 minutes to the build. To move the pin, change
+`NEMO_SPEECH_REF`, rebuild and run the `nemotron-3.5-transcribe` lane. The GGUF
+files are AtomicChat's conversion, pinned to a revision in `asset-profiles.json`;
+a new runtime can need newer files, so move both together.
+
 ## Startup patches
 
 `entrypoint.sh` applies every patch in `patches/` on each start. A patch whose
@@ -88,8 +99,8 @@ lands and the pack is pulled.
 
 ## ComfyUI submodule
 
-The submodule tracks `jdaln/ComfyUI` branch `dgx-state`: upstream master as of
-2026-10-03 (v0.38.0 plus 32 commits) with the DGX commits rebased on top. It is
+The submodule tracks `jdaln/ComfyUI` branch `dgx-state`: upstream v0.46.2
+(2026-11-20) with the DGX commits rebased on top. It is
 a fork rather than upstream because the branch carries changes ahead of a
 release:
 

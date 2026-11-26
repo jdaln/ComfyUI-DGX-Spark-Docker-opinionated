@@ -10,9 +10,13 @@ timeout cannot keep running under the next lane. While a lane runs,
 /system_stats is sampled every 10 s and the lowest available memory and lowest
 free VRAM go into the report.
 """
-import json, os, subprocess, sys, threading, time, urllib.request
+import json, os, re, subprocess, sys, threading, time, urllib.request
 
 PORT = 8188
+# wf_smoke.py lines that mean the lane ran on something the workflow does not
+# give a user: a stand-in input file or image, a subgraph's inner values instead
+# of the ones it shows, an empty default. Such a pass is marked "hollow".
+HOLLOW = re.compile(r'^(substituting missing input|fed unconnected|.*using inner node defaults|defaulted )')
 MIN_AVAILABLE_GIB = float(os.environ.get('LANE_MIN_AVAILABLE_GIB', '85'))
 GATE_WAIT_S = float(os.environ.get('LANE_GATE_WAIT_S', '900'))
 
@@ -89,15 +93,16 @@ report = {}
 for lane in lanes:
     prof, wf = lane[0], lane[1]
     lane_subs = lane[2] if len(lane) > 2 else None
+    lane_timeout = int(lane[3]) if len(lane) > 3 else 1800
     if only and prof not in only:
         continue
     print(f'=== {prof} :: {wf}', flush=True)
     free_models()
     if not wait_for_memory(prof):
         break
-    cmd = ['python3', '/tmp/wf_smoke.py', wf, '1800']
-    if lane_subs:
-        cmd.append(json.dumps(lane_subs))
+    cmd = ['python3', '/tmp/wf_smoke.py', wf, str(lane_timeout)]
+    if lane_subs or lane_timeout != 1800:
+        cmd.append(json.dumps(lane_subs or {}))
     lows, done = {}, threading.Event()
     sampler = threading.Thread(target=sample, args=(lows, done), daemon=True)
     sampler.start()
@@ -109,17 +114,25 @@ for lane in lanes:
     status = 'PASS' if r.returncode == 0 else 'FAIL'
     if status == 'FAIL':
         stop_running()
+    hollow = [line for line in out.splitlines() if HOLLOW.match(line)]
     report[prof] = {'workflow': wf, 'status': status,
                     'seconds': round(time.time() - t0),
                     'lowest_available_gib': round(lows.get('available', 0), 1),
                     'lowest_free_vram_gib': round(lows.get('vram', 0), 1),
+                    'hollow': hollow,
                     'tail': out[-1500:]}
-    print(f'    {status} ({report[prof]["seconds"]}s, lowest {report[prof]["lowest_available_gib"]} GiB '
+    print(f'    {status}{" (hollow)" if hollow and status == "PASS" else ""} ({report[prof]["seconds"]}s, '
+          f'lowest {report[prof]["lowest_available_gib"]} GiB '
           f'available) {out.splitlines()[-1][:160] if out else ""}', flush=True)
+    for line in hollow:
+        print(f'      {line[:160]}', flush=True)
     json.dump(report, open('/tmp/lane_report.json', 'w'), indent=1)
 
 free_models()
 json.dump(report, open('/tmp/lane_report.json', 'w'), indent=1)
 
 npass = sum(1 for v in report.values() if v['status'] == 'PASS')
+hollow = [p for p, v in report.items() if v['status'] == 'PASS' and v.get('hollow')]
 print(f'\n{npass}/{len(report)} lanes passed; report at /tmp/lane_report.json')
+if hollow:
+    print(f'{len(hollow)} of the passes are hollow (stand-in inputs or values): {", ".join(hollow)}')

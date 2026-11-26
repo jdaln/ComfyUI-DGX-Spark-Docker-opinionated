@@ -11,14 +11,21 @@ interface here rather than pulling the pack in. See that module for detail.
 one run into eight takes. `dialogue_nodes` splits a script into one speech clip
 per line, joins the clips back, with pauses for listening exercises if wanted,
 plans MiniMax H3 shots for the joined track, and writes, burns in and saves
-subtitles, for the dialogue and subtitle templates. `speech_nodes` adds Whisper
-large-v3 speech to text with word timings, and Chatterbox Speech, which runs the
-multilingual Chatterbox or Finnish-NLP's Finnish fine-tune of it.
+subtitles, for the dialogue and subtitle templates. `speech_nodes` adds speech to
+text with word timings (Nemotron 3.5 Transcribe, the default, and Whisper
+large-v3), and Chatterbox Speech, which runs the multilingual Chatterbox or
+Finnish-NLP's Finnish fine-tune of it.
 
 `character_nodes` keeps a picture and a voice sample together as a named
 character in input/cast/. `speech_text_nodes` cuts text into sentences and writes out numbers in Finnish
 words for speech. `language_model_nodes` runs chat models that core's Generate
 Text does not, such as the Finnish-trained Poro 2, through transformers.
+`body_nodes` runs FAB body estimation into core's SAM 3D Body pose data.
+`movieroll_nodes` runs Tencent's MovieRoll long-video sampler on core's HunyuanVideo 1.5
+model (Tencent Hunyuan Community Licence, see licenses/). `iris_z_nodes` runs Speridlabs' Iris-Z small
+(image to depth, depth to image, text to image and depth) on core's FLUX.2 Klein 9B model and sampler.
+`separation_nodes` splits two people talking over each other into one track each with ClearerVoice's
+MossFormer2 (model code vendored in vendor/, Apache-2.0, see licenses/).
 
 `cpu_memory` starts a watcher that hands the CPU memory PyTorch has freed back
 to the system once the queue has been idle for a minute. `example_inputs` copies
@@ -26,14 +33,15 @@ sample files that ship with the pack, the InfiniteTalk speaker masks, into the
 input folder when they are missing.
 """
 
-from . import (character_nodes, cpu_memory, dialogue_nodes, example_inputs, language_model_nodes, memory_nodes,
-               seed_nodes, speech_nodes, speech_text_nodes)
+from . import (body_nodes, character_nodes, cpu_memory, dialogue_nodes, example_inputs, iris_z_nodes,
+               language_model_nodes, memory_nodes, movieroll_nodes, seed_nodes, separation_nodes, speech_nodes,
+               speech_text_nodes)
 
 cpu_memory.start()
 example_inputs.install()
 
 _MODULES = (memory_nodes, seed_nodes, dialogue_nodes, speech_nodes, character_nodes, speech_text_nodes,
-            language_model_nodes)
+            language_model_nodes, body_nodes, movieroll_nodes, iris_z_nodes, separation_nodes)
 NODE_CLASS_MAPPINGS = {name: node for module in _MODULES for name, node in module.NODE_CLASS_MAPPINGS.items()}
 NODE_DISPLAY_NAME_MAPPINGS = {name: title for module in _MODULES
                               for name, title in module.NODE_DISPLAY_NAME_MAPPINGS.items()}

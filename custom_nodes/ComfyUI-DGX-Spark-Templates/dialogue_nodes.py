@@ -16,7 +16,7 @@ pause and every shot has one of those counts; the video then stays in sync
 with the speech for its whole length.
 
 Word Timestamps to Subtitles is for audio that has no script: it groups the
-per-word timings Whisper Speech to Text prints into subtitle cues. Burn In
+per-word timings Nemotron or Whisper Speech to Text prints into subtitle cues. Burn In
 Subtitles draws cues onto video frames and Save Subtitles writes an .srt file.
 Subtitles travel between nodes as SRT text.
 
@@ -595,7 +595,7 @@ class TimestampsToSubtitles:
                 words.append((float(match.group(1)), float(match.group(2)), match.group(3)))
         if not words:
             raise ValueError("No speech was found to make subtitles from. Use a clip in which people speak. (In a "
-                             "workflow of your own, connect the timestamps output of Whisper Speech to Text, not "
+                             "workflow of your own, connect the timestamps output of the speech to text node, not "
                              "its text output.)")
         cues, text, start, end = [], "", None, None
         for w_start, w_end, word in words:

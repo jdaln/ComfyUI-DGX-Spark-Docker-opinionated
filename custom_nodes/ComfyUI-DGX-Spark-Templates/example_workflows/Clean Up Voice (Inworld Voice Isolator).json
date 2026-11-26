@@ -1,0 +1,197 @@
+{
+  "id": "9a4c2e71-5b3d-4f08-8e6a-1d7c3b9f2a64",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        360,
+        140
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "voice_isolator_sample_14.wav",
+        null,
+        null
+      ],
+      "title": "Noisy recording"
+    },
+    {
+      "id": 2,
+      "type": "VoiceIsolator",
+      "pos": [
+        400,
+        0
+      ],
+      "size": [
+        320,
+        100
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "voice",
+          "type": "AUDIO",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "background",
+          "type": "AUDIO",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VoiceIsolator"
+      },
+      "widgets_values": [
+        false
+      ]
+    },
+    {
+      "id": 3,
+      "type": "SaveAudio",
+      "pos": [
+        760,
+        0
+      ],
+      "size": [
+        380,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/voice_isolated"
+      ],
+      "title": "Voice"
+    },
+    {
+      "id": 4,
+      "type": "SaveAudio",
+      "pos": [
+        760,
+        160
+      ],
+      "size": [
+        380,
+        120
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/voice_isolated_background"
+      ],
+      "title": "What was removed"
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        200
+      ],
+      "size": [
+        720,
+        300
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Clean Up Voice (Inworld Voice Isolator)\n\nSeparates the voice in a recording from noise, music and room sound. The\nvoice keeps its level and timing; the second output is what was removed, and\nthe two add up to the input. Use it on a reference voice before cloning\n(Chatterbox, Audio8, Qwen3-TTS) or on speech before subtitles.\n\nInworld Voice Isolator v1, the offline model: 64M parameters, 48 kHz,\nApache-2.0 for code and weights. The Voice Isolator node is part of this\ntemplate pack and runs the `inworld-voice-isolation` package; it downloads\n`denoiser.safetensors` (0.26 GB) from inworld/voice-isolator into\n`models/voice_isolator/` on first use. Profile `voice-isolator`. The sample is\nInworld's `sample_14.wav`.\n"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      2,
+      1,
+      4,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

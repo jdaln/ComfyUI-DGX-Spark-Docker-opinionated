@@ -1,0 +1,397 @@
+{
+  "id": "3e9b1c52-8f0a-4b7d-9a61-5c2e7d4f1a08",
+  "revision": 0,
+  "last_node_id": 8,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadAudio",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        360,
+        140
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "chatterbox_input_target_voice.mp3",
+        null,
+        null
+      ],
+      "title": "Reference voice"
+    },
+    {
+      "id": 2,
+      "type": "TrimAudioDuration",
+      "pos": [
+        0,
+        190
+      ],
+      "size": [
+        360,
+        110
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2,
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TrimAudioDuration"
+      },
+      "widgets_values": [
+        0,
+        10
+      ],
+      "title": "First 10 seconds"
+    },
+    {
+      "id": 3,
+      "type": "WhisperSpeechToText",
+      "pos": [
+        400,
+        190
+      ],
+      "size": [
+        360,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "timestamps",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "WhisperSpeechToText"
+      },
+      "widgets_values": [
+        "auto",
+        false
+      ],
+      "title": "Transcript of the reference"
+    },
+    {
+      "id": 4,
+      "type": "Audio8Loader",
+      "pos": [
+        400,
+        0
+      ],
+      "size": [
+        360,
+        150
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "AUDIO8_MODEL",
+          "links": [
+            3,
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "models": [
+          {
+            "name": "audio8-realistic-int8-all.safetensors",
+            "url": "https://huggingface.co/NidAll/audio8-tts-realistic-0.6b-int8-convrot/resolve/main/audio8-realistic-int8-all.safetensors",
+            "directory": "audio8"
+          }
+        ],
+        "Node name for S&R": "Audio8Loader"
+      },
+      "widgets_values": [
+        "audio8-realistic-int8-all.safetensors",
+        "auto",
+        "auto",
+        "gpu"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Audio8Voice",
+      "pos": [
+        800,
+        190
+      ],
+      "size": [
+        360,
+        120
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "AUDIO8_MODEL",
+          "link": 3
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        },
+        {
+          "name": "transcript",
+          "type": "STRING",
+          "widget": {
+            "name": "transcript"
+          },
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "voice",
+          "type": "AUDIO8_VOICE",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Audio8Voice"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Audio8Synthesize",
+      "pos": [
+        1200,
+        0
+      ],
+      "size": [
+        420,
+        380
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "AUDIO8_MODEL",
+          "link": 6
+        },
+        {
+          "name": "voice",
+          "type": "AUDIO8_VOICE",
+          "shape": 7,
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "metrics",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Audio8Synthesize"
+      },
+      "widgets_values": [
+        "Hyvää huomenta! Tänään opettelemme uusia sanoja ja harjoittelemme ääntämistä.",
+        42,
+        "fixed",
+        512,
+        0.8,
+        0.95,
+        50,
+        true,
+        "auto",
+        false
+      ]
+    },
+    {
+      "id": 7,
+      "type": "SaveAudio",
+      "pos": [
+        1660,
+        0
+      ],
+      "size": [
+        400,
+        140
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 8
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/audio8_voice_clone"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        360
+      ],
+      "size": [
+        760,
+        360
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Text to Speech (Audio8 Voice Clone)\n\nClones a voice from a short recording and speaks new text with it, in 23\nlanguages including Finnish. The reference is cut to its first 10 seconds and\ntranscribed with Whisper large-v3; Audio8 needs the exact words of the clip.\nCheck the transcript and type it into **Audio8 Reference Voice** by hand if\nWhisper got a word wrong. Keep references short and clean, without music.\n\nFor text longer than a few sentences, replace **Audio8 Speech** with **Audio8\nLong Speech**; one call holds about 24 seconds.\n\nModel: Edge0's Audio8-TTS-Realistic-Air, 0.6B, 44.1 kHz, Apache-2.0, int8\nfile from NidAll/audio8-tts-realistic-0.6b-int8-convrot (1.5 GB). Nodes:\nNidAll/ComfyUI-Audio8 (Apache-2.0). Profile `audio8-tts`.\n"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      4,
+      0,
+      5,
+      0,
+      "AUDIO8_MODEL"
+    ],
+    [
+      4,
+      2,
+      0,
+      5,
+      1,
+      "AUDIO"
+    ],
+    [
+      5,
+      3,
+      0,
+      5,
+      2,
+      "STRING"
+    ],
+    [
+      6,
+      4,
+      0,
+      6,
+      0,
+      "AUDIO8_MODEL"
+    ],
+    [
+      7,
+      5,
+      0,
+      6,
+      1,
+      "AUDIO8_VOICE"
+    ],
+    [
+      8,
+      6,
+      0,
+      7,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

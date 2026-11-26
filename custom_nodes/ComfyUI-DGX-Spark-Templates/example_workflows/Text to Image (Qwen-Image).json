@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 78,
-  "last_link_id": 1,
+  "last_link_id": 154,
   "nodes": [
     {
       "id": 76,
@@ -211,7 +211,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA picture from a prompt, with Qwen-Image and its 8-step Lightning LoRA. Qwen-Image writes legible text into pictures, in English and Chinese, as the sample's shop signs show.\n\nThe middle node is ComfyUI's **Text to Image (Qwen-Image)** blueprint, the one in the node search box; double-click it to see inside. The sample prompt is from Comfy's `image_qwen_image` template (MIT).\n\nAsset profile: `qwen-image-t2i-lightning-8step`."
+        "## About this workflow\n\nA picture from a prompt, with Qwen-Image and its 8-step Lightning LoRA. Qwen-Image writes legible text into pictures, in English and Chinese, as the sample's shop signs show.\n\nThe middle node is ComfyUI's **Text to Image (Qwen-Image)** blueprint, the one in the node search box; double-click it to see inside. The sample prompt is from Comfy's `image_qwen_image` template (MIT).\n\nAsset profile: `qwen-image-t2i-lightning-8step`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -233,8 +233,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 5,
-          "lastNodeId": 87,
-          "lastLinkId": 153,
+          "lastNodeId": 88,
+          "lastLinkId": 154,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -433,6 +433,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "qwen_image_vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -510,6 +517,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "CLIPLoader",
+              "models": [
+                {
+                  "name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -703,8 +717,7 @@
                 "type": "MODEL",
                 "slot_index": 0,
                 "links": [
-                  129,
-                  142
+                  154
                 ]
               }
             ],
@@ -717,6 +730,13 @@
                 "input_ue_unconnectable": {}
               },
               "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "qwen_image_fp8_e4m3fn.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -979,7 +999,14 @@
                 "version": "7.7",
                 "input_ue_unconnectable": {}
               },
-              "Node name for S&R": "LoraLoaderModelOnly"
+              "Node name for S&R": "LoraLoaderModelOnly",
+              "models": [
+                {
+                  "name": "Qwen-Image-Lightning-8steps-V1.0.safetensors",
+                  "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-8steps-V1.0.safetensors",
+                  "directory": "loras"
+                }
+              ]
             },
             "widgets_values": [
               "Qwen-Image-Lightning-8steps-V1.0.safetensors",
@@ -1582,10 +1609,50 @@
               }
             },
             "widgets_values": [
-              "Try 50 steps, if you want original the qwen image's setting, but it will takes longer"
+              "Try 50 steps, if you want original the [qwen image](https://huggingface.co/Qwen/Qwen-Image)'s setting, but it will takes longer"
             ],
             "color": "#222",
             "bgcolor": "#000"
+          },
+          {
+            "id": 88,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -260,
+              230
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 19,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 154
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  129,
+                  142
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1674,7 +1741,7 @@
           },
           {
             "id": 129,
-            "origin_id": 37,
+            "origin_id": 88,
             "origin_slot": 0,
             "target_id": 73,
             "target_slot": 0,
@@ -1810,7 +1877,7 @@
           },
           {
             "id": 142,
-            "origin_id": 37,
+            "origin_id": 88,
             "origin_slot": 0,
             "target_id": 78,
             "target_slot": 0,
@@ -1903,6 +1970,14 @@
             "target_id": 86,
             "target_slot": 0,
             "type": "BOOLEAN"
+          },
+          {
+            "id": 154,
+            "origin_id": 37,
+            "origin_slot": 0,
+            "target_id": 88,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

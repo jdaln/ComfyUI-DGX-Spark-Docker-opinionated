@@ -15,7 +15,6 @@ validate_manifest.py runs the check.
 """
 import json
 import os
-import re
 import sys
 import uuid
 
@@ -35,13 +34,8 @@ class Template:
         for sg in self.subgraphs.values():
             defined = {link["id"] for link in sg.get("links", [])}
             for node in sg["nodes"]:
-                # Without download links the bootstrap leaves these models to the
-                # profiles, as it did when the blueprint was the only copy. A
-                # Hugging Face link in a note counts as one, so notes keep the text.
-                node.get("properties", {}).pop("models", None)
-                if node["type"] in ("Note", "MarkdownNote") and node.get("widgets_values"):
-                    text = re.sub(r"\[([^\]]*)\]\(https://huggingface\.co/[^)]*\)", r"\1", node["widgets_values"][0])
-                    node["widgets_values"][0] = re.sub(r"https://huggingface\.co/(\S+)", r"\1", text)
+                # The blueprint's properties.models stay, so the template downloads
+                # its own models like every other bundled template.
                 for out in node.get("outputs") or []:
                     out["links"] = [lid for lid in out.get("links") or [] if lid in defined] or None
                 for inp in node.get("inputs") or []:
@@ -112,6 +106,37 @@ class Template:
 
     def note(self, text):
         self.add("MarkdownNote", (0, -380), [text], size=(max(self.width, 720), 330))
+
+    def lora_slot(self, model_file):
+        """A bypassed LoRA loader after the blueprint's model loader, as the other image and video templates have."""
+        sub = self.sub
+        loader = next(n for n in sub["nodes"] if n["type"] in ("UNETLoader", "CheckpointLoaderSimple")
+                      and (n.get("widgets_values") or [None])[0] == model_file)
+        nid = max(n["id"] for n in sub["nodes"]) + 1
+        lid = max([link["id"] for link in sub["links"]] + [self.wf.get("last_link_id", 0)]) + 1
+        consumers = list(loader["outputs"][0]["links"] or [])
+        for link in sub["links"]:
+            if link["id"] in consumers:
+                link["origin_id"], link["origin_slot"] = nid, 0
+        sub["links"].append({"id": lid, "origin_id": loader["id"], "origin_slot": 0, "target_id": nid,
+                             "target_slot": 0, "type": "MODEL"})
+        loader["outputs"][0]["links"] = [lid]
+        x, y = loader["pos"]
+        sub["nodes"].append({
+            "id": nid, "type": "LoraLoaderModelOnly", "pos": [x, y + loader.get("size", [0, 100])[1] + 40],
+            "size": [380, 82], "flags": {}, "order": len(sub["nodes"]), "mode": 4, "title": "Load LoRA (optional)",
+            "inputs": [{"name": "model", "type": "MODEL", "link": lid}],
+            "outputs": [{"name": "MODEL", "type": "MODEL", "links": consumers}],
+            "properties": {"Node name for S&R": "LoraLoaderModelOnly"}, "widgets_values": ["", 1]})
+        state = sub.setdefault("state", {})
+        state["lastNodeId"] = max(state.get("lastNodeId", 0), nid)
+        state["lastLinkId"] = max(state.get("lastLinkId", 0), lid)
+        self.wf["last_link_id"] = max(self.wf.get("last_link_id", 0), lid)
+        note = next(n for n in self.wf["nodes"] if n["type"] == "MarkdownNote")
+        note["widgets_values"][0] += (
+            "\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so "
+            "nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box "
+            "and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.")
 
     def save(self, kind, values, output_type):
         node = self.add(kind, (self.width + 80, 0), values, inputs=[(INPUT_OF[kind], output_type)], size=(400, 400))
@@ -437,10 +462,27 @@ TEMPLATES = {
 }
 
 
+# The image and video blueprints get a LoRA slot after this model file's loader.
+LORA_SLOT = {
+    "Text to Image (Qwen-Image)": "qwen_image_fp8_e4m3fn.safetensors",
+    "Text to Image (Ideogram v4)": "ideogram4_fp8_scaled.safetensors",
+    "Image Edit (Qwen 2511)": "qwen_image_edit_2511_bf16.safetensors",
+    "Image Inpainting (Qwen-image)": "qwen_image_fp8_e4m3fn.safetensors",
+    "Video Inpainting (Wan2.1 VACE)": "wan2.1_vace_14B_fp16.safetensors",
+    "Canny to Video (LTX 2.0)": "ltx-2-19b-dev.safetensors",
+    "Depth to Video (ltx 2.0)": "ltx-2-19b-dev.safetensors",
+    "Pose to Video (LTX 2.0)": "ltx-2-19b-dev.safetensors",
+    "Text to Video (LTX-2.3)": "ltx-2.3-22b-dev.safetensors",
+    "Image to Video (LTX-2.3)": "ltx-2.3-22b-dev.safetensors",
+}
+
+
 def build(name):
     t = Template(name)
     t.wf["id"] = str(uuid.uuid5(uuid.NAMESPACE_URL, "ComfyUI-DGX-Spark-Templates/" + name))
     TEMPLATES[name](t)
+    if name in LORA_SLOT:
+        t.lora_slot(LORA_SLOT[name])
     return json.dumps(t.wf, indent=2, ensure_ascii=False) + "\n"
 
 

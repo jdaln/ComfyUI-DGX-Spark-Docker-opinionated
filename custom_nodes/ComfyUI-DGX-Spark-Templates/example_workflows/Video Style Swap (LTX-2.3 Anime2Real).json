@@ -1,8 +1,8 @@
 {
   "id": "2fc9e008-b891-4752-b6b6-df596eb94292",
   "revision": 0,
-  "last_node_id": 332,
-  "last_link_id": 664,
+  "last_node_id": 333,
+  "last_link_id": 665,
   "nodes": [
     {
       "id": 278,
@@ -2366,7 +2366,7 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            520
+            665
           ]
         },
         {
@@ -2880,7 +2880,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Anime to real, and back\n\nSwap the LoRA on the **BFS task LoRA** node to change direction; the `bfs-ltx-2.3-style-swap` profile provisions both:\n\n- `bfs/ltx23_anime2real_rank64_v1_4500.safetensors`: anime to live action (loaded here)\n- `bfs/ltx23_real2anime_rank64_v1_5000.safetensors`: live action to anime\n\nand write the prompt as BFS does: \"Convert this video to a photorealistic style.\" or \"Convert this video to an anime style.\" Original graph: `Alissonerdx/LTX-LoRAs/workflows/ltx23_anime2real_or_real2anime_v1.json`.\n\n### How the clip goes in\n\nThe clip is a guide, as in BFS's own graphs: `LTXV Add Guide` appends its frames to the latent in both stages, and `LTXV Crop Guides` takes them off after each. The task LoRA was trained to change a video it sees beside the one it makes; an earlier version of this template pinned the frames into the video itself with `LTXV Img To Video Inplace` and gave the clip back unchanged. The length (whole 8n+1 frames) and the frame rate come from the clip, and the result keeps the clip's sound.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n"
+        "Adaptation of the ComfyUI-BFSNodes LTX-2.3 workflows created by Alisson Anjos (alisson-anjos), rebuilt on this repo's verified `Text to Video (LTX-2.3)` blueprint so it runs on the checkpoint the `ltx-2.3-*` profiles already provision instead of a second 23 GiB transformer-only copy.\n\n- nodes: https://github.com/alisson-anjos/ComfyUI-BFSNodes\n- LoRAs and the original graphs: https://huggingface.co/Alissonerdx\n\n### Anime to real, and back\n\nSwap the LoRA on the **BFS task LoRA** node to change direction; the `bfs-ltx-2.3-style-swap` profile provisions both:\n\n- `bfs/ltx23_anime2real_rank64_v1_4500.safetensors`: anime to live action (loaded here)\n- `bfs/ltx23_real2anime_rank64_v1_5000.safetensors`: live action to anime\n\nand write the prompt as BFS does: \"Convert this video to a photorealistic style.\" or \"Convert this video to an anime style.\" Original graph: `Alissonerdx/LTX-LoRAs/workflows/ltx23_anime2real_or_real2anime_v1.json`.\n\n### How the clip goes in\n\nThe clip is a guide, as in BFS's own graphs: `LTXV Add Guide` appends its frames to the latent in both stages, and `LTXV Crop Guides` takes them off after each. The task LoRA was trained to change a video it sees beside the one it makes; an earlier version of this template pinned the frames into the video itself with `LTXV Img To Video Inplace` and gave the clip back unchanged. The length (whole 8n+1 frames) and the frame rate come from the clip, and the result keeps the clip's sound.\n\n### Shared LTX-2.3 base\n\nThe 22 GiB checkpoint, the Gemma text encoder, the distilled LoRA and the spatial upscaler come from the profile, not from this file, so simply having the template installed does not pull 60 GiB. Only the small task LoRA below self-provisions.\n\n```\n📂 ComfyUI/models/\n├── 📂 checkpoints/ltx-2.3-22b-dev.safetensors\n├── 📂 text_encoders/gemma_3_12B_it_fp4_mixed.safetensors\n├── 📂 loras/ltxv/ltx2/ltx-2.3-22b-distilled-lora-384-1.1.safetensors\n└── 📂 latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors\n```\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler, bypassed, so nothing is applied by default. Pick a file in its `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "title": "Credit, models and settings",
       "color": "#222",
@@ -3206,6 +3206,45 @@
       },
       "widgets_values": [],
       "title": "Clip size"
+    },
+    {
+      "id": 333,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        1660,
+        3860
+      ],
+      "size": [
+        380,
+        82
+      ],
+      "flags": {},
+      "order": 48,
+      "mode": 4,
+      "title": "Load LoRA (optional)",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 665
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            520
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
     }
   ],
   "links": [
@@ -3267,7 +3306,7 @@
     ],
     [
       520,
-      318,
+      333,
       0,
       287,
       0,
@@ -3792,6 +3831,14 @@
       312,
       1,
       "AUDIO"
+    ],
+    [
+      665,
+      318,
+      0,
+      333,
+      0,
+      "MODEL"
     ]
   ],
   "groups": [],

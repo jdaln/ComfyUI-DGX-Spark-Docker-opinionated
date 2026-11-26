@@ -2,7 +2,15 @@ services:
   comfy:
     build: .
     container_name: comfyui
+    # Comes back after a reboot or a crash. `docker compose stop` keeps it down.
+    restart: unless-stopped
     user: "${UID}:${GID}"
+    # Runs as your user and needs no Linux capabilities. no-new-privileges
+    # also blocks setuid programs inside the image.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     shm_size: "${COMFY_SHM_SIZE:-16g}"
     ulimits:
       memlock: -1

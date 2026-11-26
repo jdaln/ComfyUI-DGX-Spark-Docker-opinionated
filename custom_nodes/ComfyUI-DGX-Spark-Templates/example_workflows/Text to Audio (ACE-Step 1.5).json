@@ -536,6 +536,18 @@
               "cnr_id": "comfy-core",
               "ver": "0.11.1",
               "Node name for S&R": "DualCLIPLoader",
+              "models": [
+                {
+                  "name": "qwen_0.6b_ace15.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_0.6b_ace15.safetensors",
+                  "directory": "text_encoders"
+                },
+                {
+                  "name": "qwen_4b_ace15.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/text_encoders/qwen_4b_ace15.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -590,6 +602,13 @@
               "cnr_id": "comfy-core",
               "ver": "0.11.1",
               "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "ace_1.5_vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/vae/ace_1.5_vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1182,6 +1201,13 @@
               "cnr_id": "comfy-core",
               "ver": "0.11.1",
               "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "acestep_v1.5_turbo.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/ace_step_1.5_ComfyUI_files/resolve/main/split_files/diffusion_models/acestep_v1.5_turbo.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,

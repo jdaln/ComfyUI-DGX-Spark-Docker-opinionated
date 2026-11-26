@@ -273,6 +273,9 @@ if [ "${INSTALL_CUSTOM_NODES}" = "true" ]; then
         fi
         [ -f "$dir/requirements.txt" ] && python -m pip install -r "$dir/requirements.txt"
     done < /workspace/ComfyUI/custom_nodes/custom_nodes.txt
+    # The template pack is committed, not cloned, so it is not in custom_nodes.txt.
+    [ -f ComfyUI-DGX-Spark-Templates/requirements.txt ] && \
+        python -m pip install -r ComfyUI-DGX-Spark-Templates/requirements.txt
 else
     echo "Skipping custom node clone/install because DISABLE_ALL_CUSTOM_NODES=true"
 fi

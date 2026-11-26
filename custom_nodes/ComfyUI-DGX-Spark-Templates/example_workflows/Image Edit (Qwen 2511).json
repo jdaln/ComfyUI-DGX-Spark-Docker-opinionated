@@ -2,7 +2,7 @@
   "id": "93cb4cbf-f8ec-57a5-9995-3be226488bf7",
   "revision": 0,
   "last_node_id": 21,
-  "last_link_id": 35,
+  "last_link_id": 36,
   "nodes": [
     {
       "id": 17,
@@ -241,7 +241,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nEdits a picture from an instruction, with up to three pictures as input: here the sofa in the first takes the fur of the second. Refer to them in the prompt as image 1, image 2 and image 3.\n\nThe middle node is ComfyUI's **Image Edit (Qwen 2511)** blueprint, the one in the node search box; double-click it to see inside. The sample pictures are from Comfy's `image_qwen_image_edit_2511` template (MIT).\n\nAsset profile: `qwen-image-edit-2511-core`."
+        "## About this workflow\n\nEdits a picture from an instruction, with up to three pictures as input: here the sofa in the first takes the fur of the second. Refer to them in the prompt as image 1, image 2 and image 3.\n\nThe middle node is ComfyUI's **Image Edit (Qwen 2511)** blueprint, the one in the node search box; double-click it to see inside. The sample pictures are from Comfy's `image_qwen_image_edit_2511` template (MIT).\n\nAsset profile: `qwen-image-edit-2511-core`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -280,7 +280,7 @@
         "state": {
           "lastGroupId": 2,
           "lastNodeId": 17,
-          "lastLinkId": 32,
+          "lastLinkId": 36,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -511,6 +511,13 @@
               "cnr_id": "comfy-core",
               "ver": "0.5.1",
               "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "qwen_image_vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -564,7 +571,7 @@
                 "type": "MODEL",
                 "slot_index": 0,
                 "links": [
-                  29
+                  36
                 ]
               }
             ],
@@ -572,6 +579,13 @@
               "cnr_id": "comfy-core",
               "ver": "0.5.1",
               "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "qwen_image_edit_2511_bf16.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1322,6 +1336,13 @@
               "cnr_id": "comfy-core",
               "ver": "0.5.1",
               "Node name for S&R": "CLIPLoader",
+              "models": [
+                {
+                  "name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1334,6 +1355,45 @@
               "qwen_2.5_vl_7b_fp8_scaled.safetensors",
               "qwen_image",
               "default"
+            ]
+          },
+          {
+            "id": 17,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -174.9530552190643,
+              98.67070231081178
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 15,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 36
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  29
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
             ]
           }
         ],
@@ -1560,7 +1620,7 @@
           },
           {
             "id": 29,
-            "origin_id": 4,
+            "origin_id": 17,
             "origin_slot": 0,
             "target_id": 2,
             "target_slot": 0,
@@ -1589,6 +1649,14 @@
             "target_id": 3,
             "target_slot": 0,
             "type": "COMBO"
+          },
+          {
+            "id": 36,
+            "origin_id": 4,
+            "origin_slot": 0,
+            "target_id": 17,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

@@ -1,7 +1,7 @@
 {
   "revision": 0,
   "last_node_id": 206,
-  "last_link_id": 1,
+  "last_link_id": 224,
   "nodes": [
     {
       "id": 204,
@@ -207,7 +207,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nA picture from a prompt with Ideogram 4, the strongest model here at text and layout in posters and graphics. The sample prompt is structured as JSON; keep its shape and change the descriptions.\n\nThe middle node is ComfyUI's **Text to Image (Ideogram v4)** blueprint, the one in the node search box; double-click it to see inside.\n\nAsset profile: `ideogram-4`."
+        "## About this workflow\n\nA picture from a prompt with Ideogram 4, the strongest model here at text and layout in posters and graphics. The sample prompt is structured as JSON; keep its shape and change the descriptions.\n\nThe middle node is ComfyUI's **Text to Image (Ideogram v4)** blueprint, the one in the node search box; double-click it to see inside.\n\nAsset profile: `ideogram-4`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -425,6 +425,13 @@
               "Node name for S&R": "VAELoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "flux2-vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors",
+                  "directory": "vae"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -917,7 +924,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  222
+                  224
                 ]
               }
             ],
@@ -925,6 +932,13 @@
               "Node name for S&R": "UNETLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "ideogram4_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_fp8_scaled.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1056,6 +1070,13 @@
               "Node name for S&R": "CLIPLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "qwen3vl_8b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/text_encoders/qwen3vl_8b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -1862,6 +1883,13 @@
               "Node name for S&R": "UNETLoader",
               "cnr_id": "comfy-core",
               "ver": "0.8.2",
+              "models": [
+                {
+                  "name": "ideogram4_unconditional_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Ideogram-4/resolve/main/diffusion_models/ideogram4_unconditional_fp8_scaled.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ],
               "enableTabs": false,
               "tabWidth": 65,
               "tabXOffset": 10,
@@ -2088,6 +2116,45 @@
             "widgets_values": [
               3,
               0.7,
+              1
+            ]
+          },
+          {
+            "id": 204,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              4720,
+              730
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 27,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 224
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  222
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
               1
             ]
           }
@@ -2481,7 +2548,7 @@
           },
           {
             "id": 222,
-            "origin_id": 185,
+            "origin_id": 204,
             "origin_slot": 0,
             "target_id": 203,
             "target_slot": 0,
@@ -2492,6 +2559,14 @@
             "origin_id": 203,
             "origin_slot": 0,
             "target_id": 201,
+            "target_slot": 0,
+            "type": "MODEL"
+          },
+          {
+            "id": 224,
+            "origin_id": 185,
+            "origin_slot": 0,
+            "target_id": 204,
             "target_slot": 0,
             "type": "MODEL"
           }

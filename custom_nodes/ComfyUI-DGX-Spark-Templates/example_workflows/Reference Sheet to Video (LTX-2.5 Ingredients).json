@@ -2,7 +2,7 @@
   "id": "3562a5f1-c8b9-5380-bd99-0be8da8d79a7",
   "revision": 0,
   "last_node_id": 9017,
-  "last_link_id": 13819,
+  "last_link_id": 13825,
   "nodes": [
     {
       "id": 5509,
@@ -87,7 +87,7 @@
       "title": "Inputs",
       "properties": {},
       "widgets_values": [
-        "## Inputs\n\nEverything here is optional except the reference sheet.\n\n### Prompt\n\nEnter a positive prompt. To rewrite it into a fuller description first, enable\n**enhance positive prompt** on the Input Parameters node below. The negative\nprompt is used as written and is never enhanced.\n\nSee the [prompting guide](https://docs.ltx.io/open-source-model/usage-guides/prompting-guide).\n\n### Reference sheet\n\nLoad one image holding the elements you want the model to draw on - characters,\nprops, wardrobe, a location - laid out side by side. Describe them in the prompt\nand refer to them by their position on the sheet, so the model knows which\nelement you mean.\n\nThe sheet is resized once and then held on every frame as the IC-LoRA guide, so\nit steers the whole clip rather than only the opening moment. It does **not**\nbecome the first frame: **bypass** on the Preprocess node is on by default.\nTurn it off if you do want the sheet itself to open the video.\n\n### Frame rate and duration\n\nSet both below. The frame count has to be 1 + a multiple of 8, so the duration\nactually used is worked out from the fps and the duration you ask for, and may\ncome out slightly shorter than requested."
+        "## Inputs\n\nEverything here is optional except the reference sheet.\n\n### Prompt\n\nEnter a positive prompt. To rewrite it into a fuller description first, enable\n**enhance positive prompt** on the Input Parameters node below. The negative\nprompt is used as written and is never enhanced.\n\nSee the [prompting guide](https://docs.ltx.io/open-source-model/usage-guides/prompting-guide).\n\n### Reference sheet\n\nLoad one image holding the elements you want the model to draw on - characters,\nprops, wardrobe, a location - laid out side by side. Describe them in the prompt\nand refer to them by their position on the sheet, so the model knows which\nelement you mean.\n\nThe sheet is resized once and then held on every frame as the IC-LoRA guide, so\nit steers the whole clip rather than only the opening moment. It does **not**\nbecome the first frame: **bypass** on the First frame node inside the\nPreprocess subgraph is on by default. Turn it off to open the video on the sheet itself.\n\n### Frame rate and duration\n\nSet both below. The frame count has to be 1 + a multiple of 8, so the duration\nactually used is worked out from the fps and the duration you ask for, and may\ncome out slightly shorter than requested."
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -137,7 +137,7 @@
       "title": "Preprocess",
       "properties": {},
       "widgets_values": [
-        "## Preprocess\n\nHolds the reference sheet on every frame (`RepeatImageBatch`) to build the guide\nvideo, and injects it through the IC-LoRA (`LTXAddVideoICLoRAGuide`) so the\nelements on the sheet steer the whole clip.\n\nIt also builds the empty audio-video latent at the sheet's resized size and the\nrequested frame count.\n\n`bypass` is on by default, so the sheet acts purely as a reference and does not\nbecome the opening frame. Turn it off to condition on it as the first frame as\nwell; `img_compression` then controls how much the conditioning copy is degraded.\n\nThe guide frames are cropped out during sampling (`LTXVCropGuides`) so only the\ngenerated video is decoded."
+        "## Preprocess\n\nHolds the reference sheet on every frame (`RepeatImageBatch`) to build the guide\nvideo, and injects it through the IC-LoRA (`LTXAddVideoICLoRAGuide`) so the\nelements on the sheet steer the whole clip.\n\nIt also builds the empty audio-video latent at the sheet's resized size and the\nrequested frame count.\n\n**First frame** (`LTXVImgToVideoInplace`) has `bypass` on by default, so the sheet\nacts purely as a reference and does not become the opening frame. Turn it off to\npin the sheet as frame 0 as well. (The subgraph's own `bypass` and\n`img_compression` inputs are wired to nothing, as in Lightricks' example.)\n\nThe guide frames are cropped out during sampling (`LTXVCropGuides`) so only the\ngenerated video is decoded."
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -223,7 +223,7 @@
       "title": "About this copy",
       "properties": {},
       "widgets_values": [
-        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_ICLoRA_Ingredients_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-ingredients-0.9`, released for 2.5 after the example shipped, instead of the 2.3 build it loads.\n- Sample sheet `german_shepherd_news_anchor_ref.png` from Comfy's template inputs. The prompt is core's LTX-2.3 Ingredients sample rewritten in the model card's two parts, \"Reference sheet:\" for the panels and \"Generated video:\" for the action, with the card's negative prompt.\n- 5 seconds at 24 fps, 121 frames: the length the LoRA was trained on.\n\nAsset profile: `ltx-2.5-ingredients`."
+        "## About this copy\n\nAdapted from Lightricks' `LTX-2.5_ICLoRA_Ingredients_Single_Stage_Distilled.json` in [ComfyUI-LTXVideo](https://github.com/Lightricks/ComfyUI-LTXVideo/tree/3bf3ca62595f1764c47d01c35c8e5dfe47e1a88f/example_workflows/2.5) at commit 3bf3ca6, under the LTX-2 Community License.\n\nChanges:\n- Transformer: `ltx-2.5-22b-distilled-transformer-comfy-int8-convrot` (21.5 GB) instead of the bf16 build (42 GB). The NVFP4 build (18.7 GB) loads too: pick it in Load Models.\n- Text encoder: Gemma 4 12B comfy-int8-convrot (15.4 GB) instead of bf16 (26.3 GB).\n- The LTX API prompt path is gone (API key field, key check, Gemma API encoders). Everything runs locally.\n- IC-LoRA: Lightricks' `ltx-2.5-22b-ic-lora-ingredients-0.9`, released for 2.5 after the example shipped, instead of the 2.3 build it loads.\n- Sample sheet `german_shepherd_news_anchor_ref.png` from Comfy's template inputs. The prompt is core's LTX-2.3 Ingredients sample rewritten in the model card's two parts, \"Reference sheet:\" for the panels and \"Generated video:\" for the action, with the card's negative prompt.\n- 5 seconds at 24 fps, 121 frames: the length the LoRA was trained on.\n\nAsset profile: `ltx-2.5-ingredients`.\n\n**Licence to accept first.** These models are gated on Hugging Face. Accept the licence on [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5), [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) with the account whose token is `HF_TOKEN` in `.env`. Until then the download fails and this template has no model.\n\n## Adding a LoRA\n\nA LoRA loader sits between the model loader and the sampler inside the subgraph, bypassed, so nothing is applied by default. Open the subgraph, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`.\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1166,8 +1166,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 158,
-          "lastNodeId": 9017,
-          "lastLinkId": 13819,
+          "lastNodeId": 9018,
+          "lastLinkId": 13822,
           "lastRerouteId": 9025
         },
         "revision": 0,
@@ -1471,7 +1471,7 @@
                 "name": "MODEL",
                 "type": "MODEL",
                 "links": [
-                  9
+                  13822
                 ]
               }
             ],
@@ -1614,6 +1614,45 @@
               "ltx-2.5-22b-ic-lora-ingredients-0.9.safetensors",
               1
             ]
+          },
+          {
+            "id": 9018,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -820,
+              462
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 5,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 13822
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  9
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1681,7 +1720,7 @@
           },
           {
             "id": 9,
-            "origin_id": 5602,
+            "origin_id": 9018,
             "origin_slot": 0,
             "target_id": 5606,
             "target_slot": 0,
@@ -1726,6 +1765,14 @@
             "target_id": -20,
             "target_slot": 4,
             "type": "FLOAT"
+          },
+          {
+            "id": 13822,
+            "origin_id": 5602,
+            "origin_slot": 0,
+            "target_id": 9018,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {}
@@ -4129,8 +4176,8 @@
         "version": 1,
         "state": {
           "lastGroupId": 158,
-          "lastNodeId": 9017,
-          "lastLinkId": 13819,
+          "lastNodeId": 9100,
+          "lastLinkId": 13825,
           "lastRerouteId": 9025
         },
         "revision": 0,
@@ -4184,7 +4231,8 @@
             "name": "vae",
             "type": "VAE",
             "linkIds": [
-              11
+              11,
+              13823
             ],
             "pos": [
               -2739.037109375,
@@ -4209,7 +4257,8 @@
             "type": "IMAGE",
             "linkIds": [
               26,
-              13808
+              13808,
+              13824
             ],
             "pos": [
               -2739.037109375,
@@ -4464,7 +4513,7 @@
                 "localized_name": "latent",
                 "name": "latent",
                 "type": "LATENT",
-                "link": 13814
+                "link": 13825
               },
               {
                 "localized_name": "image",
@@ -4745,6 +4794,77 @@
             "widgets_values": [
               1
             ]
+          },
+          {
+            "id": 9100,
+            "type": "LTXVImgToVideoInplace",
+            "pos": [
+              -2209.037109375,
+              4311
+            ],
+            "size": [
+              270,
+              130
+            ],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "title": "First frame",
+            "inputs": [
+              {
+                "localized_name": "vae",
+                "name": "vae",
+                "type": "VAE",
+                "link": 13823
+              },
+              {
+                "localized_name": "image",
+                "name": "image",
+                "type": "IMAGE",
+                "link": 13824
+              },
+              {
+                "localized_name": "latent",
+                "name": "latent",
+                "type": "LATENT",
+                "link": 13814
+              },
+              {
+                "localized_name": "strength",
+                "name": "strength",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "strength"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "bypass",
+                "name": "bypass",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "bypass"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "latent",
+                "name": "latent",
+                "type": "LATENT",
+                "links": [
+                  13825
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LTXVImgToVideoInplace"
+            },
+            "widgets_values": [
+              1.0,
+              true
+            ]
           }
         ],
         "groups": [],
@@ -4938,9 +5058,36 @@
             "id": 13814,
             "origin_id": 3059,
             "origin_slot": 0,
+            "target_id": 9100,
+            "target_slot": 2,
+            "type": "LATENT"
+          },
+          {
+            "id": 13823,
+            "origin_id": -10,
+            "origin_slot": 2,
+            "target_id": 9100,
+            "target_slot": 0,
+            "type": "VAE",
+            "parentId": null
+          },
+          {
+            "id": 13824,
+            "origin_id": -10,
+            "origin_slot": 4,
+            "target_id": 9100,
+            "target_slot": 1,
+            "type": "IMAGE",
+            "parentId": null
+          },
+          {
+            "id": 13825,
+            "origin_id": 9100,
+            "origin_slot": 0,
             "target_id": 5012,
             "target_slot": 3,
-            "type": "LATENT"
+            "type": "LATENT",
+            "parentId": null
           }
         ],
         "reroutes": [

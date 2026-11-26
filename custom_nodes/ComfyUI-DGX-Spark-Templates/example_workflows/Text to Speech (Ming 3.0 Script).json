@@ -1,0 +1,259 @@
+{
+  "id": "38279c6d-f89a-4235-b3a1-0b32dd1348c0",
+  "revision": 0,
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        370,
+        70
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "ming-3.0-tts-0.5b_bf16.safetensors",
+            "url": "https://huggingface.co/nynxz/Ming-3.0/resolve/main/diffusion_models/ming-3.0-tts-0.5b_bf16.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "ming-3.0-tts-0.5b_bf16.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "ming/ming-3.0-tts-tiny_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 2,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        120
+      ],
+      "size": [
+        370,
+        70
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "ming-3.0_audio_vae.safetensors",
+            "url": "https://huggingface.co/nynxz/Ming-3.0/resolve/main/vae/ming-3.0_audio_vae.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "ming-3.0_audio_vae.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "ming/ming-3.0_audio_vae.safetensors"
+      }
+    },
+    {
+      "type": "MingScript",
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "MingScript"
+      },
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 2
+        },
+        {
+          "name": "voice_1",
+          "type": "MING_VOICE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "voice_2",
+          "type": "MING_VOICE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "voice_3",
+          "type": "MING_VOICE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "voice_4",
+          "type": "MING_VOICE",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "timeline",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "id": 3,
+      "pos": [
+        420,
+        0
+      ],
+      "size": [
+        460,
+        420
+      ],
+      "widgets_values": [
+        "# <voice slot>: text   or   <slot> (mods): text\n# mods: an emotion, speed=fast pitch=low volume=high, voice=<built-in>, design=<description>, or free-form direction\n1 (voice=US_Emma): Did you hear that? Something is moving in the attic.\n2 (voice=US_James): Please tell me it's just the wind.\n1 (voice=US_Emma): Stay here. I'll go and look.\n[pause 0.8]\n2 (voice=US_James): [Laughter] It was the cat. It was only the cat!",
+        "English",
+        0,
+        2,
+        0.25,
+        10,
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SaveAudio",
+      "pos": [
+        900,
+        0
+      ],
+      "size": [
+        400,
+        140
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/ming_script"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "MarkdownNote",
+      "pos": [
+        -560,
+        0
+      ],
+      "size": [
+        520,
+        380
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Text to Speech (Ming 3.0 Script)\n\nOne line per utterance, each with its voice slot and optional delivery: an emotion, speed, pitch or volume, a built-in voice, a voice description, or free-form direction. `[pause 0.8]` inserts silence. Lines are generated one by one and joined; the second output is a timeline of when each line starts and ends, for subtitles. Connect a **Ming Reference Voice** to a voice slot to use a cloned voice.\n\nBuilt from the example workflows of Nynxz/ComfyUI-MingTTS (Apache-2.0). Model: inclusionAI's Ming-3.0-tts, 0.5B, MIT; files from nynxz/Ming-3.0. Languages: Chinese, English, German, Spanish, French, Korean, Japanese, Sichuanese and Cantonese. No Finnish: use the Chatterbox or Audio8 templates for Finnish.\n\nProfile `ming-3-tts-script`, 3 GB.\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      1,
+      "VAE"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

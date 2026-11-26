@@ -2,7 +2,7 @@
   "id": "cee9a9b4-6509-56ae-991e-d25a86e8250d",
   "revision": 0,
   "last_node_id": 259,
-  "last_link_id": 406,
+  "last_link_id": 407,
   "nodes": [
     {
       "id": 256,
@@ -198,7 +198,7 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## About this workflow\n\nRepaints the masked part of a picture from a prompt. The sample's mask covers the throne. For your own picture, right-click it in **Load Image** and open the mask editor to paint the part to change.\n\nThe middle node is ComfyUI's **Image Inpainting (Qwen-image)** blueprint, the one in the node search box; double-click it to see inside. The sample picture and prompt are from Comfy's `image_qwen_image_instantx_inpainting_controlnet` template (MIT).\n\nAsset profile: `qwen-image-inpaint-lightning-4step`."
+        "## About this workflow\n\nRepaints the masked part of a picture from a prompt. The sample's mask covers the throne. For your own picture, right-click it in **Load Image** and open the mask editor to paint the part to change.\n\nThe middle node is ComfyUI's **Image Inpainting (Qwen-image)** blueprint, the one in the node search box; double-click it to see inside. The sample picture and prompt are from Comfy's `image_qwen_image_instantx_inpainting_controlnet` template (MIT).\n\nAsset profile: `qwen-image-inpaint-lightning-4step`.\n\n## Adding a LoRA\n\nA LoRA loader sits after the model loader inside the blueprint, bypassed, so nothing is applied by default. Double-click the blueprint, pick a file in the loader's `lora_name` box and press Ctrl+B on it to switch it on. The file goes in `models/loras/`."
       ]
     }
   ],
@@ -237,7 +237,7 @@
         "state": {
           "lastGroupId": 14,
           "lastNodeId": 256,
-          "lastLinkId": 403,
+          "lastLinkId": 407,
           "lastRerouteId": 0
         },
         "revision": 0,
@@ -412,7 +412,14 @@
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.51",
-              "Node name for S&R": "CLIPLoader"
+              "Node name for S&R": "CLIPLoader",
+              "models": [
+                {
+                  "name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                  "directory": "text_encoders"
+                }
+              ]
             },
             "widgets_values": [
               "qwen_2.5_vl_7b_fp8_scaled.safetensors",
@@ -461,14 +468,21 @@
                 "type": "MODEL",
                 "slot_index": 0,
                 "links": [
-                  145
+                  407
                 ]
               }
             ],
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.51",
-              "Node name for S&R": "UNETLoader"
+              "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "qwen_image_fp8_e4m3fn.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ]
             },
             "widgets_values": [
               "qwen_image_fp8_e4m3fn.safetensors",
@@ -567,7 +581,14 @@
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.51",
-              "Node name for S&R": "ControlNetLoader"
+              "Node name for S&R": "ControlNetLoader",
+              "models": [
+                {
+                  "name": "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image-InstantX-ControlNets/resolve/main/split_files/controlnet/Qwen-Image-InstantX-ControlNet-Inpainting.safetensors",
+                  "directory": "controlnet"
+                }
+              ]
             },
             "widgets_values": [
               "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors"
@@ -614,7 +635,14 @@
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.51",
-              "Node name for S&R": "VAELoader"
+              "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "qwen_image_vae.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+                  "directory": "vae"
+                }
+              ]
             },
             "widgets_values": [
               "qwen_image_vae.safetensors"
@@ -972,7 +1000,14 @@
             "properties": {
               "cnr_id": "comfy-core",
               "ver": "0.3.51",
-              "Node name for S&R": "LoraLoaderModelOnly"
+              "Node name for S&R": "LoraLoaderModelOnly",
+              "models": [
+                {
+                  "name": "Qwen-Image-Lightning-4steps-V1.0.safetensors",
+                  "url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Lightning-4steps-V1.0.safetensors",
+                  "directory": "loras"
+                }
+              ]
             },
             "widgets_values": [
               "Qwen-Image-Lightning-4steps-V1.0.safetensors",
@@ -1338,6 +1373,45 @@
               "Node name for S&R": "MaskPreview"
             },
             "widgets_values": []
+          },
+          {
+            "id": 225,
+            "type": "LoraLoaderModelOnly",
+            "pos": [
+              -90,
+              62
+            ],
+            "size": [
+              380,
+              82
+            ],
+            "flags": {},
+            "order": 18,
+            "mode": 4,
+            "title": "Load LoRA (optional)",
+            "inputs": [
+              {
+                "name": "model",
+                "type": "MODEL",
+                "link": 407
+              }
+            ],
+            "outputs": [
+              {
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  145
+                ]
+              }
+            ],
+            "properties": {
+              "Node name for S&R": "LoraLoaderModelOnly"
+            },
+            "widgets_values": [
+              "",
+              1
+            ]
           }
         ],
         "groups": [
@@ -1509,7 +1583,7 @@
           },
           {
             "id": 145,
-            "origin_id": 37,
+            "origin_id": 225,
             "origin_slot": 0,
             "target_id": 80,
             "target_slot": 0,
@@ -1626,6 +1700,14 @@
             "target_id": 84,
             "target_slot": 0,
             "type": "COMBO"
+          },
+          {
+            "id": 407,
+            "origin_id": 37,
+            "origin_slot": 0,
+            "target_id": 225,
+            "target_slot": 0,
+            "type": "MODEL"
           }
         ],
         "extra": {

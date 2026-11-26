@@ -10,6 +10,24 @@ Background on the provisioning model and the smoke toolchain lives in
 [docs/verifying.md](../../docs/verifying.md).
 This skill is the step-by-step onboarding checklist.
 
+## Ground rules
+
+- **Every Python run goes in a container**, the small edit and check scripts
+  too: `docker exec comfyui ...` against the server, otherwise a one-off
+  locked container (`scripts/tools/locked_run.sh`: no capabilities, read-only
+  root, no network unless fetching, read-only mounts, only `-e HF_TOKEN`, never
+  `--env-file .env`). Edit files with the editor tools, not host Python.
+- **Fetch from containers.** The host resolves the Hub to IPv6 and has no IPv6
+  route, so host `curl`/`urllib` time out while containers work.
+  `scripts/tools/hf_repo.py` lists a repository (revision, gating, every file
+  with size and sha256); `scripts/tools/hf_fetch.py` downloads at a pinned
+  revision and keeps a file only after its sha256 matches.
+- **Do not work from inside `custom_nodes/`.** Claude Code then creates
+  `custom_nodes/.claude/`, and ComfyUI logs an import failure for it on every
+  start. Stay at the repo root and use paths.
+- **One GPU job at a time**, under the memory guard
+  (`scripts/tools/mem_guard.sh`); CPU and GPU share one memory pool here.
+
 ## 0. Check what core already does — before writing anything
 
 Two sessions running, the first draft of a new template duplicated something
@@ -93,6 +111,14 @@ except urllib.error.HTTPError as e: print(e.code, e.reason)"
 
 403 with a valid token means that specific repo needs its licence accepted.
 
+**What does the repository really hold?** List it before planning around it:
+`scripts/tools/hf_repo.py ORG/REPO` prints every file with its size and the
+folder totals. Two plan items went wrong on assumptions this would have caught:
+a text encoder "the repo already has" was not provisioned anywhere, and a
+"47 GB" release turned out to replace one part of a 131 GB base bundle it
+depends on (its `release.json` says `"dependency"`). Check memory the same way:
+add up what the runtime keeps loaded at once, not the size of one file.
+
 ## 1. Decide how it gets provisioned
 
 Prefer **profile-driven** provisioning for anything you want deterministically
@@ -134,6 +160,23 @@ Patterns that keep coming back:
   enhancer only loads with `refine_prompt` on, but its loader sits in the
   graph, so the GUI reports the file missing and `audit_refs.py` fails without
   it. Provision it.
+- **A model split over several files.** Put it in its own subfolder
+  (`diffusion_models/iris-z-small/`), let the loader's widget name the first
+  shard (`iris-z-small/transformer-00001-of-00004.safetensors`) and find the
+  rest beside it, and list every shard and side file in `properties.models`
+  with the subfolder in `name`. The bootstrap fetches all of a node's entries
+  in the same subfolder once the widget names one of them. Only
+  `.safetensors`-type files belong there: the frontend reports a listed
+  `.json` as missing, so the loader must work without its config file (or the
+  profile provisions it).
+- **Nodes that fetch their own weights** (Voice Isolator, Separate Two
+  Speakers) take no model widget, so `properties.models` cannot drive them:
+  pin the revision and check the sha256 in the node, and give the file a
+  profile group as well.
+- **Changing the bootstrap or the entrypoint.** Both are baked into the image:
+  `docker compose build comfy`, then `docker compose up -d --no-deps comfy`.
+  Test a bootstrap change offline first by running its spec emitter on the
+  template pack with the old and the new script and diffing the two lists.
 
 If the template belongs to a custom-node pack that ships its own
 `example_workflows/`, also check
@@ -212,6 +255,10 @@ one: the LTX-2.3 motion-track, HDR and LipDub lanes once ran core's
 union-control template with their LoRA swapped in, passed, and produced a copy
 of the depth video. Each now runs its own official example.
 
+The one other use: a third-party example that loads the author's own files
+(WanAnimate's `raw.mp4` and `refer.jpeg`). Map them to a provisioned sample of
+the same kind and add that sample's group to the profile.
+
 Skip the lane (and note why in `scripts/smoke/pending_models.json` if
 upstream weights are missing) when the workflow is genuinely
 input-dependent (needs a user-supplied file with no bundled sample) or
@@ -235,15 +282,40 @@ primitive fixes, the MiniMax Music 3 and YuE2 lanes would have run on empty
 text. After changing `wf_smoke.py`, `lane_prompt_diff.py` shows what the change
 does to every lane's prompt without queueing anything.
 
+`run_lanes.py` marks such a pass `PASS (hollow)` and lists the lines, and the
+sweep summary names the hollow lanes. Clear every one before promoting a row:
+
+- `substituting missing input X`: the template names a sample file nothing
+  provisions. Add a `file` entry for it (Comfy-Org/workflow_templates `input/`
+  has the core templates' samples) to the lane's profile.
+- `fed unconnected IMAGE input`: a node on the output path has an empty image
+  socket. In the GUI that prompt is refused, so it is a template bug.
+- A template of ours must not load `example.png`. That file is a screenshot of
+  a node graph; the 2026-11 sweep found Mage-Flow, Lucida and MiniMax H3
+  "passing" by editing, cutting out and animating it. Give it a real sample
+  that fits its prompt, from the core template it came from when there is one.
+
+The harness leaves out nodes no output node reads, as ComfyUI does (several
+core templates carry a second, unconnected copy of their pipeline), and logs
+`left out N node(s)`. Subgraph values come from `properties.proxyWidgets` when
+the frontend saved it.
+
+Look at the contact sheet too, and remember its labels sit under the tiles.
+
 ## 4. Validate offline first
 
 ```bash
-python3 scripts/smoke/validate_manifest.py
+docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges --read-only --tmpfs /tmp \
+  --user 1000:1000 -e HOME=/tmp -v "$PWD:/r:ro" --entrypoint sh comfyui-dgx-spark-docker-opinionated-comfy \
+  -c 'git config --global --add safe.directory /r; python3 -I /r/scripts/smoke/validate_manifest.py /r'
 ```
 
 Fix everything it reports: unknown profile/group references, dangling
 symlink targets, node types no installed custom-node pack provides, lane
-workflows whose models the profile doesn't actually provision.
+workflows whose models the profile doesn't actually provision. It checks only
+the node packs git tracks (or new, unignored files), so the packs the
+entrypoint cloned into `custom_nodes/` on this machine do not count; before
+that, a working tree reported about 1,600 false problems.
 
 ## 5. Bring up, provision, and run for real
 
@@ -261,7 +333,14 @@ docker exec comfyui python3 /tmp/audit_refs.py my-new-profile
 ```
 
 Both must pass. A passing lane alone is not sufficient proof — `audit_refs.py`
-catches models the harness silently stubbed or substituted.
+catches models the harness silently stubbed or substituted. Grep every lane
+log for the harness's stub lines too, all three: `fed unconnected` (an
+IMAGE/VIDEO/AUDIO input with no link got a sample file; a misnamed input in a
+builder once fed a refine the wrong video, and the lane still passed),
+`defaulted` and `using inner node defaults`.
+
+When you run a sweep, write its lane list (or "every lane") into the plan: an
+earlier 50-lane selection was lost and could not be repeated.
 
 For more than a couple of lanes, or anything left running unattended, use
 `scripts/smoke/sweep.sh <profiles>`. It runs them one at a time behind
@@ -285,7 +364,9 @@ the prompt the lane actually sent, not the one you expect.
 
 Move the row from *Provisioned — not yet hardware-verified* into its category
 table (or add a new row/table if this is the first of its kind), filling in
-the measured Run time from the smoke output. Then update the counts in the
+the measured Run time from the smoke output. A lane's time includes the first
+model load (Iris-Z: 146 s cold, 10 s a photo once loaded); where the two
+differ a lot, give both in the note or the paragraph. Then update the counts in the
 opening paragraph ("defines N profiles. The M in the category tables") and the
 "Most of those M" line under it; `validate_manifest.py` checks the first two.
 README.md and docs/models.md state the profile and template counts as well.

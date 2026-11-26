@@ -6,15 +6,20 @@
       "Text to Image (Krea 2 RAW)",
       "Text to Image (Krea 2 Turbo NVFP4)",
       "Text to Image (Krea 2 Turbo Style LoRA)",
-      "Text to Image (Qwen-Image)"
+      "Text to Image (MiniMax H3 Image)",
+      "Text to Image (Qwen-Image)",
+      "Depth to Image (Iris-Z small)",
+      "Text to Image and Depth (Iris-Z small)"
     ]
   },
   "2-image-editing": {
     "ComfyUI-DGX-Spark-Templates": [
       "Image Edit (Mage-Flow Turbo)",
       "Image Edit (Mage-Flow)",
+      "Image Edit (MiniMax H3 Image)",
       "Image Edit (Qwen 2511)",
-      "Image Inpainting (Qwen-image)"
+      "Image Inpainting (Qwen-image)",
+      "Multi-Reference Edit (FLUX 3 Klein)"
     ]
   },
   "3-video": {
@@ -24,9 +29,13 @@
       "Context Segments (MiniMax H3 Easy)",
       "Context Segments Refine (MiniMax H3 Easy)",
       "Depth to Video (ltx 2.0)",
+      "Image to Long Video (MovieRoll)",
+      "Image to Long Video with Sound (LTX-2.5)",
       "Image to Video (LTX-2.3)",
       "Image to Video (MiniMax H3 Turbo)",
       "Image to Video (MiniMax H3)",
+      "Image to Video (PAN 2)",
+      "Image to Video with Detailer LoRA (LTX 2.0)",
       "LTX Director 2 (LTX-2.5)",
       "Motion Track to Video (LTX-2.3)",
       "Multishot ShotPlan (LTX-2.3)",
@@ -35,10 +44,13 @@
       "Reference to Video (MiniMax H3)",
       "Shot Sequencer (LTX-2.5)",
       "Talking Video (InfiniteTalk Two Speakers)",
+      "Talking Video (LongCat Avatar 1.6)",
+      "Text to Long Video (MovieRoll)",
       "Text to Video (LTX-2.3)",
       "Text to Video (LTX-2.5 NVFP4)",
       "Text to Video (MiniMax H3 VDN 8-step)",
-      "Text to Video (MiniMax H3)"
+      "Text to Video (MiniMax H3)",
+      "Text to Video (pi-H3)"
     ],
     "ComfyUI-KJNodes": [
       "leapfusion_hunyuuanvideo_i2v_native_testing"
@@ -58,6 +70,7 @@
       "Video Inpainting (LTX-2.3 Masked)",
       "Video Inpainting with Reference (LTX-2.3)",
       "Video Inpainting (Wan2.1 VACE)",
+      "Video Refine 2K (Open-H3 IC)",
       "Video Refine (MiniMax H3 Easy)",
       "Video SDR to HDR (LTX-2.3)",
       "Video Style Swap (LTX-2.3 Anime2Real)",
@@ -66,10 +79,16 @@
   },
   "5-speech": {
     "ComfyUI-DGX-Spark-Templates": [
+      "Clean Up Voice (Inworld Voice Isolator)",
+      "Separate Two Speakers (MossFormer2)",
+      "Subtitles from Speech (Nemotron 3.5)",
       "Subtitles from Speech (Whisper large-v3)",
       "Talking Characters with Subtitles",
+      "Text to Speech (Audio8 Voice Clone)",
       "Text to Speech (Chatterbox Multilingual)",
       "Text to Speech (LTX-2.3 Prompted Voice)",
+      "Text to Speech (Ming 3.0 Script)",
+      "Text to Speech (Ming 3.0 Voice Design)",
       "Text to Speech (Multi-Character Conversation)",
       "Text to Speech (Prompted Voices to Conversation)",
       "Text to Speech (Qwen3-TTS Voice Design)"
@@ -95,7 +114,10 @@
   "8-utility": {
     "ComfyUI-DGX-Spark-Templates": [
       "Image Depth Estimation (Lotus Depth)",
-      "Remove Background (Lucida)"
+      "Image to Depth (Iris-Z small)",
+      "Remove Background (Lucida)",
+      "Video to Pose Guide (FAB)",
+      "Video to Pose Guide (SAM 3D Body)"
     ]
   },
   "9-text": {

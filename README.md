@@ -14,9 +14,9 @@ the rest. If you like it, PRs are very welcome. Forked from this original work:
   than compiling them on every machine.
 - **33 custom node packs**, cloned at startup from
   [`custom_nodes/custom_nodes.txt`](custom_nodes/custom_nodes.txt).
-- **93 asset profiles.** Name one in `.env` and the container downloads every
+- **122 asset profiles.** Name one in `.env` and the container downloads every
   model that workflow needs before it starts.
-- **63 bundled templates**, for models ComfyUI ships no template for and for
+- **85 bundled templates**, for models ComfyUI ships no template for and for
   variants of ones it does: Krea 2, Ideogram 4, Mage-Flow, MiniMax H3,
   HeartMuLa, VibeVoice, YuE2, MuScriptor, the LTX-2.3 task LoRAs, LTX-2.5
   audio to video and IC-LoRA edits, speech with subtitles, text from Gemma 4
@@ -78,6 +78,38 @@ this one is a good starting point at 19 GB and about 20 seconds a render:
 COMFY_ASSET_PROFILES=z-image-turbo-core
 ```
 
+#### Licences to accept on Hugging Face
+
+Gated repositories refuse downloads until a Hugging Face account accepts the
+licence on the repository page. Accept the ones you need and put that
+account's token in `.env` as `HF_TOKEN`. Approval is per repository.
+
+Bundled templates download their models at every start, profile or not, so a
+default setup needs all of these except Gemma and SAM 3D Body, which only the
+FAB template reads, on first use. A repository not accepted logs a warning and
+its templates stay without models.
+
+| Repository | Needed for | Licence |
+| --- | --- | --- |
+| [black-forest-labs/flux-3-image-klein-comfy](https://huggingface.co/black-forest-labs/flux-3-image-klein-comfy) | `flux-3-klein-*` | FLUX Kommunity License |
+| [Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5) | `ltx-2.5-*`, `talking-characters` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Ingredients) | `ltx-2.5-ingredients`, `ltx-2.5-long-i2v-sound` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Clean-Plate) | `ltx-2.5-clean-plate` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Alpha-Gen) | `ltx-2.5-alpha-matte` | LTX-2.x Community License |
+| [Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details](https://huggingface.co/Lightricks/LTX-2.5-22b-IC-LoRA-Refine-Details) | `ltx-2.5-refine-details` (parked, see the plan) | LTX-2.x Community License |
+| [Lightricks/LTX-2.3-22b-LoRA-Foley-V2A](https://huggingface.co/Lightricks/LTX-2.3-22b-LoRA-Foley-V2A) | `ltx-2.5-foley` | LTX-2 Community License |
+| [Lightricks/LTX-2.3-22b-IC-LoRA-HDR](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-HDR) | `ltx-2.3-iclora-hdr-distilled` | LTX-2 Community License |
+| [Lightricks/LTX-2.3-22b-IC-LoRA-DubIt](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-DubIt) | `ltx-2.3-iclora-lipdub-two-stage-distilled` | LTX-2 Community License |
+| [MuScriptor/muscriptor-large](https://huggingface.co/MuScriptor/muscriptor-large) | `muscriptor` | CC BY-NC 4.0 |
+| [google/gemma-3-12b-it-qat-q4_0-unquantized](https://huggingface.co/google/gemma-3-12b-it-qat-q4_0-unquantized) | `ltx-2.0-*` | Gemma, approved by hand |
+| [facebook/sam-3d-body-dinov3](https://huggingface.co/facebook/sam-3d-body-dinov3) | `fab-pose-guide` (its model config) | SAM License, approved by hand |
+| [yunyangge/MovieRoll](https://huggingface.co/yunyangge/MovieRoll) | `movieroll-t2v`, `movieroll-i2v` | Tencent Hunyuan Community License; does not apply in the EU, the UK and South Korea |
+
+Models that are not gated but restrict use are listed in
+[docs/models.md](docs/models.md#gated-models). `scripts/smoke/plan_downloads.py`
+shows what profiles still download and whether the token reads every
+repository ([docs/verifying.md](docs/verifying.md)).
+
 ### 4. Build
 
 ```bash
@@ -94,14 +126,18 @@ docker logs -f comfyui
 ## First start
 
 The first run installs PyTorch and every custom node's dependencies into the
-mounted venv, then downloads the models for the profiles you selected. ComfyUI's
+mounted venv, then downloads the models of the bundled templates (about 713 GB,
+see [docs/models.md](docs/models.md#templates-that-download-without-a-profile))
+and of the profiles you selected. ComfyUI's
 HTTP server starts only after all of that finishes, so the port stays closed for
 a while and the healthcheck allows 30 minutes before it reports unhealthy. This
 is expected. Watch `docker logs -f comfyui` rather than the port.
 
 Once the log shows the server listening, open <http://localhost:8188>.
 
-Stop with `docker compose down`.
+The container restarts after a reboot or a crash. `docker compose stop` keeps it
+down, also over reboots, until the next `docker compose up -d`.
+`docker compose down` removes it.
 
 ## Reaching the UI from another machine
 
@@ -153,12 +189,12 @@ from
 | `.env.example` | template for `.env` |
 | `docker-compose.override.yml.example` | optional mount for an apps repository in `apps/` |
 | `constraints.txt` | the pinned torch / torchvision / torchaudio versions, and protobuf below 5 |
-| `asset-profiles.json` | the 93 profiles and the files each one downloads |
+| `asset-profiles.json` | the 122 profiles and the files each one downloads |
 | `scripts/bootstrap_comfy_assets.sh` | resolves and downloads those files |
 | `scripts/smoke/` | offline manifest validation and in-container smoke lanes |
 | `patches/` | startup patches applied to ComfyUI and to cloned node packs |
 | `custom_nodes/custom_nodes.txt` | the list of node repositories to clone |
-| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 63 templates this repo bundles |
+| `custom_nodes/ComfyUI-DGX-Spark-Templates/` | the 85 templates this repo bundles |
 | `DGX-Spark-WheelsBuilder/` | builds and exports the aarch64 wheels the image consumes |
 | `models-cutter/` | splits a monolithic `.safetensors` into ComfyUI's expected files |
 | `ComfyUI/` | submodule, `jdaln/ComfyUI` branch `dgx-state` |
