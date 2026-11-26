@@ -53,7 +53,7 @@ download nothing. See [models.md](models.md) for the current gated list.
 | Fastest general purpose image model | `z-image-turbo-core` | `image_z_image_turbo` | Template | 19 GB | 20 s |
 | High-aesthetic 8-step distilled model | `krea-2-turbo` | `image_krea2_turbo_t2i` | Template | 17 GB | 35 s |
 | Same, NVFP4 build; smaller and faster on Blackwell | `krea-2-turbo-nvfp4` | Text to Image (Krea 2 Turbo NVFP4) | Ours | 12 GB | 25 s |
-| Krea 2 with nine style LoRAs (ink wash, retro anime, watercolour) | `krea-2-turbo-styleloras` | Text to Image (Krea 2 Turbo Style LoRA) | Ours | 21 GB | 35 s |
+| Krea 2 with nine style LoRAs (ink wash, retro anime, watercolour) | `krea-2-turbo-styleloras` | Text to Image (Krea 2 Turbo Style LoRA) | Ours | 21 GB | 25 s |
 | Krea 2 base model, full 52-step sampling; best for LoRA training and variety | `krea-2-raw` | Text to Image (Krea 2 RAW) | Ours | 17 GB | 90 s |
 | Qwen-Image, 8-step Lightning LoRA | `qwen-image-t2i-lightning-8step` | Text to Image (Qwen-Image) | Ours | 30 GB | 105 s |
 | Qwen-Image 2512, 4-step Lightning LoRA | `qwen-image-2512-t2i-lightning-4step` | `image_qwen_Image_2512` | Template | 30 GB | 230 s |
@@ -117,11 +117,11 @@ Comfy-Org's fp8 build for Klein 9B.
 | --- | --- | --- | --- | ---: | ---: |
 | Instruction-driven edits ("make it night", object swaps) | `qwen-image-edit-2511-core` | Image Edit (Qwen 2511) | Ours | 47 GB | 375 s |
 | Inpainting and outpainting with a mask | `qwen-image-inpaint-lightning-4step` | Image Inpainting (Qwen-image) | Ours | 34 GB | 30 s |
-| Split an image into editable layers | `qwen-image-layered-core` | `image_qwen_image_layered` | Template | 47 GB | 65 s |
-| Compose from a control image (canny, depth, pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 80 s |
-| Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 275 s |
-| Same, 4-step distilled, about 7x faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 30 s |
-| Instruction edits in seconds, 4B distilled | `flux2-klein-4b-edit` | `image_flux2_klein_image_edit_4b_distilled` | Template | 11 GB | 15 s |
+| Split an image into editable layers | `qwen-image-layered-core` | `image_qwen_image_layered` | Template | 47 GB | 105 s |
+| Compose from a control image (canny, depth, pose) | `z-image-turbo-union-control` | `image_z_image_turbo_fun_union_controlnet` | Template | 22 GB | 60 s |
+| Instruction-driven edits with up to 16 reference images | `mage-flow-edit` | Image Edit (Mage-Flow) | Ours | 17 GB | 45 s |
+| Same, 4-step distilled, about 7x faster | `mage-flow-edit-turbo` | Image Edit (Mage-Flow Turbo) | Ours | 17 GB | 10 s |
+| Instruction edits in seconds, 4B distilled | `flux2-klein-4b-edit` | `image_flux2_klein_image_edit_4b_distilled` | Template | 11 GB | 11 s |
 | Instruction edits at 16 megapixels | `minimax-h3-image-edit` | Image Edit (MiniMax H3 Image) | Ours | 37 GB | 300 s |
 | FLUX 3 Image Klein edits, with layout boxes | `flux-3-klein-edit` | `image_flux3_klein_distilled_image_edit` | Template | 18 GB | 30 s |
 | Same, base model, 50 steps | `flux-3-klein-base-edit` | `image_flux3_klein_image_edit` | Template | 18 GB | 65 s |
@@ -193,7 +193,7 @@ Nothing is gated. Core's templates need ComfyUI 0.37 or newer.
 | Text to video, 14B | `wan2.2-t2v-bundled` | `video_wan2_2_14B_t2v` | Template | 37 GB | 10 min |
 | Animate a still image, 14B | `wan2.2-i2v-bundled` | `video_wan2_2_14B_i2v` | Template | 37 GB | 10 min |
 | Replace or remove things inside a video | `wan2.1-vace-bundled` | Video Inpainting (Wan2.1 VACE) | Ours | 41 GB | 265 s |
-| Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 5 s |
+| Drive a character with a reference video | `wananimate-preprocess` | WanAnimate_native_example_01 | Node example | 2 GB | 185 s |
 | The person in a video replaced by a character from one picture | `scail-2-int8` | `video_wan21_scail2_character_replacement_int8` | Template | 29 GB | 383 s |
 | A character picture moved by a reference video, distilled | `wan-animate-2-distilled` | `video_wan_animate2_distilled` | Template | 25 GB | 396 s |
 | Two people in a picture speak two recorded tracks, lips matched | `infinitetalk` | Talking Video (InfiniteTalk Two Speakers) | Ours | 30 GB | 555 s |
@@ -209,9 +209,14 @@ keeps the lip sync on long vowels and double consonants. Give clean speech
 without music, and a calm prompt. One speaker only.
 
 `wananimate-preprocess` ships only the pose, detection and segmentation models.
-Pair it with a Wan animate checkpoint. Its smoke lane covers the preprocessing
-branch alone, which is why it runs in seconds; the animate checkpoint, LoRAs,
-text encoder and VAE the rest of that workflow loads come from you.
+Pair it with a Wan animate checkpoint. The animate checkpoint, LoRAs, text
+encoder and VAE the rest of the example loads come from you. The example was
+saved on Windows, so its model paths read `WanVideo\2_2\...`; pick each file
+again in the GUI. This machine had those files, so the smoke lane runs the
+whole example, on Comfy's Wan Animate 2 samples: the doll from
+`ref_doll_realistic.png` dances to `drive_doll_street_dance.mp4` in about three
+minutes. Before the 2026-11 harness fixes the lane "passed" in seconds, because
+the path error dropped everything after the preprocessing.
 
 `scail-2-int8` and `wan-animate-2-distilled` provision core's SCAIL-2 and Wan
 Animate 2 templates with their sample inputs, and share the UMT5 encoder and
@@ -483,7 +488,7 @@ community licence.
 | What you get | Profile | Workflow | Type | Disk | Run |
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, distilled (quickest) | `ltx-2.0-t2v-distilled` | `video_ltx2_t2v_distilled` | Template | 64 GB | 80 s |
-| Image to video, distilled | `ltx-2.0-i2v-distilled` | `video_ltx2_i2v_distilled` | Template | 64 GB | 80 s |
+| Image to video, distilled | `ltx-2.0-i2v-distilled` | `video_ltx2_i2v_distilled` | Template | 64 GB | 105 s |
 | Text to video, full dev checkpoint | `ltx-2.0-t2v-full` | `video_ltx2_t2v` | Template | 71 GB | 165 s |
 | Image to video, full dev checkpoint | `ltx-2.0-i2v-full` | `video_ltx2_i2v` | Template | 72 GB | 165 s |
 | Image to video with the detailer LoRA | `ltx-2.0-v2v-detailer` | Image to Video with Detailer LoRA (LTX 2.0) | Ours | 88 GB | 340 s |
@@ -513,7 +518,7 @@ fixes the template.
 | --- | --- | --- | --- | ---: | ---: |
 | Text to video, two-stage distilled | `ltx-2.3-t2v-i2v-two-stage-distilled` | Text to Video (LTX-2.3) | Ours | 60 GB | 135 s |
 | Image to video, single stage | `ltx-2.3-t2v-i2v-single-stage-distilled-full` | Image to Video (LTX-2.3) | Ours | 60 GB | 150 s |
-| Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 270 s |
+| Aligned control (canny, depth, pose) via IC-LoRA | `ltx-2.3-iclora-union-control-distilled` | `video_ltx2_3_ic_lora` | Template | 61 GB | 190 s |
 | Animate an image along drawn motion tracks | `ltx-2.3-iclora-motion-track-distilled` | Motion Track to Video (LTX-2.3) | Ours | 60 GB | 160 s |
 | SDR video to HDR, saved as EXR frames | `ltx-2.3-iclora-hdr-distilled` | Video SDR to HDR (LTX-2.3) | Ours | 60 GB | 225 s |
 | New speech for a talking clip, lips to match | `ltx-2.3-iclora-lipdub-two-stage-distilled` | Video Dubbing (LTX-2.3 Dub-It) | Ours | 63 GB | 463 s |
@@ -546,13 +551,13 @@ here with the sample input each one was made for:
 | Same, NVFP4 transformer, 3 GB smaller on disk | `ltx-2.5-distilled-nvfp4` | Text to Video (LTX-2.5 NVFP4) | Ours | 38 GB | 90 s |
 | Upscale any existing video 2x, no generator needed | `ltx-2.5-latent-upscale` | Video Upscale (LTX-2.5 Latent 2x) | Ours | 2.3 GB | 160 s |
 | Timeline editor: multi-shot sequencing, per-segment prompts | `ltx-2.5-distilled-nvfp4` | LTX Director 2 (LTX-2.5) | Ours | 38 GB | GUI only |
-| Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 120 s |
+| Place up to 50 keyframes at chosen frames | `ltx-2.5-sequencer` | Shot Sequencer (LTX-2.5) | Ours | 41 GB | 100 s |
 | A picture that speaks a recorded line; the audio drives the video | `ltx-2.5-a2v` | Audio to Video (LTX-2.5) | Ours | 45 GB | 386 s |
 | A clip that keeps characters, props and set from one reference sheet | `ltx-2.5-ingredients` | Reference Sheet to Video (LTX-2.5 Ingredients) | Ours | 46 GB | 191 s |
 | 30 s from a start picture with sound, the subject held to the end | `ltx-2.5-long-i2v-sound` | Image to Long Video with Sound (LTX-2.5) | Ours | 46 GB | 26 min |
 | People removed from a clip, the empty scene left behind | `ltx-2.5-clean-plate` | Remove People from Video (LTX-2.5 Clean Plate) | Ours | 45 GB | 120 s |
 | A grayscale alpha matte of a clip, hair and smoke included | `ltx-2.5-alpha-matte` | Video Alpha Matte (LTX-2.5 Alpha Gen) | Ours | 46 GB | 115 s |
-| Sound effects for a silent clip, generated to match the picture | `ltx-2.5-foley` | Add Sound to Video (LTX-2.5 Foley) | Ours | 45 GB | 80 s |
+| Sound effects for a silent clip, generated to match the picture | `ltx-2.5-foley` | Add Sound to Video (LTX-2.5 Foley) | Ours | 45 GB | 51 s |
 
 LTX 2.5 conditions on Gemma 4, so it needs ComfyUI 0.35.0 or newer. Core ships
 the three templates and matching blueprints, all pointing at the int8-convrot
@@ -760,7 +765,7 @@ A sixth profile, `bfs-ltx-2.3-multishot`, is waiting on upstream weights.
 | Speech in a cloned voice, 23 languages, 44.1 kHz | `audio8-tts` | Text to Speech (Audio8 Voice Clone) | Ours | 4.6 GB | 40 s |
 | Two people in a picture speak a script, subtitles included | `talking-characters` | Talking Characters with Subtitles | Ours | 55 GB | 571 s |
 | Subtitles for any video, the default: transcript, .srt and a burned-in copy, 40 languages, Finnish included, recordings up to an hour | `nemotron-3.5-transcribe` | Subtitles from Speech (Nemotron 3.5) | Ours | 21.4 GB | 40 s |
-| Same with a smaller model, 100 languages, for those Nemotron lacks or when memory is short | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 45 s |
+| Same with a smaller model, 100 languages, for those Nemotron lacks or when memory is short | `whisper-subtitles` | Subtitles from Speech (Whisper large-v3) | Ours | 3.1 GB | 35 s |
 | A voice cleaned of noise, music and room sound, and what was removed | `voice-isolator` | Clean Up Voice (Inworld Voice Isolator) | Ours | 0.3 GB | 10 s |
 | Two people talking over each other, split into one track each | `speech-separation` | Separate Two Speakers (MossFormer2) | Ours | 0.7 GB | 10 s |
 
@@ -1023,10 +1028,10 @@ separate repositories and need their own acceptance. The code is MIT.
 | --- | --- | --- | --- | ---: | ---: |
 | Turn one image into an untextured 3D shape (`.glb`) | `hunyuan3d-2.1-core` | Image to Model (Hunyuan3d 2.1) | Ours | 7.3 GB | 50 s |
 | Front, side and back views to an untextured 3D shape | `hunyuan3d-2.0-mv-turbo` | `3d_hunyuan3d_multiview_to_model_turbo` | Template | 4.9 GB | 35 s |
-| One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | 155 s |
-| A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | 270 s |
-| A game-ready model of about 30,000 triangles with PBR maps | `pixal3d-game-asset` | 3D Game Asset (Pixal3D) | Ours | 15 GB | 140 s |
-| A figurine as one solid piece for 3D printing | `pixal3d-figurine` | 3D Figurine for Printing (Pixal3D) | Ours | 15 GB | 205 s |
+| One picture to a textured 3D model with clean geometry | `pixal3d-trellis2` | `3d_pixal3d_trellis2_image_to_model` | Template | 15 GB | 100 s |
+| A four-view character sheet to a 3D model | `pixal3d-multiview` | `3d_pixal3d_multi_views` | Template | 9.3 GB | 145 s |
+| A game-ready model of about 30,000 triangles with PBR maps | `pixal3d-game-asset` | 3D Game Asset (Pixal3D) | Ours | 15 GB | 70 s |
+| A figurine as one solid piece for 3D printing | `pixal3d-figurine` | 3D Figurine for Printing (Pixal3D) | Ours | 15 GB | 135 s |
 | Motion capture from a clip: a mesh overlay video and an animated `.glb` | `sam3d-body-mocap` | `utility_sam3d_body` | Template | 5.5 GB | 155 s |
 
 Core's two Pixal3D templates save a model of about 700,000 triangles with PBR

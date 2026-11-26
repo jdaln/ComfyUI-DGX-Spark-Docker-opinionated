@@ -1,7 +1,7 @@
 {
   "_comment": "profile -> [workflow (container path or template name), optional substitution map, optional timeout in seconds (default 1800)]",
   "lanes": [
-    ["wananimate-preprocess",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-WanAnimatePreprocess/example_workflows/WanAnimate_native_example_01.json"],
+    ["wananimate-preprocess",                       "/workspace/ComfyUI/custom_nodes/ComfyUI-WanAnimatePreprocess/example_workflows/WanAnimate_native_example_01.json", {"raw.mp4": "drive_doll_street_dance.mp4", "refer.jpeg": "ref_doll_realistic.png"}],
     ["wan2.2-t2v-bundled",                          "video_wan2_2_14B_t2v"],
     ["wan2.2-i2v-bundled",                          "video_wan2_2_14B_i2v"],
     ["z-image-turbo-core",                          "image_z_image_turbo"],

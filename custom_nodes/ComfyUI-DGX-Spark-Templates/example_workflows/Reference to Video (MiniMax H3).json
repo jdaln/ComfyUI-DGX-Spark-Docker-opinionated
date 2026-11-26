@@ -1451,7 +1451,7 @@
       ],
       "type": "LoadImage",
       "widgets_values": [
-        "example.png",
+        "red_superboy_on_city_roof.png",
         "image"
       ]
     },
@@ -1554,7 +1554,7 @@
       ],
       "type": "LoadImage",
       "widgets_values": [
-        "example.png",
+        "mecha_dragon_lightning.png",
         "image"
       ]
     },

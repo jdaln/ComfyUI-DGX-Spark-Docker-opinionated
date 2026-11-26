@@ -1,7 +1,8 @@
 {
  "profiles": {
   "wananimate-preprocess": [
-   "wananimate-detection"
+   "wananimate-detection",
+   "wan-animate-2-inputs"
   ],
   "wan2.2-t2v-bundled": [
    "wananimate-detection",
@@ -9,14 +10,16 @@
   ],
   "wan2.2-i2v-bundled": [
    "wananimate-detection",
-   "wan2.2-i2v-core-assets"
+   "wan2.2-i2v-core-assets",
+   "sample-image-wan22-i2v"
   ],
   "z-image-turbo-core": [
    "z-image-turbo-core-assets"
   ],
   "z-image-turbo-union-control": [
    "z-image-turbo-core-assets",
-   "z-image-turbo-union-controlnet"
+   "z-image-turbo-union-controlnet",
+   "sample-image-z-image-union-control"
   ],
   "qwen-image-t2i-lightning-8step": [
    "qwen-image-core-assets",
@@ -37,7 +40,8 @@
    "qwen-image-edit-2511-inputs"
   ],
   "qwen-image-layered-core": [
-   "qwen-image-layered-core-assets"
+   "qwen-image-layered-core-assets",
+   "sample-image-coastal-woman"
   ],
   "lotus-depth-support": [
    "lotus-depth-support-assets",
@@ -66,7 +70,8 @@
   "ltx-2.0-i2v-distilled": [
    "ltx-gemma3-snapshot-text-encoder",
    "ltx-2-distilled-checkpoint",
-   "ltx-2-upscaler"
+   "ltx-2-upscaler",
+   "sample-image-snow-bike"
   ],
   "ltx-2.0-t2v-full": [
    "ltx-gemma3-snapshot-text-encoder",
@@ -79,7 +84,8 @@
    "ltx-2-dev-checkpoint",
    "ltx-2-distilled-lora",
    "ltx-2-squish-lora",
-   "ltx-2-upscaler"
+   "ltx-2-upscaler",
+   "sample-image-freckled-girl"
   ],
   "ltx-2.0-v2v-detailer": [
    "ltx-gemma3-snapshot-text-encoder",
@@ -134,7 +140,8 @@
    "ltx-2.3-dev-checkpoint",
    "ltx-2.3-distilled-lora",
    "ltx-2.3-iclora-support",
-   "ltx-2.3-iclora-union"
+   "ltx-2.3-iclora-union",
+   "ltx-2.3-ic-lora-inputs"
   ],
   "ltx-2.3-iclora-motion-track-distilled": [
    "ltx-gemma3-comfy-text-encoder",
@@ -184,7 +191,8 @@
    "ideogram-4-nvfp4-models"
   ],
   "lucida-background-removal": [
-   "lucida-background-removal-assets"
+   "lucida-background-removal-assets",
+   "sample-image-freckled-girl"
   ],
   "bfs-ltx-2.3-edit-anything": [
    "ltx-gemma3-comfy-text-encoder",
@@ -236,11 +244,13 @@
   ],
   "mage-flow-edit": [
    "mage-flow-support-assets",
-   "mage-flow-edit-model"
+   "mage-flow-edit-model",
+   "sample-image-gold-earring"
   ],
   "mage-flow-edit-turbo": [
    "mage-flow-support-assets",
-   "mage-flow-edit-turbo-model"
+   "mage-flow-edit-turbo-model",
+   "sample-image-gold-earring"
   ],
   "heartmula-oss-3b": [
    "heartmula-shared-config",
@@ -277,11 +287,13 @@
   ],
   "minimax-h3-i2v": [
    "minimax-h3-support-assets",
-   "minimax-h3-fl2va-model"
+   "minimax-h3-fl2va-model",
+   "sample-image-gaming-mouse"
   ],
   "minimax-h3-ref2v": [
    "minimax-h3-support-assets",
-   "minimax-h3-ref2va-model"
+   "minimax-h3-ref2va-model",
+   "minimax-h3-r2v-inputs"
   ],
   "pi-h3": [
    "minimax-h3-support-assets",
@@ -298,7 +310,8 @@
   "minimax-h3-i2v-turbo": [
    "minimax-h3-support-assets",
    "minimax-h3-fl2va-model",
-   "minimax-h3-turbo-lora"
+   "minimax-h3-turbo-lora",
+   "sample-image-gaming-mouse"
   ],
   "minimax-h3-vdn-8step": [
    "minimax-h3-support-assets",
@@ -389,7 +402,8 @@
    "ltx-2.5-audio-vae",
    "ltx-2.5-prompt-enhancer",
    "ltx-2.5-spatial-upscaler",
-   "ltx-2.5-distilled-int8"
+   "ltx-2.5-distilled-int8",
+   "sample-image-neon-cyborg"
   ],
   "yue2": [
    "yue2-assets"
@@ -2865,6 +2879,86 @@
     "dest": "/workspace/ComfyUI/models/speech_separation/mossformer2_ss_16k.pt",
     "url": "https://huggingface.co/alibabasglab/MossFormer2_SS_16K/resolve/407cb030cd66340918ebb6c8cc63b18f8592cdbe/last_best_checkpoint.pt",
     "label": "MossFormer2 two-speaker separation, 16 kHz (ClearerVoice-Studio)"
+   }
+  ],
+  "sample-image-wan22-i2v": [
+   {
+    "dest": "/workspace/ComfyUI/input/video_wan2_2_14B_i2v_input_image.jpg",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/video_wan2_2_14B_i2v_input_image.jpg",
+    "label": "Wan 2.2 i2v sample picture"
+   }
+  ],
+  "sample-image-z-image-union-control": [
+   {
+    "dest": "/workspace/ComfyUI/input/image_z_image_turbo_fun_union_controlnet_input_image.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/image_z_image_turbo_fun_union_controlnet_input_image.png",
+    "label": "Z-Image union control sample picture"
+   }
+  ],
+  "sample-image-coastal-woman": [
+   {
+    "dest": "/workspace/ComfyUI/input/coastal_smiling_woman.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/coastal_smiling_woman.png",
+    "label": "Sample picture: a woman smiling by the coast"
+   }
+  ],
+  "sample-image-snow-bike": [
+   {
+    "dest": "/workspace/ComfyUI/input/snow_bike_jump_crew.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/snow_bike_jump_crew.png",
+    "label": "Sample picture: a bike jump in the snow"
+   }
+  ],
+  "sample-image-freckled-girl": [
+   {
+    "dest": "/workspace/ComfyUI/input/freckled_curly_girl.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/freckled_curly_girl.png",
+    "label": "Sample picture: a freckled girl with curly hair"
+   }
+  ],
+  "ltx-2.3-ic-lora-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/stone_ruins.mp4",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/stone_ruins.mp4",
+    "label": "LTX-2.3 IC-LoRA sample clip: stone ruins"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/the_forgotten_gate.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/the_forgotten_gate.png",
+    "label": "LTX-2.3 IC-LoRA sample picture: the forgotten gate"
+   }
+  ],
+  "sample-image-neon-cyborg": [
+   {
+    "dest": "/workspace/ComfyUI/input/neon_cyborg_portrait.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/neon_cyborg_portrait.png",
+    "label": "Sample picture: a neon cyborg portrait"
+   }
+  ],
+  "sample-image-gaming-mouse": [
+   {
+    "dest": "/workspace/ComfyUI/input/transparent_rgb_gaming_mouse.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/transparent_rgb_gaming_mouse.png",
+    "label": "Sample picture: a transparent gaming mouse"
+   }
+  ],
+  "minimax-h3-r2v-inputs": [
+   {
+    "dest": "/workspace/ComfyUI/input/red_superboy_on_city_roof.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/red_superboy_on_city_roof.png",
+    "label": "MiniMax H3 reference sample: a boy superhero on a roof"
+   },
+   {
+    "dest": "/workspace/ComfyUI/input/mecha_dragon_lightning.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/mecha_dragon_lightning.png",
+    "label": "MiniMax H3 reference sample: a mecha dragon"
+   }
+  ],
+  "sample-image-gold-earring": [
+   {
+    "dest": "/workspace/ComfyUI/input/woman_gold_earring_teal_top_portrait.png",
+    "url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/woman_gold_earring_teal_top_portrait.png",
+    "label": "Sample picture: a woman with a gold earring"
    }
   ]
  }

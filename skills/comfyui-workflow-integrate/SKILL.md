@@ -255,6 +255,10 @@ one: the LTX-2.3 motion-track, HDR and LipDub lanes once ran core's
 union-control template with their LoRA swapped in, passed, and produced a copy
 of the depth video. Each now runs its own official example.
 
+The one other use: a third-party example that loads the author's own files
+(WanAnimate's `raw.mp4` and `refer.jpeg`). Map them to a provisioned sample of
+the same kind and add that sample's group to the profile.
+
 Skip the lane (and note why in `scripts/smoke/pending_models.json` if
 upstream weights are missing) when the workflow is genuinely
 input-dependent (needs a user-supplied file with no bundled sample) or
@@ -277,6 +281,26 @@ pass, on input the workflow never shows a user; before the subgraph and
 primitive fixes, the MiniMax Music 3 and YuE2 lanes would have run on empty
 text. After changing `wf_smoke.py`, `lane_prompt_diff.py` shows what the change
 does to every lane's prompt without queueing anything.
+
+`run_lanes.py` marks such a pass `PASS (hollow)` and lists the lines, and the
+sweep summary names the hollow lanes. Clear every one before promoting a row:
+
+- `substituting missing input X`: the template names a sample file nothing
+  provisions. Add a `file` entry for it (Comfy-Org/workflow_templates `input/`
+  has the core templates' samples) to the lane's profile.
+- `fed unconnected IMAGE input`: a node on the output path has an empty image
+  socket. In the GUI that prompt is refused, so it is a template bug.
+- A template of ours must not load `example.png`. That file is a screenshot of
+  a node graph; the 2026-11 sweep found Mage-Flow, Lucida and MiniMax H3
+  "passing" by editing, cutting out and animating it. Give it a real sample
+  that fits its prompt, from the core template it came from when there is one.
+
+The harness leaves out nodes no output node reads, as ComfyUI does (several
+core templates carry a second, unconnected copy of their pipeline), and logs
+`left out N node(s)`. Subgraph values come from `properties.proxyWidgets` when
+the frontend saved it.
+
+Look at the contact sheet too, and remember its labels sit under the tiles.
 
 ## 4. Validate offline first
 

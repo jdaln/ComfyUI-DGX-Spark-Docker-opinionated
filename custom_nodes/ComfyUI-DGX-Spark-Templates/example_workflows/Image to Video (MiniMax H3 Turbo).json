@@ -1683,7 +1683,7 @@
       ],
       "type": "LoadImage",
       "widgets_values": [
-        "example.png",
+        "transparent_rgb_gaming_mouse.png",
         "image"
       ]
     },

@@ -138,6 +138,14 @@ model. Run the audit too:
 docker exec comfyui python3 /tmp/audit_refs.py krea-2-turbo ideogram-4
 ```
 
+The same goes for inputs. When a lane ran on something the workflow doesn't
+give a user, `run_lanes.py` prints `PASS (hollow)` with the reasons under it,
+and the summary names those lanes. The reasons are a stand-in for a missing
+sample file, a stub image in an empty socket, a subgraph's inner values in
+place of the ones it shows, or an empty default. The stand-in image,
+ComfyUI's `example.png`, is a screenshot of a node graph, so a hollow image
+lane has usually edited or animated that screenshot.
+
 Then open the output file. A `COMPLETED` result only proves the graph executed.
 
 ```bash

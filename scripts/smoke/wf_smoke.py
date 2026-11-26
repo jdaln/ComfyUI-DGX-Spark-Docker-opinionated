@@ -20,9 +20,16 @@ SUBS = {}
 # template while pointing at different checkpoints
 if len(sys.argv) > 3:
     SUBS.update(json.loads(sys.argv[3]))
+MODEL_FILE = re.compile(r"\.(safetensors|gguf|sft|ckpt|pt|pth|onnx|bin)$", re.I)
+_normalized = set()
 def sub(v):
     if not isinstance(v, str): return v
-    if "\\" in v and v.rsplit(".", 1)[-1] in ("safetensors", "gguf", "pt", "sft", "ckpt"):
+    if "\\" in v and MODEL_FILE.search(v):
+        # a workflow saved on Windows stores model subfolders as onnx\yolov10m.onnx;
+        # the Linux server lists onnx/yolov10m.onnx and the GUI shows the value red
+        if v not in _normalized:
+            _normalized.add(v)
+            print(f"normalized Windows path {v} -> {v.replace(chr(92), '/')}")
         v = v.replace("\\", "/")
     return SUBS.get(v, v)
 
@@ -46,7 +53,6 @@ def api(path, data=None):
         print("HTTP", e.code, e.read().decode()[:3000]); sys.exit(1)
 
 _newlink = itertools.count(10_000_000)
-MODEL_FILE = re.compile(r"\.(safetensors|gguf|sft|ckpt|pt|pth|onnx|bin)$", re.I)
 
 def accepts(node, slot, value, object_info):
     """Whether `value` could be what input `slot` of `node` holds."""
@@ -80,7 +86,7 @@ def promoted_values(sg, wv, in_links, nodes, object_info):
     on; anything else returns None and keeps the inner node defaults."""
     values, wi = {}, 0
     for k, sin in enumerate(sg.get("inputs", [])):
-        if sin.get("type") not in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO"):
+        if sin.get("type") not in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO", "COMFY_DYNAMICCOMBO_V3"):
             continue
         if wi >= len(wv): return None
         values[k] = wv[wi]; wi += 1
@@ -91,6 +97,39 @@ def promoted_values(sg, wv, in_links, nodes, object_info):
         for tid, tslot in in_links.get(k, []):
             if not accepts(nodes[tid], tslot, v, object_info): return None
     return values
+
+def proxied_values(o, sg, pre, wv, in_links, nodes, object_info):
+    """Map a subgraph node's widgets_values through properties.proxyWidgets.
+
+    Newer frontends list every widget shown on the subgraph node there, in the
+    order of widgets_values: ["-1", name] is a subgraph input, [inner_id, name]
+    a widget of an inner node shown directly (a sampler's seed). A null value
+    stays on the inner widget. Returns ({input slot: value}, {(inner node id,
+    input name): value}), or None when the list does not fit."""
+    proxy = (o.get("properties") or {}).get("proxyWidgets")
+    if not isinstance(proxy, list) or len(proxy) != len(wv):
+        return None
+    slot_by_name = {inp.get("name"): k for k, inp in enumerate(sg.get("inputs", []))}
+    values, inner = {}, {}
+    for entry, v in zip(proxy, wv):
+        if not (isinstance(entry, list) and len(entry) == 2):
+            return None
+        owner, name = str(entry[0]), entry[1]
+        if v is None or name == "control_after_generate":
+            continue
+        if owner == "-1":
+            k = slot_by_name.get(name)
+            if k is None:
+                return None
+            for tid, tslot in in_links.get(k, []):
+                if not accepts(nodes[tid], tslot, v, object_info):
+                    return None
+            values[k] = v
+        else:
+            if pre + owner not in nodes:
+                return None
+            inner[(pre + owner, name)] = v
+    return values, inner
 
 def expand_subgraphs(wf, object_info):
     """Inline-expand subgraph nodes.
@@ -128,7 +167,14 @@ def expand_subgraphs(wf, object_info):
         # inputs (promoted_values); otherwise fall back to the inner nodes' own
         # widgets_values (which carry the blueprint's intended defaults).
         align = len(wv) == len(widget_inputs)
-        promoted = None if align or not wv else promoted_values(sg, wv, in_links, nodes, object_info)
+        promoted = None
+        if wv and not align:
+            proxied = proxied_values(o, sg, pre, wv, in_links, nodes, object_info)
+            if proxied is not None:
+                promoted, inner_values = proxied
+                forced.update(inner_values)
+            else:
+                promoted = promoted_values(sg, wv, in_links, nodes, object_info)
         if wv and not align and promoted is None:
             print(f"subgraph {sg.get('name', o['type'])[:40]}: widgets_values ({len(wv)}) "
                   f"!= promoted widgets ({len(widget_inputs)}); using inner node defaults")
@@ -251,6 +297,12 @@ def ui_to_api(wf, object_info):
                 if lid is None: return None
                 src, slot, _t = links[lid]
                 continue
+            if n["type"] == "SetNode":
+                # a SetNode's own output passes its input through, like a reroute
+                lid = by_dst.get(src, {}).get(0)
+                if lid is None: return None
+                src, slot, _t = links[lid]
+                continue
             if n["type"] == "Reroute" or n.get("mode") == 4:
                 # pass-through: follow input of matching type (Reroute: slot 0)
                 nxt = None
@@ -285,7 +337,7 @@ def ui_to_api(wf, object_info):
         wv = n.get("widgets_values")
         if isinstance(wv, dict):
             for k, v in wv.items():
-                if k not in inputs: inputs[k] = v
+                if k not in inputs: inputs[k] = sub(v)
         elif t in NODE_WIDGET_MAP:
             wv = list(wv or [])
             for i, name in enumerate(NODE_WIDGET_MAP[t]):
@@ -325,7 +377,9 @@ def ui_to_api(wf, object_info):
                                 wi += 1
                     continue
                 is_widget = isinstance(typ, list) or typ in ("INT", "FLOAT", "STRING", "BOOLEAN", "COMBO") or typ in VIEWER_TYPES or cfg.get("widget") or "default" in cfg
-                if not is_widget: continue
+                # forceInput: a socket only, the workflow keeps no widget value for it
+                # (SAM2's coordinates_positive took individual_objects' False)
+                if not is_widget or cfg.get("forceInput"): continue
                 if name in inputs:
                     # linked widget still consumes a slot in widgets_values
                     if wi < len(wv): wi += 1
@@ -437,6 +491,21 @@ def ui_to_api(wf, object_info):
                     attached = True
                     break
             if attached: break
+    # ComfyUI runs only what an output node reads. Drop the rest (a leftover node
+    # with nothing connected) so it gets no stub input and no stub warning.
+    reached = set()
+    todo = [nid for nid, p in prompt.items() if object_info.get(p["class_type"], {}).get("output_node")]
+    while todo:
+        nid = todo.pop()
+        if nid in reached or nid not in prompt: continue
+        reached.add(nid)
+        todo += [v[0] for v in prompt[nid]["inputs"].values()
+                 if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)]
+    unread = [nid for nid in prompt if nid not in reached]
+    for nid in unread:
+        del prompt[nid]
+    if unread:
+        print(f"left out {len(unread)} node(s) no output reads")
     # feed unconnected required IMAGE/MASK/VIDEO inputs from stub loaders
     stubs = {}
     def stub(kind):
